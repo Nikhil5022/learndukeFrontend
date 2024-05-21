@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
+import axios from 'axios';
 
 export default function Cart() {
     const location = useLocation();
+    const user = JSON.parse(localStorage.getItem("user"));
     const [cartProducts, setCartProducts] = useState(location.state.products.map(product => ({ ...product, quantity: 1 })));
+
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            const userdata = JSON.parse(storedUser);
+            axios.get(`http://localhost:3000/getUser/${userdata.email}`).then((response) => {
+                setImage(response.data.profilephoto.url);
+            })
+            };
+    }, []);
 
     const handleIncrease = (index) => {
         const newCartProducts = [...cartProducts];
@@ -33,6 +47,37 @@ export default function Cart() {
         });
         return total;
     };
+
+    const checkoutHandler = async () => {
+    
+        const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
+          amount: calculateTotal(),
+        });
+    
+        const options = {
+          key: "rzp_test_jH3t9W8Up3P2iW",
+          amount: calculateTotal() * 100,
+          currency: "INR",
+          name: user.name ? user.name : "Sample User",
+          description: "Tutorial of RazorPay",
+          image: image ? image : "",
+          order_id: data.order.id,
+          callback_url: `http://localhost:3000/api/v1/verify/payment/${user.email}`,
+          prefill: {
+            name: user.name ? user.name : "Sample User",
+            email: user.email ? user.email : "Sample@gmail.com",
+            contact: user.mobile && user.mobile  ,
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#121212",
+          },
+        };
+        const razor = new window.Razorpay(options);
+        razor.open();
+      };
 
     return (
         <div className="w-full flex justify-center">
@@ -64,7 +109,9 @@ export default function Cart() {
                     <div className="font-semibold">Total: Rs. {calculateTotal().toFixed(2)}</div>
                 </div>
                 <div className="flex justify-center py-4">
-                    <button className="bg-orange-500 text-white py-3 px-6 rounded hover:bg-orange-600">Checkout</button>
+                    <button className="bg-orange-500 text-white py-3 px-6 rounded hover:bg-orange-600"
+                    onClick={() => checkoutHandler()}
+                    >Checkout</button>
                 </div>
             </div>
         </div>

@@ -59,7 +59,9 @@ export default function UserPage() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUserData({ ...userData, profilephoto: e.target.result });
+        setUserData({ ...userData, profilephoto:{
+          url: e.target.result,
+        } });
       };
       reader.readAsDataURL(file);
     }
@@ -121,7 +123,7 @@ export default function UserPage() {
               <div className="flex justify-center m-5">
                 <label htmlFor="profilePhotoInput" className="relative cursor-pointer group">
                   <img
-                    src={userData.profilephoto}
+                    src={userData.profilephoto.url}
                     alt=""
                     className="w-20 rounded-full"
                   />
@@ -213,10 +215,10 @@ export default function UserPage() {
             <div className="w-full flex ">
               <div className="w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-l-3xl shadow-lg">
                 <img
-                  src={userData?.profilephoto}
-                  alt=""
+                  src={userData?.profilephoto.url}
+                  alt="Profile pic"
                   className="w-2/4 rounded-full my-5"
-                />
+                  />
                 <div className="text-2xl font-semibold my-3 text-center">
                   {userData?.name}
                 </div>
