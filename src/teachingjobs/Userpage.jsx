@@ -30,19 +30,6 @@ export default function UserPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (user && user.email) {
-      axios
-        .get(`http://localhost:3000/getJobs/${user.email}`)
-        .then((response) => {
-          setJobs(response.data);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the jobs:", error);
-        });
-    }
-  }, [user]);
-
   const handleDelete = (jobId) => {
     axios
       .delete(`http://localhost:3000/deleteJob/${jobId}`)

@@ -5,7 +5,6 @@ import DosAndDonts from "./DosAndDonts";
 import { useNavigate } from "react-router-dom";
 import Achievements from "../assets/Achievements.jpg";
 import numbers2 from "../assets/numbers2.jpg";
-// import Aboutlearnduke from "../assets/Aboutlearnduke.mp4";
 
 export default function Teachingjobs() {
   const navigator = useNavigate();
@@ -272,7 +271,7 @@ export default function Teachingjobs() {
               <button
                 className="w-full text-white bg-blue-500 py-4 mt-2 hover:scale-105"
                 onClick={() => {
-                  window.open("https://rzp.io/l/learndukeindia", "_blank");
+                  window.open("https://rzp.io/l/learndukeindia", "blank");
                 }}
               >
                 Buy it now
