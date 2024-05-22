@@ -18,7 +18,7 @@ export default function Navbar() {
     if (storedUser) {
       const userdata=JSON.parse(storedUser);
       axios.get(`http://localhost:3000/getUser/${userdata.email}`).then((response) => {
-        setPhoto(response.data.profilephoto);
+        setPhoto(response.data.profilephoto.url);
       });
     }
 
