@@ -5,11 +5,44 @@ import DosAndDonts from "./DosAndDonts";
 import { useNavigate } from "react-router-dom";
 import Achievements from "../assets/Achievements.jpg";
 import numbers2 from "../assets/numbers2.jpg";
-// import Aboutlearnduke from "../assets/Aboutlearnduke.mp4";
+import axios from "axios"
+import image from "../assets/learnDuke.png";
 
 export default function Teachingjobs() {
   const navigator = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
   const scrollRef = useRef(null);
+
+  const checkoutHandler = async () => {
+    
+    const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
+      amount: 999,
+    });
+
+    const options = {
+      key: "rzp_test_jH3t9W8Up3P2iW",
+      amount: 99900 / 100,
+      currency: "INR",
+      name: user.name ? user.name : "Sample User",
+      description: "Tutorial of RazorPay",
+      image: image,
+      order_id: data.order.id,
+      callback_url: `http://localhost:3000/api/v1/verify/payment/${user.email}`,
+      prefill: {
+        name: user.name ? user.name : "Sample User",
+        email: user.email ? user.email : "Sample@gmail.com",
+        contact: user.mobile && user.mobile  ,
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
 
   const handleAddToCart = () => {
     // Scroll to the top of the page
@@ -237,13 +270,6 @@ export default function Teachingjobs() {
           </div>
           <div className="flex flex-col md:flex-row px-3 md:px-10">
             <div className="w-full md:w-1/2">
-              {/* <video
-                loop
-                controls
-                className={`w-full p-2 md:p-0 md:pr-10 md:pl-0 md:pt-10 md:pb-0`}
-              >
-                <source src={Aboutlearnduke} type="video/mp4" />
-              </video> */}
             </div>
             <div className="w-full md:w-1/2 flex flex-col  md:px-10">
               <div
@@ -271,9 +297,10 @@ export default function Teachingjobs() {
 
               <button
                 className="w-full text-white bg-blue-500 py-4 mt-2 hover:scale-105"
-                onClick={() => {
-                  window.open("https://rzp.io/l/learndukeindia", "_blank");
-                }}
+                // onClick={() => {
+                //   window.open("https://rzp.io/l/learndukeindia", "blank");
+                // }}
+                onClick={() => checkoutHandler()}
               >
                 Buy it now
               </button>
