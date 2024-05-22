@@ -17,6 +17,7 @@ export default function UserPage() {
       axios
         .get(`http://localhost:3000/getUser/${user.email}`)
         .then((response) => {
+          console.log(response.data)
           setUserData(response.data);
           setLoading(false);
         })

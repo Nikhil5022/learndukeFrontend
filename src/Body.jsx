@@ -27,7 +27,7 @@ export default function Body() {
             .then((userResponse) => {
               // i need to add name into the job object as userName
               job.userName = userResponse.data.name;
-              job.imageLink = userResponse.data.profilephoto;
+              job.imageLink = userResponse.data.profilephoto.url;
               setNewTutorialJobs((prevJobs) => [...prevJobs, job]);
             })
             .catch((error) => {
