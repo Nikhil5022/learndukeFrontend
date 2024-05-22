@@ -21,6 +21,8 @@ import Admin from "./admin/Admin";
 import Userpage from "./teachingjobs/Userpage";
 import Userdata from "./Userdata";
 import PaymentSuccess from "./teachingjobs/PaymentSuccess";
+import Detailedjob from "./teachingjobs/Detailedjob";
+import PaymentFailure from "./teachingjobs/PaymentFailure";
 
 // function NavbarWrapper() {
 //   const location = useLocation();
@@ -55,6 +57,8 @@ export default function App() {
           <Route path="/userpage" element={<Userpage />} />
           <Route path="/userdata" element={<Userdata />} />
           <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+          <Route path="/detailedjob/:jobId" element={<Detailedjob />} />
+          <Route path="/paymentfailure" element={<PaymentFailure />} />
           {/* Add additional routes here */}
         </Routes>
         <Footer />

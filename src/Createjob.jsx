@@ -25,6 +25,9 @@ export default function CreateJob() {
     whatsappNumber: "",
     countryCode: "+1", // Default country code
     isDifferentWhatsappNumber: false, // Flag to indicate if WhatsApp number is different
+    requirements: "",
+    responsibilities: "",
+    tags: [],
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -36,6 +39,10 @@ export default function CreateJob() {
     location: false,
     phoneNumber: false,
     whatsappNumber: false,
+    countryCode: false,
+    requirements: false,
+    responsibilities: false,
+    tags: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -43,11 +50,17 @@ export default function CreateJob() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
-    setFormData({ ...formData, [name]: newValue });
+    
+    if (name === "tags") {
+      const tagsArray = value.split(',').map(tag => tag.trim());
+      setFormData({ ...formData, [name]: tagsArray });
+    } else {
+      setFormData({ ...formData, [name]: newValue });
 
-    // If WhatsApp number is same as phone number, update WhatsApp number when phone number changes
-    if (name === "phoneNumber" && !formData.isDifferentWhatsappNumber) {
-      setFormData({ ...formData, whatsappNumber: value });
+      // If WhatsApp number is same as phone number, update WhatsApp number when phone number changes
+      if (name === "phoneNumber" && !formData.isDifferentWhatsappNumber) {
+        setFormData({ ...formData, whatsappNumber: value });
+      }
     }
   };
 
@@ -185,7 +198,7 @@ export default function CreateJob() {
               />
               {formErrors.maxAmountPerHour && submitted && (
                 <p className="text-red-500 text-xs mt-1">
-                  This field is required
+                  This field isrequired
                 </p>
               )}
             </div>
@@ -240,6 +253,85 @@ export default function CreateJob() {
                 This field is required
               </p>
             )}
+          </div>
+          {/* Requirements */}
+          <div className="mb-4">
+            <label
+              htmlFor="requirements"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Requirements
+            </label>
+            <textarea
+              id="requirements"
+              name="requirements"
+              value={formData.requirements}
+              onChange={handleChange}
+              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                formErrors.requirements && submitted ? "border-red-500" : ""
+              }`}
+              rows="4"
+            />
+            {formErrors.requirements && submitted && (
+              <p className="text-red-500 text-xs mt-1">
+                This field is required
+              </p>
+            )}
+          </div>
+          {/* Responsibilities */}
+          <div className="mb-4">
+            <label
+              htmlFor="responsibilities"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Responsibilities
+            </label>
+            <textarea
+              id="responsibilities"
+              name="responsibilities"
+              value={formData.responsibilities}
+              onChange={handleChange}
+              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                formErrors.responsibilities && submitted ? "border-red-500" : ""
+              }`}
+              rows="4"
+            />
+            {formErrors.responsibilities && submitted && (
+              <p className="text-red-500 text-xs mt-1">
+                This field is required
+              </p>
+            )}
+          </div>
+          {/* Tags */}
+          <div className="mb-4">
+            <label
+              htmlFor="tags"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Tags
+            </label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              value={formData.tags.join(', ')}
+              onChange={handleChange}
+              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                formErrors.tags && submitted ? "border-red-500" : ""
+              }`}
+            />
+            {formErrors.tags && submitted && (
+              <p className="text-red-500 text-xs mt-1">
+                This field is required
+              </p>
+            )}
+            <div className="mt-2">
+              {formData.tags.map((tag, index) => (
+                <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
           <div className="mb-4 flex items-center">
             <input
@@ -307,7 +399,7 @@ export default function CreateJob() {
             </div>
           )}
           <div className="mb-4">
-            <label
+          <label
               htmlFor="countryCode"
               className="block text-gray-700 font-semibold mb-2"
             >
@@ -340,3 +432,4 @@ export default function CreateJob() {
     </div>
   );
 }
+

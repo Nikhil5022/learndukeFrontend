@@ -17,6 +17,7 @@ export default function UserPage() {
       axios
         .get(`http://localhost:3000/getUser/${user.email}`)
         .then((response) => {
+          console.log(response.data)
           setUserData(response.data);
           setLoading(false);
         })
@@ -219,9 +220,14 @@ export default function UserPage() {
                   alt="Profile pic"
                   className="w-2/4 rounded-full my-5"
                   />
-                <div className="text-2xl font-semibold my-3 text-center">
-                  {userData?.name}
+                <div className="text-2xl w-72 items-center justify-center flex font-semibold my-3  text-center">
+                  {userData?.name}  {userData?.isPremium && (
+                  <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl">
+                  PRO 
                 </div>
+                )}
+                </div>
+                
               </div>
               <div className="w-2/3 bg-orange-100 p-5 rounded-r-3xl">
                 <div className="flex justify-between">
@@ -233,7 +239,7 @@ export default function UserPage() {
                     Edit
                   </button>
                 </div>
-                <div className="flex space-x-5 my-5">
+                <div className="flex items-center space-x-5 my-5">
                   {/* linkedin icon */}
                   <div
                     className=" p-3 rounded-lg cursor-pointer"
@@ -249,13 +255,14 @@ export default function UserPage() {
                   >
                     <FaGithub className="text-3xl text-gray-800" />
                   </div>
-                </div>
-                <div>{userData.bio}</div>
-                {userData.isPremium && (
-                  <div className="bg-green-200 p-2 rounded-lg mt-5">
+                  {userData.isPremium && (
+                  <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
                     Premium Member
                   </div>
                 )}
+                </div>
+                <div>{userData.bio}</div>
+               
                 {user && (
                   <div>
                     <div className="text-2xl font-semibold my-3 text-orange-600">

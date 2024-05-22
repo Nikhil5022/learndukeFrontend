@@ -3,7 +3,7 @@ import { FaWallet, FaPhone } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import whatsapp from "./assets/whatsapp2.png";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 export default function Tutorial({
   imageLink,
   userName,
@@ -16,11 +16,20 @@ export default function Tutorial({
   location,
   whatsappNumber,
   email,
+  requirements,
+  responsibilities,
+  tags,
+  id
+  
 }) {
+  const navigate = useNavigate();
   const borderColor = "#4D4C5C";
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(null);
+
 
   useEffect(() => {
+    const isLogin = JSON.parse(localStorage.getItem("user")) ? setIsLogin(true) : setIsLogin(false);
     axios
       .get(`http://localhost:3000/getUser/${email}`)
       .then((userResponse) => {
@@ -29,26 +38,65 @@ export default function Tutorial({
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
-  }, [email]);
+  }, [email, isLogin]);
 
   const handleCallNow = () => {
-    window.location.href = user.isPremium ? `tel:${phoneNumber},"_blank"` : "/findteachingjobs";
+    if(isLogin){
+      window.location.href = user.isPremium && `tel:${phoneNumber},"_blank"`;
+    }else{
+      alert("You need to login to call the user.")
+    }
   };
 
   const handleWhatsApp = () => {
-    if (user.isPremium) {
-      window.location.href = `https://wa.me/${whatsappNumber}`, "_blank";
-    } else {
-      window.location.href = "/findteachingjobs";
+    if (isLogin){
+
+      if (user.isPremium) {
+        window.location.href = `https://wa.me/${whatsappNumber}`, "_blank";
+      } else {
+        window.location.href = "/findteachingjobs";
+      }
+    } else{
+      alert("You need to login to call the user.")
     }
   };
+
+
+  function handleJobClick() {
+    // need to send this data to another page to show the details of the job
+    let jobData = {
+      imageLink,
+      userName,
+      title,
+      description,
+      minAmountPerHour,
+      maxAmountPerHour,
+      jobType,
+      phoneNumber,
+      location,
+      whatsappNumber,
+      email,
+      isPremium: user.isPremium,
+      requirements,
+      responsibilities,
+      tags,
+
+    };
+    // i want to send this file to /detailedjob page
+    // console.log("jobData", jobData)
+    navigate('/detailedjob/'+id);
+
+  }
   
 
   return (
     <div
-      className={`rounded-xl mt-5 p-5 border-${borderColor}`}
+      className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer`}
       style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+      
     >
+      <div onClick={handleJobClick}>
+
       <div className="flex  items-center  mb-4">
         <img
           src={
@@ -64,7 +112,7 @@ export default function Tutorial({
       </div>
       <div className="text-3xl font-semibold">{title}</div>
       <div style={{ color: borderColor }} className="mt-3">
-        {description}
+        {description.slice(0,200)+ "...."}
       </div>
       <div className="flex flex-wrap mt-4 space-x-3 md:space-x-8">
         <div
@@ -89,6 +137,7 @@ export default function Tutorial({
             </div>
           )}
         </div>
+      </div>
       </div>
       <div className="flex mt-4 space-x-3 md:space-x-8">
         <button
