@@ -3,7 +3,7 @@ import { FaWallet, FaPhone } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import whatsapp from "./assets/whatsapp2.png";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 export default function Tutorial({
   imageLink,
   userName,
@@ -16,7 +16,13 @@ export default function Tutorial({
   location,
   whatsappNumber,
   email,
+  requirements,
+  responsibilities,
+  tags,
+  id
+  
 }) {
+  const navigate = useNavigate();
   const borderColor = "#4D4C5C";
   const [user, setUser] = useState({});
 
@@ -42,12 +48,40 @@ export default function Tutorial({
       window.location.href = "/findteachingjobs";
     }
   };
+
+
+  function handleJobClick() {
+    // need to send this data to another page to show the details of the job
+    let jobData = {
+      imageLink,
+      userName,
+      title,
+      description,
+      minAmountPerHour,
+      maxAmountPerHour,
+      jobType,
+      phoneNumber,
+      location,
+      whatsappNumber,
+      email,
+      isPremium: user.isPremium,
+      requirements,
+      responsibilities,
+      tags,
+
+    };
+    // i want to send this file to /detailedjob page
+    // console.log("jobData", jobData)
+    navigate('/detailedjob/'+id);
+
+  }
   
 
   return (
     <div
-      className={`rounded-xl mt-5 p-5 border-${borderColor}`}
+      className={`rounded-xl mt-5 p-5 border-${borderColor} cursor-pointer`}
       style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+      onClick={handleJobClick}
     >
       <div className="flex  items-center  mb-4">
         <img
