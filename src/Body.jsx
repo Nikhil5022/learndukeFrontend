@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Tutorial from "./Tutorial";
-import { FaAngleDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaAngleDown, FaSearch, FaMapMarkerAlt, FaAngleUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -202,20 +202,24 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
           <button
             onClick={toggleDropdown}
             className="px-4 py-2 bg-gray-200 rounded-lg mb-2 md:mr-0"
-          >
-            <FaAngleDown className="inline-block text-xl" />
+          >{
+            dropdownVisible ? 
+            <FaAngleUp className="inline-block text-xl" />
+            :
+            <FaAngleDown className="inline-block text-xl" /> 
+          }
           </button>
         )}
       </div>
       {dropdownVisible && (
         <div
-          className=" left-0 mt-2   rounded-lg  flex space-x-3"
+          className=" left-0 mt-2 rounded-lg flex space-x-3"
           ref={dropdownRef}
         >
           {dropdownOptions.map((option, index) => (
             <button
               key={index}
-              className={`px-4 py-2 w-full text-left bg-gray-200 rounded-lg hover:bg-gray-300 ${
+              className={`px-4 py-2  text-left bg-gray-200 rounded-lg hover:bg-gray-300 ${
                 selectedFilter === option ? "bg-blue-500 text-white" : ""
               }`}
               onClick={() => {

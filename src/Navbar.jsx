@@ -39,7 +39,7 @@ export default function Navbar() {
           setPhoto(response.data.profilephoto);
         });
         setUser({ email, name, accessToken });
-        navigator("/userdata");
+        navigator("/teachingjobs");
       } else {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -90,7 +90,7 @@ export default function Navbar() {
           >
             Explore Jobs
           </div>
-          <div className="text-base font-semibold m-1.5" onClick={() => {}}>
+          <div className="text-base font-semibold m-1.5">
             Corporate training
           </div>
           <div className="text-base font-semibold m-1.5">Become a tutor</div>
@@ -101,11 +101,11 @@ export default function Navbar() {
           <div className="absolute top-16 right-0 bg-white p-4 rounded-lg shadow-md z-10 flex flex-col w-1/3 lg:hidden">
             <div className="flex items-center">
               <FaUserCircle className="text-xl mr-2" />
-              <div className="font-semibold">Log in</div>
+              <div className="font-semibold cursor-pointer">Log in</div>
             </div>
             <hr className="m-2 mb-5" />
             <div
-              className="text-base font-semibold mb-4"
+              className="text-base cursor-pointer font-semibold mb-4"
               onClick={() => {
                 navigator("/teachingJobs");
               }}

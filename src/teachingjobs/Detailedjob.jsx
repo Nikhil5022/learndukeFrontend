@@ -19,6 +19,7 @@ export default function Detailedjob() {
   const [photo, setPhoto] = useState(null);
   const [user, setUser] = useState(null);
   const [similarJobs, setSimilarJobs] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
     const jobId = window.location.pathname.split("/").pop();
@@ -45,15 +46,17 @@ export default function Detailedjob() {
         .get(`http://localhost:3000/getUser/${user.email}`)
         .then((response) => {
           setIsPremium(response.data.isPremium);
+          setIsLogin(true);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+          setIsLogin(false);
         });
     }
-  }, []);
+  }, [isLogin, user]);
 
   const handleShare = () => {
-    if (navigator.share) {
+    if (navigator.share && isLogin) {
       navigator
         .share({
           title: job.title,
@@ -171,10 +174,15 @@ export default function Detailedjob() {
             <button
               className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300"
               onClick={() => {
-                if (isPremium) {
-                  window.location.href = `tel:${job.phoneNumber}`;
-                } else {
-                  alert("You need to be a premium user to call this number");
+                if(isLogin){
+
+                  if (isPremium) {
+                    window.location.href = `tel:${job.phoneNumber}`;
+                  } else {
+                    alert("You need to be a premium user to call this number");
+                  }
+                }else{
+                  alert("You need to login to call this number");
                 }
               }}
             >
@@ -184,10 +192,15 @@ export default function Detailedjob() {
             <button
               className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300"
               onClick={() => {
-                if (isPremium) {
-                  window.location.href = `https://wa.me/${job.whatsappNumber}`;
-                } else {
-                  alert("You need to be a premium user to call this number");
+                if(isLogin){
+
+                  if (isPremium) {
+                    window.location.href = `https://wa.me/${job.whatsappNumber}`;
+                  } else {
+                    alert("You need to be a premium user to call this number");
+                  }
+                }else{
+                  alert("You need to login to call this number");
                 }
               }}
             >
