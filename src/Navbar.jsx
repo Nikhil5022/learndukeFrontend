@@ -40,7 +40,7 @@ export default function Navbar() {
           setPhoto(response.data.profilephoto.url);
         });
         setUser({ email, name, accessToken });
-        navigate("/userdata");
+        navigator("/teachingjobs");
       } else {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
