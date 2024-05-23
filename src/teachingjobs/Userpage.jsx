@@ -213,77 +213,73 @@ export default function UserPage() {
               </div>
             </div>
           ) : (
-            <div className="w-full flex ">
-              <div className="w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-l-3xl shadow-lg">
-                <img
-                  src={userData?.profilephoto.url}
-                  alt="Profile pic"
-                  className="w-2/4 rounded-full my-5"
-                  />
-                <div className="text-2xl w-72 items-center justify-center flex font-semibold my-3  text-center">
-                  {userData?.name}  {userData?.isPremium && (
+            <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-l-3xl shadow-lg">
+              <img
+                src={userData?.profilephoto.url}
+                alt="Profile pic"
+                className="w-2/4 rounded-full my-5"
+              />
+              <div className="text-2xl font-semibold my-3 text-center">
+                {userData?.name}
+                {userData?.isPremium && (
                   <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl">
-                  PRO 
-                </div>
-                )}
-                </div>
-                
-              </div>
-              <div className="w-2/3 bg-orange-100 p-5 rounded-r-3xl">
-                <div className="flex justify-between">
-                  <div className="text-2xl font-semibold my-3 text-orange-500">About Me</div>
-                  <button
-                    className="text-white bg-orange-500 px-5 h-12  rounded-md"
-                    onClick={() => setIsEditEnabled(true)}
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div className="flex items-center space-x-5 my-5">
-                  {/* linkedin icon */}
-                  <div
-                    className=" p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.linkedin, "_blank")}
-                  >
-                    <FaLinkedin className="text-3xl text-blue-800" />
-                  </div>
-
-                  {/* github icon */}
-                  <div
-                    className=" p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.github, "_blank")}
-                  >
-                    <FaGithub className="text-3xl text-gray-800" />
-                  </div>
-                  {userData.isPremium && (
-                  <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
-                    Premium Member
-                  </div>
-                )}
-                </div>
-                <div>{userData.bio}</div>
-               
-                {user && (
-                  <div>
-                    <div className="text-2xl font-semibold my-3 text-orange-600">
-                      Contact
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Phone:</span>
-                      {userData.phoneNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">WhatsApp:</span>
-                      {userData.whatsappNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Email:</span>
-                      {userData.email}
-                    </div>
+                    PRO 
                   </div>
                 )}
               </div>
             </div>
+            <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-r-3xl">
+              <div className="flex justify-between">
+                <div className="text-2xl font-semibold my-3 text-orange-500">About Me</div>
+                <button
+                  className="text-white bg-orange-500 px-5 h-12  rounded-md"
+                  onClick={() => setIsEditEnabled(true)}
+                >
+                  Edit
+                </button>
+              </div>
+              <div className="flex items-center space-x-5 my-5">
+                <div
+                  className="p-3 rounded-lg cursor-pointer"
+                  onClick={() => window.open(userData.linkedin, "_blank")}
+                >
+                  <FaLinkedin className="text-3xl text-blue-800" />
+                </div>
+                <div
+                  className="p-3 rounded-lg cursor-pointer"
+                  onClick={() => window.open(userData.github, "_blank")}
+                >
+                  <FaGithub className="text-3xl text-gray-800" />
+                </div>
+                {userData.isPremium && (
+                  <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
+                    Premium Member
+                  </div>
+                )}
+              </div>
+              <div>{userData.bio}</div>
+              {userData && (
+                <div>
+                  <div className="text-2xl font-semibold my-3 text-orange-600">
+                    Contact
+                  </div>
+                  <div className="text-lg mb-2">
+                    <span className="mr-2">Phone:</span>
+                    {userData.phoneNumber}
+                  </div>
+                  <div className="text-lg mb-2">
+                    <span className="mr-2">WhatsApp:</span>
+                    {userData.whatsappNumber}
+                  </div>
+                  <div className="text-lg mb-2">
+                    <span className="mr-2">Email:</span>
+                    {userData.email}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
           )}
         </div>
         <h1 className="text-2xl font-bold mt-10 mb-5">Your Jobs</h1>
