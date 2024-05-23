@@ -214,7 +214,7 @@ export default function UserPage() {
             </div>
           ) : (
             <div className="flex flex-col md:flex-row">
-            <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-l-3xl shadow-lg">
+            <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-none md:rounded-l-3xl shadow-lg">
               <img
                 src={userData?.profilephoto.url}
                 alt="Profile pic"
@@ -229,7 +229,7 @@ export default function UserPage() {
                 )}
               </div>
             </div>
-            <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-r-3xl">
+            <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-none md:rounded-r-3xl">
               <div className="flex justify-between">
                 <div className="text-2xl font-semibold my-3 text-orange-500">About Me</div>
                 <button
