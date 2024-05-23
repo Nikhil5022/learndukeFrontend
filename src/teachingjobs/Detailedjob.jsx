@@ -23,17 +23,17 @@ export default function Detailedjob() {
 
   useEffect(() => {
     const jobId = window.location.pathname.split("/").pop();
-    axios.get(`http://localhost:3000/getJobById/${jobId}`).then((response) => {
+    axios.get(`https://learndukeserver.vercel.app/getJobById/${jobId}`).then((response) => {
       axios
-        .get(`http://localhost:3000/getUser/${response.data.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${response.data.email}`)
         .then((userResponse) => {
-          setPhoto(userResponse.data.profilephoto);
+          setPhoto(userResponse.data.profilephoto.url);
           setUser(userResponse.data.name);
         });
       setJob(response.data);
     });
     axios
-      .get(`http://localhost:3000/getSimilarJobs/${jobId}`)
+      .get(`https://learndukeserver.vercel.app/getSimilarJobs/${jobId}`)
       .then((response) => {
         setSimilarJobs(response.data);
       });
@@ -43,7 +43,7 @@ export default function Detailedjob() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       axios
-        .get(`http://localhost:3000/getUser/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
           setIsPremium(response.data.isPremium);
           setIsLogin(true);
@@ -119,7 +119,7 @@ export default function Detailedjob() {
       </div>
       <div className="w-full flex flex-col border border-orange-400 rounded-lg p-5 bg-white shadow-md animate-fade-in-right mt-12">
         <div className="p-3 rounded-lg m-3 flex justify-center">
-          <img src={photo} alt="" className="w-24 rounded-md shadow-lg" />
+          <img src={photo} alt="" className="w-24 h-24 shadow-lg rounded-full" />
         </div>
         <div className="text-lg font-semibold text-orange-700 m-3 text-center">
           {user}

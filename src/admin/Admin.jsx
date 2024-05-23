@@ -22,7 +22,7 @@ export default function Admin() {
   useEffect(() => {
     if (isLogged) {
       axios
-        .get("http://localhost:3000/getUsers")
+        .get("https://learndukeserver.vercel.app/getUsers")
         .then((response) => {
           setUsers(response.data);
         })
@@ -40,7 +40,7 @@ export default function Admin() {
       const updatedIsPremium = !user.isPremium;
 
       await axios
-        .post(`http://localhost:3000/updateUser/${user.email}`, {
+        .post(`https://learndukeserver.vercel.app/updateUser/${user.email}`, {
           isPremium: updatedIsPremium,
         })
         .then((response) => {
@@ -69,7 +69,7 @@ export default function Admin() {
   const handleLogin = async (event) => {
     event.preventDefault();
     console.log(email, password);
-    axios.post("http://localhost:3000/login", { email,password}).then((response) => {
+    axios.post("https://learndukeserver.vercel.app/login", { email,password}).then((response) => {
         console.log(response.data);
         if(response.data.token){
             localStorage.setItem("token", response.data.token);

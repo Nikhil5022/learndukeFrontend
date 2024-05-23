@@ -15,7 +15,7 @@ export default function UserPage() {
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`http://localhost:3000/getUser/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
           console.log(response.data)
           setUserData(response.data);
@@ -33,7 +33,7 @@ export default function UserPage() {
 
   const handleDelete = (jobId) => {
     axios
-      .delete(`http://localhost:3000/deleteJob/${jobId}`)
+      .delete(`https://learndukeserver.vercel.app/deleteJob/${jobId}`)
       .then((response) => {
         setJobs(jobs.filter((job) => job._id !== jobId));
       })
@@ -71,7 +71,7 @@ export default function UserPage() {
   const handleSaveProfile = () => {
     console.log("User Data:", userData);
     // Save the updated profile data to the server
-    axios.post(`http://localhost:3000/editUserData/${user.email}`, userData).then((response) => {
+    axios.post(`https://learndukeserver.vercel.app/editUserData/${user.email}`, userData).then((response) => {
       console.log("Profile data updated successfully:", response.data);
       alert("Profile data updated successfully");
       setIsEditEnabled(false);

@@ -20,7 +20,7 @@ export default function Teachingjobs() {
       return
     }
     
-    const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
+    const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
       amount: 999,
     });
 
@@ -32,7 +32,7 @@ export default function Teachingjobs() {
       description: "Tutorial of RazorPay",
       image: image,
       order_id: data.order.id,
-      callback_url: `http://localhost:3000/api/v1/verify/payment/${user.email}`,
+      callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
       prefill: {
         name: user.name ? user.name : "Sample User",
         email: user.email ? user.email : "Sample@gmail.com",

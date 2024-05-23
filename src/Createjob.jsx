@@ -91,7 +91,7 @@ export default function CreateJob() {
 
     if (!errors) {
       const jobData = { ...formData, email: email };
-      await axios.post("http://localhost:3000/addJob", jobData).then((res) => {
+      await axios.post("https://learndukeserver.vercel.app/addJob", jobData).then((res) => {
         console.log("Job created successfully:", res.data);
         alert("Job created successfully");
       });

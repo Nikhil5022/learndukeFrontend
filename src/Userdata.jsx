@@ -45,7 +45,7 @@ function Userdata() {
     e.preventDefault();
     if (validateForm()) {
       console.log('Form Data Submitted:', formData);
-      axios.post('http://localhost:3000/updateUserInfo/' + User.email, formData).then((response) => {
+      axios.post('https://learndukeserver.vercel.app/updateUserInfo/' + User.email, formData).then((response) => {
         console.log(response.data);
         alert('User data updated successfully');
         window.location.href = 'http://localhost:5173/';

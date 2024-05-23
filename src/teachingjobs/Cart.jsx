@@ -14,7 +14,7 @@ export default function Cart() {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             const userdata = JSON.parse(storedUser);
-            axios.get(`http://localhost:3000/getUser/${userdata.email}`).then((response) => {
+            axios.get(`https://learndukeserver.vercel.app/getUser/${userdata.email}`).then((response) => {
                 setImage(response.data.profilephoto.url);
             })
             };
@@ -55,7 +55,7 @@ export default function Cart() {
             return;
         }
     
-        const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
+        const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
           amount: calculateTotal(),
         });
     
@@ -67,7 +67,7 @@ export default function Cart() {
           description: "Tutorial of RazorPay",
           image: image ? image : "",
           order_id: data.order.id,
-          callback_url: `http://localhost:3000/api/v1/verify/payment/${user.email}`,
+          callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
           prefill: {
             name: user.name ? user.name : "Sample User",
             email: user.email ? user.email : "Sample@gmail.com",

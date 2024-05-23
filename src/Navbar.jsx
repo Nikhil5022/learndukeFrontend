@@ -17,7 +17,7 @@ export default function Navbar() {
     if (storedUser) {
       const userdata = JSON.parse(storedUser);
       axios
-        .get(`http://localhost:3000/getUser/${userdata.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${userdata.email}`)
         .then((response) => {
           setPhoto(response.data.profilephoto.url);
         });
@@ -36,11 +36,11 @@ export default function Navbar() {
           "user",
           JSON.stringify({ email, name, accessToken })
         );
-        axios.get(`http://localhost:3000/getUser/${email}`).then((response) => {
+        axios.get(`https://learndukeserver.vercel.app/getUser/${email}`).then((response) => {
           setPhoto(response.data.profilephoto.url);
         });
         setUser({ email, name, accessToken });
-        navigator("/teachingjobs");
+        navigate("/teachingjobs");
       } else {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -57,7 +57,7 @@ export default function Navbar() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "https://learndukeserver.vercel.app/auth/google";
   };
 
   const handleLogout = () => {
@@ -67,7 +67,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="p-3 flex justify-between items-center sticky top-0 bg-orange-50 h-20 border-b border-gray-300">
+    <div className="p-3 flex justify-between items-center sticky top-0 bg-orange-50 h-20 border-b border-gray-300 z-50">
       <div className="flex space-x-6 items-center">
         <div className="flex">
           <img
@@ -164,7 +164,7 @@ export default function Navbar() {
           </div>
         )}
         {user ? (
-          <div className="rounded-lg  justify-between space-x-3 items-center hidden lg:flex">
+          <div className="rounded-lg  justify-between space-x-3 items-center hidden md:flex">
             <div
               className="border-2 border-orange-500 cursor-pointer rounded-full"
               onClick={() => {

@@ -17,53 +17,97 @@ export default function Body() {
   const [user, setUser] = useState(userData);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [userCache, setUserCache] = useState({});
+  const [premium, setPremium] = useState(false);
+  // const [userCache, setUserCache] = useState({});
+  // const [jobs,setJobs] = useState([]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get("https://learndukeserver.vercel.app/getJobs")
+  //     .then((response) => {
+  //       const jobs = response.data;
+  //       const updatedJobsPromises = jobs.map((job) => {
+  //         if (!userCache[job.email]) {
+  //           return axios
+  //             .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
+  //             .then((userResponse) => {
+  //               const updatedJob = {
+  //                 ...job,
+  //                 userName: userResponse.data.name,
+  //                 imageLink: userResponse.data.profilephoto.url,
+  //               };
+  //               console.log("Updated job:", updatedJob);
+  //               setUserCache((prevCache) => ({
+  //                 ...prevCache,
+  //                 [job.email]: userResponse.data,
+  //               }));
+  //               return updatedJob;
+  //             })
+  //             .catch((error) => {
+  //               console.error("Error fetching user data:", error);
+  //               return job; // Return the original job in case of error
+  //             });
+  //         } else {
+  //           const cachedUser = userCache[job.email];
+  //           return {
+  //             ...job,
+  //             userName: cachedUser.name,
+  //             imageLink: cachedUser.profilephoto.url,
+  //           };
+  //         }
+  //       });
+
+  //       Promise.all(updatedJobsPromises).then((updatedJobs) => {
+  //         setNewTutorialJobs(updatedJobs);
+  //       });
+
+  //       setTutorialJobs(jobs);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching jobs:", error);
+  //     });
+  // }, [userCache]);
+  // useEffect(() => {
+  //  if(user){
+  //   axios
+  //     .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+  //     .then((response) => {
+  //       console.log(response.data.isPremium)
+  //       setPremium(response.data.isPremium);
+  //     });
+  //  }
+  // }, []);
   useEffect(() => {
+    
+
     axios
-      .get("http://localhost:3000/getJobs")
+      .get("https://learndukeserver.vercel.app/getJobs")
       .then((response) => {
-        const jobs = response.data;
-        const updatedJobsPromises = jobs.map((job) => {
-          if (!userCache[job.email]) {
-            return axios
-              .get(`http://localhost:3000/getUser/${job.email}`)
-              .then((userResponse) => {
-                const updatedJob = {
-                  ...job,
-                  userName: userResponse.data.name,
-                  imageLink: userResponse.data.profilephoto.url,
-                };
-                setUserCache((prevCache) => ({
-                  ...prevCache,
-                  [job.email]: userResponse.data,
-                }));
-                return updatedJob;
-              })
-              .catch((error) => {
-                console.error("Error fetching user data:", error);
-                return job; // Return the original job in case of error
-              });
-          } else {
-            const cachedUser = userCache[job.email];
-            return {
-              ...job,
-              userName: cachedUser.name,
-              imageLink: cachedUser.profilephoto.url,
-            };
-          }
-        });
+        console.log(response.data)
+        setTutorialJobs(response.data);
 
-        Promise.all(updatedJobsPromises).then((updatedJobs) => {
-          setNewTutorialJobs(updatedJobs);
+        // Iterate over tutorialJobs after setting the state
+        response.data.forEach((job,i) => {
+          axios
+            .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
+            .then((userResponse) => {
+              // console.log(userResponse.data)
+              // i need to add name into the job object as userName
+              job.userName = userResponse.data.name;
+              job.imageLink = userResponse.data.profilephoto.url;
+              // job.isPremium = premium;
+              console.log(job);
+              setNewTutorialJobs((prevJobs) => [...prevJobs, job]);
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            });
         });
-
-        setTutorialJobs(jobs);
       })
       .catch((error) => {
         console.error("Error fetching jobs:", error);
       });
-  }, [userCache]);
+  }, []);
 
   useEffect(() => {
     handleSearch();
@@ -192,6 +236,7 @@ export default function Body() {
                   responsibilities={job.responsibilities}
                   tags={job.tags}
                   id={job._id}
+                  isPremium={job.isPremium}
                 />
               ))}
             </div>
@@ -234,7 +279,7 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
   };
 
   return (
-    <div className="mt-8 sticky top-10">
+    <div className="mt-8 sticky top-32">
       <div className="flex flex-wrap md:flex-col md:items-start md:space-y-2">
         {visibleOptions.map((option, index) => (
           <button

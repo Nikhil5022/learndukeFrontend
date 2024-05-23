@@ -4,14 +4,54 @@ import companies from "../assets/companies.jpg";
 import numbers2 from "../assets/numbers2.jpg";
 // import Aboutlearnduke from "../assets/Aboutlearnduke.mp4";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import image from "../assets/learnDuke.png";
+
 
 
 export default function ResponsiveComponent() {
   const [isFixed, setIsFixed] = useState(false);
   const user=JSON.parse(localStorage.getItem("user"));
   const navigator = useNavigate();
-  const handleAddToCart = () => {
+
+  const checkoutHandler = async () => {
+
     
+    
+    const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
+      amount: 999,
+    });
+
+    const options = {
+      key: "rzp_test_jH3t9W8Up3P2iW",
+      amount: 99900 / 100,
+      currency: "INR",
+      name: user.name ? user.name : "Sample User",
+      description: "Tutorial of RazorPay",
+      image: image,
+      order_id: data.order.id,
+      callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+      prefill: {
+        name: user.name ? user.name : "Sample User",
+        email: user.email ? user.email : "Sample@gmail.com",
+        contact: user.mobile && user.mobile  ,
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
+  const handleAddToCart = () => {
+    // Scroll to the top of the page
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   
     const products = [
       { name: "Product 1", price: 999 },
@@ -81,7 +121,7 @@ export default function ResponsiveComponent() {
             className="w-full text-white bg-blue-500 py-4 hover:scale-105"
             onClick={() => {
               if(user){
-                window.open("https://rzp.io/l/learndukeindia", "_blank");
+                checkoutHandler();
               }
               else{
                 alert("Please login to buy the product");
