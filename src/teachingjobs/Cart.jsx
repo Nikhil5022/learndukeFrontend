@@ -49,6 +49,11 @@ export default function Cart() {
     };
 
     const checkoutHandler = async () => {
+
+        if(!user){
+            alert("Please login first to proceed to checkout");
+            return;
+        }
     
         const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
           amount: calculateTotal(),

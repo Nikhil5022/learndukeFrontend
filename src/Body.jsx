@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Tutorial from "./Tutorial";
 import { FaAngleDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -13,32 +13,79 @@ export default function Body() {
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(userData);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [userCache, setUserCache] = useState({});
 
   useEffect(() => {
     axios
       .get("http://localhost:3000/getJobs")
       .then((response) => {
-        setTutorialJobs(response.data);
-
-        // Iterate over tutorialJobs after setting the state
-        response.data.forEach((job) => {
-          axios
-            .get(`http://localhost:3000/getUser/${job.email}`)
-            .then((userResponse) => {
-              // i need to add name into the job object as userName
-              job.userName = userResponse.data.name;
-              job.imageLink = userResponse.data.profilephoto.url;
-              setNewTutorialJobs((prevJobs) => [...prevJobs, job]);
-            })
-            .catch((error) => {
-              console.error("Error fetching user data:", error);
-            });
+        const jobs = response.data;
+        const updatedJobsPromises = jobs.map((job) => {
+          if (!userCache[job.email]) {
+            return axios
+              .get(`http://localhost:3000/getUser/${job.email}`)
+              .then((userResponse) => {
+                const updatedJob = {
+                  ...job,
+                  userName: userResponse.data.name,
+                  imageLink: userResponse.data.profilephoto.url,
+                };
+                setUserCache((prevCache) => ({
+                  ...prevCache,
+                  [job.email]: userResponse.data,
+                }));
+                return updatedJob;
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
+                return job; // Return the original job in case of error
+              });
+          } else {
+            const cachedUser = userCache[job.email];
+            return {
+              ...job,
+              userName: cachedUser.name,
+              imageLink: cachedUser.profilephoto.url,
+            };
+          }
         });
+
+        Promise.all(updatedJobsPromises).then((updatedJobs) => {
+          setNewTutorialJobs(updatedJobs);
+        });
+
+        setTutorialJobs(jobs);
       })
       .catch((error) => {
         console.error("Error fetching jobs:", error);
       });
-  }, []);
+  }, [userCache]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchTitle, searchLocation, tutorialJobs]);
+
+  const handleSearch = () => {
+    let filteredJobs = tutorialJobs;
+
+    if (searchTitle) {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.title.toLowerCase().includes(searchTitle.toLowerCase())
+      );
+    }
+
+    if (searchLocation) {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.location.toLowerCase().includes(searchLocation.toLowerCase())
+      );
+    }
+
+    setNewTutorialJobs(filteredJobs);
+  };
 
   const toggleContent = () => {
     setShowFullContent(!showFullContent);
@@ -53,11 +100,10 @@ export default function Body() {
   const fullContent =
     "On Preply's tutoring jobs page you can always find open requests for qualified teachers of different languages and subjects to offer tuition to learners in general, as well as those who participate in our corporate language training programs and business English courses. Preply offers the chance to teach online with a flexible schedule, access to students from all over the world and constant customer service! In order to reply to student requests, you need to have a profile that shows your hourly price and your availability. Just check our tutoring jobs and find new students here!";
 
-  // Filter tutorial jobs based on the selected filter option
   const filteredTutorialJobs =
     selectedFilter === "All"
-      ? tutorialJobs
-      : tutorialJobs.filter((job) => job.locationtype === selectedFilter);
+      ? newTutorialJobs
+      : newTutorialJobs.filter((job) => job.locationtype === selectedFilter);
 
   return (
     <div className="w-full flex justify-center">
@@ -66,37 +112,41 @@ export default function Body() {
           <div className="flex flex-col md:flex-row justify-center items-center space-x-3">
             {/* input for search */}
             <div className="w-full flex flex-col md:flex-row border border-gray-300  items-center rounded-lg"
-            style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
             >
-              <div className="w-full md:w-1/2 md:w- flex">
+              <div className="w-full md:w-1/2 flex">
                 <FaSearch className="text-gray-500 m-4 text-xl" />
                 <input
                   type="text"
                   placeholder="Search for a job"
-                  className="border-2 border-none rounded-l-lg p-4 w-full   focus:outline-none"
+                  value={searchTitle}
+                  onChange={(e) => setSearchTitle(e.target.value)}
+                  className="border-2 border-none rounded-l-lg p-4 w-full focus:outline-none"
                 />
               </div>
               {/* vertical line */}
               <div className="border-r-2 h-10 w-0.5 m-1 hidden md:flex"></div>
-              <div className="w-full md:w-1/2  flex">
+              <div className="w-full md:w-1/2 flex">
                 <FaMapMarkerAlt className="text-gray-500 m-4 text-xl" />
                 {/* input by location */}
                 <input
                   type="text"
                   placeholder="Search by location"
-                  className="border-2 border-none rounded-r-lg p-4 w-full   focus:outline-none"
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  className="border-2 border-none rounded-r-lg p-4 w-full focus:outline-none"
                 />
               </div>
-              <button className="bg-blue-700 text-white px-4 h-10 rounded-md m-2">
-                Find
-              </button>
+             
             </div>
-            <button
-              className=" text-white  rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
-              onClick={() => navigate("/createjob")}
-            >
-              <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
-            </button>
+            {user && (
+              <button
+                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
+                onClick={() => navigate("/createjob")}
+              >
+                <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
+              </button>
+            )}
           </div>
 
           <div
@@ -160,7 +210,6 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
     filterOptions.slice(3)
   );
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -185,7 +234,7 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
   };
 
   return (
-    <div className=" mt-8 sticky top-10">
+    <div className="mt-8 sticky top-10">
       <div className="flex flex-wrap md:flex-col md:items-start md:space-y-2">
         {visibleOptions.map((option, index) => (
           <button
@@ -209,8 +258,7 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
       </div>
       {dropdownVisible && (
         <div
-          className=" left-0 mt-2   rounded-lg  flex space-x-3"
-          ref={dropdownRef}
+          className="left-0 mt-2 rounded-lg flex space-x-3"
         >
           {dropdownOptions.map((option, index) => (
             <button

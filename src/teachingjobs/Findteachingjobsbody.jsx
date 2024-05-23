@@ -5,8 +5,10 @@ import numbers2 from "../assets/numbers2.jpg";
 // import Aboutlearnduke from "../assets/Aboutlearnduke.mp4";
 import { useNavigate } from "react-router-dom";
 
+
 export default function ResponsiveComponent() {
   const [isFixed, setIsFixed] = useState(false);
+  const user=JSON.parse(localStorage.getItem("user"));
   const navigator = useNavigate();
   const handleAddToCart = () => {
     
@@ -78,7 +80,12 @@ export default function ResponsiveComponent() {
           <button
             className="w-full text-white bg-blue-500 py-4 hover:scale-105"
             onClick={() => {
-              window.open("https://rzp.io/l/learndukeindia", "_blank");
+              if(user){
+                window.open("https://rzp.io/l/learndukeindia", "_blank");
+              }
+              else{
+                alert("Please login to buy the product");
+              }
             }}
           >
             Buy it now

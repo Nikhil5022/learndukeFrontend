@@ -3,8 +3,8 @@ import axios from "axios";
 
 export default function CreateJob() {
   const [email, setEmail] = useState("");
+  
   useEffect(() => {
-    // getting data from local storage
     const data = localStorage.getItem("user");
     if (data) {
       const user = JSON.parse(data);
@@ -23,8 +23,8 @@ export default function CreateJob() {
     location: "",
     phoneNumber: "",
     whatsappNumber: "",
-    countryCode: "+1", // Default country code
-    isDifferentWhatsappNumber: false, // Flag to indicate if WhatsApp number is different
+    countryCode: "+1",
+    isDifferentWhatsappNumber: false,
     requirements: "",
     responsibilities: "",
     tags: [],
@@ -39,7 +39,6 @@ export default function CreateJob() {
     location: false,
     phoneNumber: false,
     whatsappNumber: false,
-    countryCode: false,
     requirements: false,
     responsibilities: false,
     tags: false,
@@ -57,9 +56,12 @@ export default function CreateJob() {
     } else {
       setFormData({ ...formData, [name]: newValue });
 
-      // If WhatsApp number is same as phone number, update WhatsApp number when phone number changes
       if (name === "phoneNumber" && !formData.isDifferentWhatsappNumber) {
-        setFormData({ ...formData, whatsappNumber: value });
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          phoneNumber: newValue,
+          whatsappNumber: newValue
+        }));
       }
     }
   };
@@ -70,16 +72,24 @@ export default function CreateJob() {
     let errors = false;
     const updatedFormErrors = { ...formErrors };
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (!formData[key] && key !== 'whatsappNumber') {
         updatedFormErrors[key] = true;
         errors = true;
       } else {
-        updatedFormErrors[key] = false; // Reset error state if field is not empty
+        updatedFormErrors[key] = false;
       }
     });
+
+    if (formData.isDifferentWhatsappNumber && !formData.whatsappNumber) {
+      updatedFormErrors.whatsappNumber = true;
+      errors = true;
+    } else {
+      updatedFormErrors.whatsappNumber = false;
+    }
+
     setFormErrors(updatedFormErrors);
+
     if (!errors) {
-      // Perform form submission
       const jobData = { ...formData, email: email };
       await axios.post("http://localhost:3000/addJob", jobData).then((res) => {
         console.log("Job created successfully:", res.data);
@@ -98,11 +108,12 @@ export default function CreateJob() {
 
   return (
     <div className="flex justify-center items-center h-full">
-      <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/2">
+      <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full md:w-3/4 lg:w-1/2">
         <h2 className="text-2xl font-semibold mb-4 text-orange-700">
           Create a Job
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
           <div className="mb-4">
             <label
               htmlFor="title"
@@ -121,11 +132,10 @@ export default function CreateJob() {
               }`}
             />
             {formErrors.title && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
+          {/* Description */}
           <div className="mb-4">
             <label
               htmlFor="description"
@@ -144,11 +154,10 @@ export default function CreateJob() {
               rows="4"
             />
             {formErrors.description && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
+          {/* Amount Per Hour */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <div className="mb-4 md:w-1/2">
               <label
@@ -198,11 +207,12 @@ export default function CreateJob() {
               />
               {formErrors.maxAmountPerHour && submitted && (
                 <p className="text-red-500 text-xs mt-1">
-                  This field isrequired
+                  This field is required
                 </p>
               )}
             </div>
           </div>
+          {/* Job Type */}
           <div className="mb-4">
             <label
               htmlFor="jobType"
@@ -226,11 +236,10 @@ export default function CreateJob() {
               <option value="Freelance">Freelance</option>
             </select>
             {formErrors.jobType && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
+          {/* Location */}
           <div className="mb-4">
             <label
               htmlFor="location"
@@ -249,9 +258,7 @@ export default function CreateJob() {
               }`}
             />
             {formErrors.location && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
           {/* Requirements */}
@@ -273,9 +280,7 @@ export default function CreateJob() {
               rows="4"
             />
             {formErrors.requirements && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
           {/* Responsibilities */}
@@ -297,9 +302,7 @@ export default function CreateJob() {
               rows="4"
             />
             {formErrors.responsibilities && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
           {/* Tags */}
@@ -321,34 +324,20 @@ export default function CreateJob() {
               }`}
             />
             {formErrors.tags && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
             <div className="mt-2">
               {formData.tags.map((tag, index) => (
-                <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                <span
+                  key={index}
+                  className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                >
                   {tag}
                 </span>
               ))}
             </div>
           </div>
-          <div className="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="isDifferentWhatsappNumber"
-              name="isDifferentWhatsappNumber"
-              checked={formData.isDifferentWhatsappNumber}
-              onChange={handleChange}
-              className="mr-2 mt-1"
-            />
-            <label
-              htmlFor="isDifferentWhatsappNumber"
-              className="text-gray-700"
-            >
-              <span className="font-semibold">Below number is not whatsapp number(First click and then enter number)</span> 
-            </label>
-          </div>
+          {/* Phone Number */}
           <div className="mb-4">
             <label
               htmlFor="phoneNumber"
@@ -367,12 +356,30 @@ export default function CreateJob() {
               }`}
             />
             {formErrors.phoneNumber && submitted && (
-              <p className="text-red-500 text-xs mt-1">
-                This field is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">This field is required</p>
             )}
           </div>
-
+          {/* Checkbox for WhatsApp Number */}
+          <div className="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              id="isDifferentWhatsappNumber"
+              name="isDifferentWhatsappNumber"
+              checked={formData.isDifferentWhatsappNumber}
+              onChange={handleChange}
+              className="mr-2 mt-1"
+            />
+            <label
+              htmlFor="isDifferentWhatsappNumber"
+              className="text-gray-700"
+            >
+              <span className="font-semibold">
+                Below number is not WhatsApp number (Click to enter WhatsApp
+                number)
+              </span>
+            </label>
+          </div>
+          {/* WhatsApp Number */}
           {formData.isDifferentWhatsappNumber && (
             <div className="mb-4">
               <label
@@ -392,14 +399,13 @@ export default function CreateJob() {
                 }`}
               />
               {formErrors.whatsappNumber && submitted && (
-                <p className="text-red-500 text-xs mt-1">
-                  This field is required
-                </p>
+                <p className="text-red-500 text-xs mt-1">This field is required</p>
               )}
             </div>
           )}
+          {/* Country Code */}
           <div className="mb-4">
-          <label
+            <label
               htmlFor="countryCode"
               className="block text-gray-700 font-semibold mb-2"
             >
@@ -410,7 +416,7 @@ export default function CreateJob() {
               name="countryCode"
               value={formData.countryCode}
               onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200`}
+              className="border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
             >
               {countryCodes.map((country) => (
                 <option key={country.code} value={country.code}>
@@ -419,6 +425,7 @@ export default function CreateJob() {
               ))}
             </select>
           </div>
+          {/* Submit Button */}
           <div className="flex justify-end">
             <button
               type="submit"
@@ -432,4 +439,3 @@ export default function CreateJob() {
     </div>
   );
 }
-

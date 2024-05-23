@@ -14,6 +14,11 @@ export default function Teachingjobs() {
   const scrollRef = useRef(null);
 
   const checkoutHandler = async () => {
+
+    if(!user){
+      alert("Please login to continue")
+      return
+    }
     
     const { data } = await axios.post("http://localhost:3000/api/v1/checkout", {
       amount: 999,
@@ -65,7 +70,7 @@ export default function Teachingjobs() {
   
 
   return (
-    <div ref={scrollRef}>
+    <div ref={scrollRef} className="mt-10">
       <div className="w-full flex justify-center">
         <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col md:flex-row px-4">
           <img src={teachingjobs} alt="" className="w-full mb-5 md:mb-0" />

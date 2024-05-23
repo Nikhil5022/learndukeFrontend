@@ -138,7 +138,7 @@ export default function Reviews() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="ml-10">
+    <div className="m-20">
       <div className="flex flex-col justify-center items-center mt-10 ">
         <div className="font-semibold text-2xl">Customer Reviews</div>
         <div className="flex flex-col mt-3">
@@ -151,7 +151,7 @@ export default function Reviews() {
       </div>
       <div>
         {currentReviews.map((review, index) => (
-          <div key={index} className="flex flex-col mt-5">
+          <div key={index} className="flex flex-col mt-5 bg-orange-100 rounded-lg p-5 hover:scale-105 transition 300ms hover:shadow-lg">
             <Stars number={review.rating} />
             <div className="font-semibold text-xl text-yellow-500 mt-3">{review.name}</div>
             <div className="font-semibold mt-5 leading-relaxed tracking-wide">{review.title}</div>
