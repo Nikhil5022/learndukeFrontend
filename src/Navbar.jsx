@@ -178,6 +178,12 @@ export default function Navbar() {
         )}
         {user ? (
           <div className="rounded-lg  justify-between space-x-3 items-center hidden md:flex">
+            <button
+                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
+                onClick={() => navigate("/createjob")}
+              >
+                <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
+              </button>
             <div
               className="border-2 border-orange-500 cursor-pointer rounded-full"
               onClick={() => {
