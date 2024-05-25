@@ -110,7 +110,7 @@ export default function Navbar() {
               <>
               <button
                 className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
-                onClick={() => navigate("/createjob")}
+                onClick={() => navigate("/createJob")}
               >
                 <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
               </button>
@@ -153,21 +153,21 @@ export default function Navbar() {
             ) : (
               <>
                 <div
-                  className="text-base font-semibold mb-4 cursor-pointer"
+                  className="text-base font-semibold mb-4 cursor-pointer whitespace-nowrap"
                   onClick={() => {
                     navigate("/teachingJobs");
                   }}
                 >
                   Explore Jobs
                 </div>
-                <div className="text-base font-semibold mb-4 cursor-pointer">
+                <div className="text-base font-semibold mb-4 cursor-pointer whitespace-nowrap">
                   Corporate training
                 </div>
-                <div className="text-base font-semibold mb-4 cursor-pointer">
+                <div className="text-base font-semibold mb-4 cursor-pointer whitespace-nowrap">
                   Become a tutor
                 </div>
                 <button
-                  className="px-4 py-2 rounded-lg font-semibold bg-black text-white"
+                  className="px-4 py-2 rounded-lg font-semibold bg-black text-white whitespace-nowrap"
                   onClick={handleGoogleLogin}
                 >
                   Log in with Google
@@ -179,10 +179,10 @@ export default function Navbar() {
         {user ? (
           <div className="rounded-lg  justify-between space-x-3 items-center hidden md:flex">
             <button
-                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
-                onClick={() => navigate("/createjob")}
+                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-fit"
+                onClick={() => navigate("/createJob")}
               >
-                <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
+                <div className="bg-orange-500 rounded-2xl px-3 py-1 whitespace-nowrap">Create Job</div>
               </button>
             <div
               className="border-2 border-orange-500 cursor-pointer rounded-full"
@@ -200,9 +200,9 @@ export default function Navbar() {
             </button>
           </div>
         ) : (
-          <div className="hidden md:block border-2 border-black rounded-lg">
+          <div className="hidden md:block border-2  rounded-lg">
             <button
-              className="px-4 py-1 rounded-lg font-semibold"
+              className="px-4 py-1 rounded-lg font-semibold whitespace-nowrap bg-black text-white"
               onClick={handleGoogleLogin}
             >
               Log in with Google

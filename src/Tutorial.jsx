@@ -83,11 +83,7 @@ export default function Tutorial({
   const closeModal = () => {
     setLoginModal(false);
     setIsModalOpen(false);
-    if (!isLogin) {
-    } else {
-      window.location.href = "/findteachingjobs";
-    }
-  };
+    };
 
   return (
     <div
@@ -159,7 +155,18 @@ export default function Tutorial({
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <h2 className="text-2xl font-semibold mb-4">Notification</h2>
-        <p>{modalMessage}</p>
+        <p className="font-semibold text-xl">{modalMessage}</p>
+        {isLogin && !isPremium && (
+          <button
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-5"
+            onClick={() => {
+              window.location.href = "/findteachingjobs";
+            
+            }}
+          >
+            Upgrade to Premium
+          </button>
+        )}
       </Modal>
       {loginModal && (
         <Modal isOpen={loginModal} onClose={closeModal}>

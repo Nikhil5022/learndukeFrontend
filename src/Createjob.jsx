@@ -30,6 +30,7 @@ export default function CreateJob() {
     requirements: "",
     responsibilities: "",
     tags: [],
+    domain: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -44,6 +45,7 @@ export default function CreateJob() {
     requirements: false,
     responsibilities: false,
     tags: false,
+    domain: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -86,6 +88,12 @@ export default function CreateJob() {
           errors = true;
         } else {
           updatedFormErrors.description = false;
+        }
+        if (!formData.domain) {
+          updatedFormErrors.domain = true;
+          errors = true;
+        } else {
+          updatedFormErrors.domain = false;
         }
         break;
       case 2:
@@ -235,6 +243,37 @@ export default function CreateJob() {
                 </p>
               )}
             </div>
+            {/* i need domain dropdown*/}
+            <div className="mb-4">
+              <label
+                htmlFor="domain"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Domain
+              </label>
+              <select
+                id="domain"
+                name="domain"
+                value={formData.domain}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.domain && submitted ? "border-red-500" : ""
+                }`}
+              >
+                <option value="">Select Domain</option>
+                <option value="IT">IT</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Finance">Finance</option>
+                <option value="Management">Management</option>
+              </select>
+              {formErrors.domain && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+            
+
           </>
         );
       case 2:
