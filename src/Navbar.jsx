@@ -5,8 +5,15 @@ import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./teachingjobs/teaching.css";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
+  // if path is /createjob, then navbar should not be seen
+  const location = useLocation();
+  if (location.pathname === "/createJob") {
+    return null;
+  }
+
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(null);
@@ -101,6 +108,12 @@ export default function Navbar() {
           <div className="absolute top-16 right-0 bg-white p-4 rounded-lg shadow-md z-10 flex flex-col w-2/3 lg:hidden">
             {user ? (
               <>
+              <button
+                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
+                onClick={() => navigate("/createjob")}
+              >
+                <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
+              </button>
                 <div
                   className="flex items-center mb-4"
                   onClick={() => {

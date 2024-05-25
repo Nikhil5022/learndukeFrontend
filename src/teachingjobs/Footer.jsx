@@ -7,8 +7,13 @@ import { SiAmericanexpress } from "react-icons/si";
 import { FaCcDiscover } from "react-icons/fa";
 import { FaApplePay } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function Footer() {
+  const location = useLocation();
+  if (location.pathname === "/createJob") {
+    return null;
+  }
   const navigator = useNavigate();
   return (
     <div className="w-full flex justify-center mt-10">

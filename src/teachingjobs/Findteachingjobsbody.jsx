@@ -82,17 +82,9 @@ export default function ResponsiveComponent() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row justify-center md:space-x-8">
+    <div className="flex flex-col md:flex-row justify-center md:space-x-8 mt-10">
       <div className="w-full md:w-1/2 md:relative">
-        {/* <video
-          loop
-          controls
-          className={`w-full p-2 ${
-            isFixed ? "md:sticky md:top-5" : "md:max-h-96"
-          }`}
-        >
-          <source src={Aboutlearnduke} type="video/mp4" />
-        </video> */}
+        <img src={teachingjobs} alt="" className="w-full sticky top-20" />
       </div>
       <div className="w-full md:w-1/2 flex flex-col items-center mt-5 md:mt-0 p-5 md:p-0">
         <div className="w-full md:w-2/3">

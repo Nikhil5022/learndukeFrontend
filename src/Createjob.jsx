@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateJob() {
+  const navigator = useNavigate();
   const [email, setEmail] = useState("");
-  
+
   useEffect(() => {
     const data = localStorage.getItem("user");
     if (data) {
@@ -45,13 +47,14 @@ export default function CreateJob() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState(1);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
-    
+
     if (name === "tags") {
-      const tagsArray = value.split(',').map(tag => tag.trim());
+      const tagsArray = value.split(",").map((tag) => tag.trim());
       setFormData({ ...formData, [name]: tagsArray });
     } else {
       setFormData({ ...formData, [name]: newValue });
@@ -60,41 +63,114 @@ export default function CreateJob() {
         setFormData((prevFormData) => ({
           ...prevFormData,
           phoneNumber: newValue,
-          whatsappNumber: newValue
+          whatsappNumber: newValue,
         }));
       }
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitted(true);
+  const validateStep = () => {
     let errors = false;
     const updatedFormErrors = { ...formErrors };
-    Object.keys(formData).forEach((key) => {
-      if (!formData[key] && key !== 'whatsappNumber') {
-        updatedFormErrors[key] = true;
-        errors = true;
-      } else {
-        updatedFormErrors[key] = false;
-      }
-    });
 
-    if (formData.isDifferentWhatsappNumber && !formData.whatsappNumber) {
-      updatedFormErrors.whatsappNumber = true;
-      errors = true;
-    } else {
-      updatedFormErrors.whatsappNumber = false;
+    switch (step) {
+      case 1:
+        if (!formData.title) {
+          updatedFormErrors.title = true;
+          errors = true;
+        } else {
+          updatedFormErrors.title = false;
+        }
+        if (!formData.description) {
+          updatedFormErrors.description = true;
+          errors = true;
+        } else {
+          updatedFormErrors.description = false;
+        }
+        break;
+      case 2:
+        if (!formData.minAmountPerHour) {
+          updatedFormErrors.minAmountPerHour = true;
+          errors = true;
+        } else {
+          updatedFormErrors.minAmountPerHour = false;
+        }
+        if (!formData.maxAmountPerHour) {
+          updatedFormErrors.maxAmountPerHour = true;
+          errors = true;
+        } else {
+          updatedFormErrors.maxAmountPerHour = false;
+        }
+        if (!formData.jobType) {
+          updatedFormErrors.jobType = true;
+          errors = true;
+        } else {
+          updatedFormErrors.jobType = false;
+        }
+        break;
+      case 3:
+        if (!formData.location) {
+          updatedFormErrors.location = true;
+          errors = true;
+        } else {
+          updatedFormErrors.location = false;
+        }
+        if (!formData.requirements) {
+          updatedFormErrors.requirements = true;
+          errors = true;
+        } else {
+          updatedFormErrors.requirements = false;
+        }
+        break;
+      case 4:
+        if (!formData.responsibilities) {
+          updatedFormErrors.responsibilities = true;
+          errors = true;
+        } else {
+          updatedFormErrors.responsibilities = false;
+        }
+        if (!formData.tags.length) {
+          updatedFormErrors.tags = true;
+          errors = true;
+        } else {
+          updatedFormErrors.tags = false;
+        }
+        break;
+      case 5:
+        if (!formData.phoneNumber) {
+          updatedFormErrors.phoneNumber = true;
+          errors = true;
+        } else {
+          updatedFormErrors.phoneNumber = false;
+        }
+        if (formData.isDifferentWhatsappNumber && !formData.whatsappNumber) {
+          updatedFormErrors.whatsappNumber = true;
+          errors = true;
+        } else {
+          updatedFormErrors.whatsappNumber = false;
+        }
+        break;
+      default:
+        break;
     }
 
     setFormErrors(updatedFormErrors);
+    return !errors;
+  };
 
-    if (!errors) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+
+    if (validateStep()) {
       const jobData = { ...formData, email: email };
-      await axios.post("https://learndukeserver.vercel.app/addJob", jobData).then((res) => {
-        console.log("Job created successfully:", res.data);
-        alert("Job created successfully");
-      });
+      console.log("Creating job with data:", jobData);
+      await axios
+        .post("https://learndukeserver.vercel.app/addJob", jobData)
+        .then((res) => {
+          console.log("Job created successfully:", res.data);
+          alert("Job created successfully");
+        });
       console.log("Form submitted successfully");
     }
   };
@@ -106,336 +182,453 @@ export default function CreateJob() {
     // Add more country codes as needed
   ];
 
-  return (
-    <div className="flex justify-center items-center h-full">
-      <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full md:w-3/4 lg:w-1/2">
-        <h2 className="text-2xl font-semibold mb-4 text-orange-700">
-          Create a Job
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div className="mb-4">
-            <label
-              htmlFor="title"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.title && submitted ? "border-red-500" : ""
-              }`}
-            />
-            {formErrors.title && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Description */}
-          <div className="mb-4">
-            <label
-              htmlFor="description"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.description && submitted ? "border-red-500" : ""
-              }`}
-              rows="4"
-            />
-            {formErrors.description && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Amount Per Hour */}
-          <div className="flex flex-col md:flex-row md:space-x-4">
-            <div className="mb-4 md:w-1/2">
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <>
+            {/* Title */}
+            <div className="mb-4 ">
               <label
-                htmlFor="minAmountPerHour"
+                htmlFor="title"
                 className="block text-gray-700 font-semibold mb-2"
               >
-                Minimum Amount per Hour
+                Title
               </label>
               <input
-                type="number"
-                id="minAmountPerHour"
-                name="minAmountPerHour"
-                value={formData.minAmountPerHour}
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
-                className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                  formErrors.minAmountPerHour && submitted
-                    ? "border-red-500"
-                    : ""
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.title && submitted ? "border-red-500" : ""
                 }`}
-                min={100}
               />
-              {formErrors.minAmountPerHour && submitted && (
+              {formErrors.title && submitted && (
                 <p className="text-red-500 text-xs mt-1">
                   This field is required
                 </p>
               )}
             </div>
-            <div className="mb-4 md:w-1/2">
-              <label
-                htmlFor="maxAmountPerHour"
-                className="block text-gray-700 font-semibold mb-2"
-              >
-                Maximum Amount per Hour
-              </label>
-              <input
-                type="number"
-                id="maxAmountPerHour"
-                name="maxAmountPerHour"
-                value={formData.maxAmountPerHour}
-                onChange={handleChange}
-                className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                  formErrors.maxAmountPerHour && submitted
-                    ? "border-red-500"
-                    : ""
-                }`}
-                max={10000}
-              />
-              {formErrors.maxAmountPerHour && submitted && (
-                <p className="text-red-500 text-xs mt-1">
-                  This field is required
-                </p>
-              )}
-            </div>
-          </div>
-          {/* Job Type */}
-          <div className="mb-4">
-            <label
-              htmlFor="jobType"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Job Type
-            </label>
-            <select
-              id="jobType"
-              name="jobType"
-              value={formData.jobType}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.jobType && submitted ? "border-red-500" : ""
-              }`}
-            >
-              <option value="">Select Job Type</option>
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Contract">Contract</option>
-              <option value="Freelance">Freelance</option>
-            </select>
-            {formErrors.jobType && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Location */}
-          <div className="mb-4">
-            <label
-              htmlFor="location"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Location
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.location && submitted ? "border-red-500" : ""
-              }`}
-            />
-            {formErrors.location && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Requirements */}
-          <div className="mb-4">
-            <label
-              htmlFor="requirements"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Requirements
-            </label>
-            <textarea
-              id="requirements"
-              name="requirements"
-              value={formData.requirements}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.requirements && submitted ? "border-red-500" : ""
-              }`}
-              rows="4"
-            />
-            {formErrors.requirements && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Responsibilities */}
-          <div className="mb-4">
-            <label
-              htmlFor="responsibilities"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Responsibilities
-            </label>
-            <textarea
-              id="responsibilities"
-              name="responsibilities"
-              value={formData.responsibilities}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.responsibilities && submitted ? "border-red-500" : ""
-              }`}
-              rows="4"
-            />
-            {formErrors.responsibilities && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Tags */}
-          <div className="mb-4">
-            <label
-              htmlFor="tags"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Tags
-            </label>
-            <input
-              type="text"
-              id="tags"
-              name="tags"
-              value={formData.tags.join(', ')}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.tags && submitted ? "border-red-500" : ""
-              }`}
-            />
-            {formErrors.tags && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-            <div className="mt-2">
-              {formData.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-          {/* Phone Number */}
-          <div className="mb-4">
-            <label
-              htmlFor="phoneNumber"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                formErrors.phoneNumber && submitted ? "border-red-500" : ""
-              }`}
-            />
-            {formErrors.phoneNumber && submitted && (
-              <p className="text-red-500 text-xs mt-1">This field is required</p>
-            )}
-          </div>
-          {/* Checkbox for WhatsApp Number */}
-          <div className="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="isDifferentWhatsappNumber"
-              name="isDifferentWhatsappNumber"
-              checked={formData.isDifferentWhatsappNumber}
-              onChange={handleChange}
-              className="mr-2 mt-1"
-            />
-            <label
-              htmlFor="isDifferentWhatsappNumber"
-              className="text-gray-700"
-            >
-              <span className="font-semibold">
-                Below number is not WhatsApp number (Click to enter WhatsApp
-                number)
-              </span>
-            </label>
-          </div>
-          {/* WhatsApp Number */}
-          {formData.isDifferentWhatsappNumber && (
+            {/* Description */}
             <div className="mb-4">
               <label
-                htmlFor="whatsappNumber"
+                htmlFor="description"
                 className="block text-gray-700 font-semibold mb-2"
               >
-                WhatsApp Number
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.description && submitted ? "border-red-500" : ""
+                }`}
+                rows="4"
+              />
+              {formErrors.description && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            {/* Amount Per Hour */}
+            <div className="flex flex-col md:flex-row md:space-x-4">
+              <div className="mb-4 md:w-1/2">
+                <label
+                  htmlFor="minAmountPerHour"
+                  className="block text-gray-700 font-semibold mb-2"
+                >
+                  Minimum Amount per Hour
+                </label>
+                <input
+                  type="number"
+                  id="minAmountPerHour"
+                  name="minAmountPerHour"
+                  value={formData.minAmountPerHour}
+                  onChange={handleChange}
+                  className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                    formErrors.minAmountPerHour && submitted
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  min={100}
+                />
+                {formErrors.minAmountPerHour && submitted && (
+                  <p className="text-red-500 text-xs mt-1">
+                    This field is required
+                  </p>
+                )}
+              </div>
+              <div className="mb-4 md:w-1/2">
+                <label
+                  htmlFor="maxAmountPerHour"
+                  className="block text-gray-700 font-semibold mb-2"
+                >
+                  Maximum Amount per Hour
+                </label>
+                <input
+                  type="number"
+                  id="maxAmountPerHour"
+                  name="maxAmountPerHour"
+                  value={formData.maxAmountPerHour}
+                  onChange={handleChange}
+                  className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                    formErrors.maxAmountPerHour && submitted
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  max={10000}
+                />
+                {formErrors.maxAmountPerHour && submitted && (
+                  <p className="text-red-500 text-xs mt-1">
+                    This field is required
+                  </p>
+                )}
+              </div>
+            </div>
+            {/* Job Type */}
+            <div className="mb-4">
+              <label
+                htmlFor="jobType"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Job Type
+              </label>
+              <select
+                id="jobType"
+                name="jobType"
+                value={formData.jobType}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.jobType && submitted ? "border-red-500" : ""
+                }`}
+              >
+                <option value="">Select Job Type</option>
+                <option value="Part-Time">Part-Time</option>
+                <option value="Full-Time">Full-Time</option>
+                <option value="Internship">Internship</option>
+                <option value="Contract">Contract</option>
+              </select>
+              {formErrors.jobType && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+          </>
+        );
+      case 3:
+        return (
+          <>
+            {/* Location */}
+            <div className="mb-4">
+              <label
+                htmlFor="location"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Location
+              </label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.location && submitted ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.location && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+            {/* Requirements */}
+            <div className="mb-4">
+              <label
+                htmlFor="requirements"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Requirements
+              </label>
+              <textarea
+                id="requirements"
+                name="requirements"
+                value={formData.requirements}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.requirements && submitted ? "border-red-500" : ""
+                }`}
+                rows="4"
+              />
+              {formErrors.requirements && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+          </>
+        );
+      case 4:
+        return (
+          <>
+            {/* Responsibilities */}
+            <div className="mb-4">
+              <label
+                htmlFor="responsibilities"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Responsibilities
+              </label>
+              <textarea
+                id="responsibilities"
+                name="responsibilities"
+                value={formData.responsibilities}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.responsibilities && submitted
+                    ? "border-red-500"
+                    : ""
+                }`}
+                rows="4"
+              />
+              {formErrors.responsibilities && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+            {/* Tags */}
+            <div className="mb-4">
+              <label
+                htmlFor="tags"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Tags
+              </label>
+              <input
+                type="text"
+                id="tags"
+                name="tags"
+                value={formData.tags.join(", ")}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.tags && submitted ? "border-red-500" : ""
+                }`}
+              />
+              {formErrors.tags && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+              <div className="mt-2">
+                {formData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </>
+        );
+      case 5:
+        return (
+          <>
+            {/* Phone Number */}
+            <div className="mb-4">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Phone Number
               </label>
               <input
                 type="tel"
-                id="whatsappNumber"
-                name="whatsappNumber"
-                value={formData.whatsappNumber}
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleChange}
-                className={`border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                  formErrors.whatsappNumber && submitted ? "border-red-500" : ""
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.phoneNumber && submitted ? "border-red-500" : ""
                 }`}
               />
-              {formErrors.whatsappNumber && submitted && (
-                <p className="text-red-500 text-xs mt-1">This field is required</p>
+              {formErrors.phoneNumber && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
               )}
             </div>
-          )}
-          {/* Country Code */}
-          <div className="mb-4">
-            <label
-              htmlFor="countryCode"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Country Code
-            </label>
-            <select
-              id="countryCode"
-              name="countryCode"
-              value={formData.countryCode}
-              onChange={handleChange}
-              className="border rounded py-2 px-3 w-full text-orange-700 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
-            >
-              {countryCodes.map((country) => (
-                <option key={country.code} value={country.code}>
-                  {`${country.name} (${country.code})`}
-                </option>
-              ))}
-            </select>
-          </div>
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-            >
-              Submit
-            </button>
+            {/* Checkbox for WhatsApp Number */}
+            <div className="mb-4 flex items-center">
+              <input
+                type="checkbox"
+                id="isDifferentWhatsappNumber"
+                name="isDifferentWhatsappNumber"
+                checked={formData.isDifferentWhatsappNumber}
+                onChange={handleChange}
+                className="mr-2 mt-1"
+              />
+              <label
+                htmlFor="isDifferentWhatsappNumber"
+                className="text-gray-700"
+              >
+                <span className="font-semibold">
+                  Below number is not WhatsApp number (Click to enter WhatsApp
+                  number)
+                </span>
+              </label>
+            </div>
+            {/* WhatsApp Number */}
+            {formData.isDifferentWhatsappNumber && (
+              <div className="mb-4">
+                <label
+                  htmlFor="whatsappNumber"
+                  className="block text-gray-700 font-semibold mb-2"
+                >
+                  WhatsApp Number
+                </label>
+                <input
+                  type="tel"
+                  id="whatsappNumber"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                    formErrors.whatsappNumber && submitted
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                />
+                {formErrors.whatsappNumber && submitted && (
+                  <p className="text-red-500 text-xs mt-1">
+                    This field is required
+                  </p>
+                )}
+              </div>
+            )}
+            {/* Country Code */}
+            <div className="mb-4">
+              <label
+                htmlFor="countryCode"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Country Code
+              </label>
+              <select
+                id="countryCode"
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleChange}
+                className="border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+              >
+                {countryCodes.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {`${country.name} (${country.code})`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const nextStep = () => {
+    if (validateStep()) {
+      setStep((prevStep) => prevStep + 1);
+      setSubmitted(false);
+    } else {
+      setSubmitted(true);
+    }
+  };
+
+  const prevStep = () => {
+    setStep((prevStep) => prevStep - 1);
+  };
+  const navigate = useNavigate();
+
+  return (
+    <div className="h-screen flex flex-col">
+    <div className="flex justify-end p-4">
+      <button
+        onClick={() => {
+          navigate("/teachingJobs");
+        }}
+        className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+      >
+        X
+      </button>
+    </div>
+    <div className="flex justify-center mb-4">
+      <div className="flex justify-center items-center w-full md:w-3/4 lg:w-1/2 px-4">
+        <div className="flex w-full">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className={`flex-1 h-2 mx-1 rounded ${
+                step > index + 1
+                  ? "bg-green-500"
+                  : step === index + 1
+                  ? "bg-orange-500"
+                  : "bg-gray-300"
+              }`}
+            ></div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div className="flex justify-center items-center flex-grow">
+      <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 w-full md:w-3/4 lg:w-1/2">
+        <h2 className="text-2xl font-semibold mb-4 text-black">
+          Create a Job - Step {step}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {renderStep()}
+          <div className="flex justify-between mt-4">
+            {step > 1 && (
+              <button
+                type="button"
+                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                onClick={prevStep}
+              >
+                Previous
+              </button>
+            )}
+            {step < 5 ? (
+              <button
+                type="button"
+                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                onClick={nextStep}
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+              >
+                Submit
+              </button>
+            )}
           </div>
         </form>
       </div>
     </div>
+  </div>
   );
 }

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import Body from "./Body";
 import Teachingjobs from "./teachingjobs/Teachingjobs";
@@ -12,7 +7,6 @@ import Cyberschool from "./cyberschool/Cyberschool";
 import Findteachingjobs from "./teachingjobs/Findteachingjobs";
 import Contactus from "./teachingjobs/Contactus";
 import Reviews from "./teachingjobs/Reviews";
-import TeachingNavbar from "./teachingjobs/TeachingNavbar";
 import Cart from "./teachingjobs/Cart";
 import Footer from "./teachingjobs/Footer";
 import Faq from "./teachingjobs/Faq";
@@ -24,25 +18,11 @@ import PaymentSuccess from "./teachingjobs/PaymentSuccess";
 import Detailedjob from "./teachingjobs/Detailedjob";
 import PaymentFailure from "./teachingjobs/PaymentFailure";
 
-// function NavbarWrapper() {
-//   const location = useLocation();
-//   const showNavbar =
-//     location.pathname !== "/teachingJobs" &&
-//     location.pathname !== "/cyberschool" &&
-//     location.pathname !== "/findteachingjobs" &&
-//     location.pathname !== "/contactus" &&
-//     location.pathname !== "/reviews" &&
-//     location.pathname !== "/cart" &&
-//     location.pathname !== "/faq";
-//   return showNavbar ? <Navbar /> : <TeachingNavbar />;
-// }
-
 export default function App() {
   return (
     <Router>
       <>
-        {/* Render NavbarWrapper instead of Navbar */}
-       <Navbar />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Teachingjobs />} />
           <Route path="/teachingJobs" element={<Body />} />

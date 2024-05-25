@@ -216,7 +216,11 @@ export default function Teachingjobs() {
             <div className="text-2xl md:text-4xl font-bold p-5 mb-5 text-center px-3 md:px-16">
               The #1 Job Site for Genuine Opportunities for Indians.
             </div>
-            <button className="bg-blue-500 text-white p-2 px-4 hover:scale-105">
+            <button className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
+            onClick={() => {
+              navigator('/findteachingjobs')
+            }}
+            >
               Find jobs now
             </button>
           </div>
@@ -275,6 +279,7 @@ export default function Teachingjobs() {
           </div>
           <div className="flex flex-col md:flex-row px-3 md:px-10">
             <div className="w-full md:w-1/2">
+              <img src={teachingjobs} alt="" className="w-full" />
             </div>
             <div className="w-full md:w-1/2 flex flex-col  md:px-10">
               <div
@@ -327,7 +332,11 @@ export default function Teachingjobs() {
               Click on the button below to know more details and apply for
               online and offline jobs.
             </div>
-            <button className="bg-blue-500 text-white w-fit p-2 px-4 hover:scale-105 mt-5">
+            <button className="bg-blue-500 text-white w-fit p-2 px-4 hover:scale-105 mt-5"
+              onClick={() => {
+                navigator('/findteachingjobs')
+              }}
+            >
               Find jobs now
             </button>
           </div>

@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Modal from './Modal';
 
 function Userdata() {
-    const [User, setUser] = useState(null);
-    useEffect(() => {
-        const user=JSON.parse(localStorage.getItem("user"));
-        console.log(user);
-        setUser(user);
-    }, []);
-
-
-
+  const [User, setUser] = useState(null);
   const [formData, setFormData] = useState({
     linkedin: '',
     github: '',
@@ -18,8 +11,15 @@ function Userdata() {
     whatsappNumber: '',
     bio: '',
   });
-
   const [errors, setErrors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
+    setUser(user);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,10 +47,15 @@ function Userdata() {
       console.log('Form Data Submitted:', formData);
       axios.post('https://learndukeserver.vercel.app/updateUserInfo/' + User.email, formData).then((response) => {
         console.log(response.data);
-        alert('User data updated successfully');
-        window.location.href = 'http://localhost:5173/';
+        setModalMessage('User data updated successfully');
+        setIsModalOpen(true);
       });
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    window.location.href = 'http://localhost:5173/';
   };
 
   return (
@@ -123,6 +128,11 @@ function Userdata() {
           Submit
         </button>
       </form>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <h2 className="text-2xl font-semibold mb-4">Success</h2>
+        <p>{modalMessage}</p>
+      </Modal>
     </div>
   );
 }

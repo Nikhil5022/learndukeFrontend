@@ -139,10 +139,7 @@ export default function Body() {
     setSelectedFilter(filter);
   };
 
-  const shortContent =
-    "On Preply's tutoring jobs page you can always find open requests for qualified teachers of different languages and subjects to offer tuition to learners in general...";
-  const fullContent =
-    "On Preply's tutoring jobs page you can always find open requests for qualified teachers of different languages and subjects to offer tuition to learners in general, as well as those who participate in our corporate language training programs and business English courses. Preply offers the chance to teach online with a flexible schedule, access to students from all over the world and constant customer service! In order to reply to student requests, you need to have a profile that shows your hourly price and your availability. Just check our tutoring jobs and find new students here!";
+ 
 
   const filteredTutorialJobs =
     selectedFilter === "All"
@@ -183,41 +180,21 @@ export default function Body() {
               </div>
              
             </div>
-            {user && (
-              <button
-                className="text-white rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
-                onClick={() => navigate("/createjob")}
-              >
-                <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
-              </button>
-            )}
+            
           </div>
-
-          <div
-            className={`mt-4 ${showFullContent ? "" : "overflow-hidden"}`}
-            style={{ color: "#4D4C5C" }}
-          >
-            {showFullContent ? fullContent : shortContent}
-            <button
-              onClick={toggleContent}
-              className="cursor-pointer ml-2 underline font-semibold"
-            >
-              {showFullContent ? "Read Less" : "Read More"}
-            </button>
-          </div>
-          <div className="flex flex-col md:flex-row mt-3 justify-start md:justify-between md:items-center">
-            <div className="text-2xl font-bold">
-              Latest online tutoring jobs
+          <div className="flex flex-col md:flex-row mt-5 justify-start md:justify-between md:items-center">
+            <div className="text-2xl font-semibold">
+              Search remote and offline jobs near your location
             </div>
           </div>
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col">
             <div className="md:w-1/4 md:mr-4 mb-4 md:mb-0">
               <FilterOptions
                 selectedFilter={selectedFilter}
                 onFilterChange={handleFilterChange}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 mt-3 md:w-2/3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 ">
               {filteredTutorialJobs.map((job, index) => (
                 <Tutorial
                   key={index}
@@ -280,7 +257,7 @@ function FilterOptions({ selectedFilter, onFilterChange }) {
 
   return (
     <div className="mt-8 sticky top-32">
-      <div className="flex flex-wrap md:flex-col md:items-start md:space-y-2">
+      <div className="flex md:space-x-4">
         {visibleOptions.map((option, index) => (
           <button
             key={index}
