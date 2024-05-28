@@ -1,16 +1,18 @@
 import React from "react";
 import { FaCheck } from "react-icons/fa";
+import axios from "axios";
+import image from "../assets/learnDuke.png";
 
 export default function Subscription() {
   const plans = [
     {
       name: "Basic",
-      price: "₹99",
+      price: 99, // in INR
       benefits: ["Call to HR directly", "100 days access limit"],
     },
     {
       name: "Advance",
-      price: "₹399",
+      price: 399, // in INR
       benefits: [
         "Placement support",
         "Resume building",
@@ -21,7 +23,7 @@ export default function Subscription() {
     },
     {
       name: "Premium",
-      price: "₹999",
+      price: 999, // in INR
       benefits: [
         "One-to-one mentorship",
         "Job support",
@@ -34,7 +36,7 @@ export default function Subscription() {
     },
     {
       name: "Teacher Pro",
-      price: "₹399",
+      price: 399, // in INR
       benefits: [
         "Home tuition connect",
         "Direct connection to parents",
@@ -45,9 +47,44 @@ export default function Subscription() {
     },
   ];
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const checkoutHandler = async (plan) => {
+    if (!user) {
+      return;
+    }
+
+    const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
+      amount: plan.price , // converting to paisa
+    });
+
+    const options = {
+      key: "rzp_test_jH3t9W8Up3P2iW",
+      amount: plan.price , // amount in paisa
+      currency: "INR",
+      name: user.name || "Sample User",
+      description: `${plan.name} Plan Purchase`,
+      image: image,
+      order_id: data.order.id,
+      callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+      prefill: {
+        name: user.name || "Sample User",
+        email: user.email || "Sample@gmail.com",
+        contact: user.mobile || "0000000000",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
+
   return (
     <div className="flex justify-center py-10 bg-white text-black">
-    
       <div className="w-full md:w-11/12 lg:w-9/12 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {plans.map((plan, index) => (
@@ -57,7 +94,7 @@ export default function Subscription() {
             >
               <div className="flex justify-between items-center mb-4">
                 <div className="text-xl font-semibold">{plan.name}</div>
-                <div className="text-xl font-semibold">{plan.price}</div>
+                <div className="text-xl font-semibold">₹{plan.price}</div>
               </div>
               <div className="flex justify-between items-end">
                 <div>
@@ -69,7 +106,10 @@ export default function Subscription() {
                   ))}
                 </div>
                 <div>
-                  <button className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200">
+                  <button
+                    className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                    onClick={() => checkoutHandler(plan)}
+                  >
                     Pay
                   </button>
                 </div>

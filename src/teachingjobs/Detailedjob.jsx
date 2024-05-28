@@ -263,7 +263,7 @@ export default function Detailedjob() {
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
           onClick={() => {
-            navigate("/findteachingjobs");
+            navigate("/subscription");
           }}
         >
           <MdOutlineWorkspacePremium className=" text-xl" />
