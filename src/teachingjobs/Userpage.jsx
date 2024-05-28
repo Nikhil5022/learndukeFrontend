@@ -19,6 +19,10 @@ export default function UserPage() {
         .then((response) => {
           console.log(response.data)
           setUserData(response.data);
+          axios.get(`https://learndukeserver.vercel.app/getJobs/${user.email}`).then((jobsResponse) => {
+            console.log(jobsResponse.data);
+            setJobs(jobsResponse.data);
+          });
           setLoading(false);
         })
         .catch((error) => {

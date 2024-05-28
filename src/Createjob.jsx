@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function CreateJob() {
   const navigator = useNavigate();
   const [email, setEmail] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
     const data = localStorage.getItem("user");
@@ -15,6 +17,31 @@ export default function CreateJob() {
       console.log("User not found in local storage");
     }
   }, []);
+
+  const handleAddNewJob = () => {
+    setFormData({
+      title: "",
+      description: "",
+      minAmountPerHour: "",
+      maxAmountPerHour: "",
+      jobType: "",
+      location: "",
+      phoneNumber: "",
+      whatsappNumber: "",
+      countryCode: "+1",
+      isDifferentWhatsappNumber: false,
+      requirements: "",
+      responsibilities: "",
+      tags: [],
+      domain: "",
+    });
+    setShowModal(false);
+    setStep(1);
+  };
+
+  const handleReturnToJobs = () => {
+    navigate("/teachingJobs");
+  };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -177,8 +204,8 @@ export default function CreateJob() {
         .post("https://learndukeserver.vercel.app/addJob", jobData)
         .then((res) => {
           console.log("Job created successfully:", res.data);
-          alert("Job created successfully");
         });
+      setShowModal(true);
       console.log("Form submitted successfully");
     }
   };
@@ -486,12 +513,27 @@ export default function CreateJob() {
       case 5:
         return (
           <>
-            {/* Phone Number */}
             <div className="mb-4">
-              <label
-                htmlFor="phoneNumber"
-                className="block text-gray-700 font-semibold mb-2"
+              <label htmlFor="countryCode" className="block text-gray-700 font-semibold mb-2">
+                Country Code
+              </label>
+              <select
+                id="countryCode"
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleChange}
+                className="border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
               >
+                <option value="">Select Country Code</option>
+                {countryCodes.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name} ({country.code})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="phoneNumber" className="block text-gray-700 font-semibold mb-2">
                 Phone Number
               </label>
               <input
@@ -505,38 +547,25 @@ export default function CreateJob() {
                 }`}
               />
               {formErrors.phoneNumber && submitted && (
-                <p className="text-red-500 text-xs mt-1">
-                  This field is required
-                </p>
+                <p className="text-red-500 text-xs mt-1">{formErrors.phoneNumber}</p>
               )}
             </div>
-            {/* Checkbox for WhatsApp Number */}
-            <div className="mb-4 flex items-center">
+            <div className="mb-4">
+              <label htmlFor="isDifferentWhatsappNumber" className="block text-gray-700 font-semibold mb-2">
+                Use a different number for WhatsApp?
+              </label>
               <input
                 type="checkbox"
                 id="isDifferentWhatsappNumber"
                 name="isDifferentWhatsappNumber"
                 checked={formData.isDifferentWhatsappNumber}
                 onChange={handleChange}
-                className="mr-2 mt-1"
+                className="mr-2 leading-tight"
               />
-              <label
-                htmlFor="isDifferentWhatsappNumber"
-                className="text-gray-700"
-              >
-                <span className="font-semibold">
-                  Below number is not WhatsApp number (Click to enter WhatsApp
-                  number)
-                </span>
-              </label>
             </div>
-            {/* WhatsApp Number */}
             {formData.isDifferentWhatsappNumber && (
               <div className="mb-4">
-                <label
-                  htmlFor="whatsappNumber"
-                  className="block text-gray-700 font-semibold mb-2"
-                >
+                <label htmlFor="whatsappNumber" className="block text-gray-700 font-semibold mb-2">
                   WhatsApp Number
                 </label>
                 <input
@@ -546,40 +575,14 @@ export default function CreateJob() {
                   value={formData.whatsappNumber}
                   onChange={handleChange}
                   className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                    formErrors.whatsappNumber && submitted
-                      ? "border-red-500"
-                      : ""
+                    formErrors.whatsappNumber && submitted ? "border-red-500" : ""
                   }`}
                 />
                 {formErrors.whatsappNumber && submitted && (
-                  <p className="text-red-500 text-xs mt-1">
-                    This field is required
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{formErrors.whatsappNumber}</p>
                 )}
               </div>
             )}
-            {/* Country Code */}
-            <div className="mb-4">
-              <label
-                htmlFor="countryCode"
-                className="block text-gray-700 font-semibold mb-2"
-              >
-                Country Code
-              </label>
-              <select
-                id="countryCode"
-                name="countryCode"
-                value={formData.countryCode}
-                onChange={handleChange}
-                className="border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
-              >
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {`${country.name} (${country.code})`}
-                  </option>
-                ))}
-              </select>
-            </div>
           </>
         );
       default:
@@ -668,6 +671,75 @@ export default function CreateJob() {
         </form>
       </div>
     </div>
+    {showModal && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                    {/* You can add any icon or animation here */}
+                    <svg
+                      className="h-6 w-6 text-green-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m-4-8l4 4m4 0l4-4m-4 4V4"
+                      />
+                    </svg>
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Job Created Successfully
+                    </h3>
+                    <div className="mt-2">
+                      {/* Modal content */}
+                      <p className="text-sm text-gray-500">
+                        Your job has been created successfully. What would you like to do next?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={handleAddNewJob}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Add a New Job
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReturnToJobs}
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Return to Jobs
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
   </div>
   );
 }

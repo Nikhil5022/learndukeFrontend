@@ -4,7 +4,7 @@ import whatsapp from "./assets/whatsapp2.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
-
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 export default function Tutorial({
   imageLink,
   userName,
@@ -154,29 +154,33 @@ export default function Tutorial({
         </button>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <h2 className="text-2xl font-semibold mb-4">Notification</h2>
+        <div className="flex flex-col justify-center items-center">
         <p className="font-semibold text-xl">{modalMessage}</p>
         {isLogin && !isPremium && (
           <button
-            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-5"
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-5 flex"
             onClick={() => {
-              window.location.href = "/findteachingjobs";
+              window.location.href = "/subscription";
             
             }}
           >
-            Upgrade to Premium
+            <MdOutlineWorkspacePremium className=" text-xl" />
+
+           <div> Upgrade to Premium</div>
           </button>
         )}
+        </div>
       </Modal>
       {loginModal && (
         <Modal isOpen={loginModal} onClose={closeModal}>
-          <h2 className="text-2xl font-semibold mb-4">Notification</h2>
+          <div className="flex flex-col justify-center items-center">
           <p>You need to login to call the user.</p>
           <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mt-2"
             onClick={handleGoogleLogin}
           >
             Login with Google
           </button>
+          </div>
         </Modal>
       )}
     </div>
