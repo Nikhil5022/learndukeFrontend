@@ -13,11 +13,18 @@ import "aos/dist/aos.css";
 export default function Teachingjobs() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  
 
   useEffect(() => {
+   
     AOS.init({
       duration: 1200,
       once: true, // whether animation should happen only once - while scrolling down
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
   }, []);
 
@@ -80,6 +87,7 @@ export default function Teachingjobs() {
           className="w-full md:w-10/12 lg:w-9/12 flex flex-col md:flex-row px-4"
           data-aos="fade-in"
           data-aos-duration="1000"
+          data-aos-anchor-placement="center-center"
         >
           <img src={teachingjobs} alt="" className="w-full mb-5 md:mb-0" />
           <div className="flex flex-col md:p-10">
@@ -114,12 +122,12 @@ export default function Teachingjobs() {
       <div className="w-full flex justify-center mt-10">
         <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col space-y-6 px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-100" data-aos="fade-right">
+            <div className="p-4 bg-gray-100" data-aos="fade-right" data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
                 We see every job before you do 👁️
               </div>
               <div
-                className="leading-relaxed tracking-wide font-thin"
+                className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
                 Our specialty is finding job opportunities from multiple sources
@@ -128,12 +136,12 @@ export default function Teachingjobs() {
                 else does.
               </div>
             </div>
-            <div className="p-4 bg-gray-100" data-aos="fade-left">
+            <div className="p-4 bg-gray-100" data-aos="fade-left" data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
                 Apply directly to the employer 👩🏻‍💼
               </div>
               <div
-                className="leading-relaxed tracking-wide font-thin"
+                className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
                 Browse high quality remote job opportunities and submit your
@@ -144,12 +152,12 @@ export default function Teachingjobs() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-100" data-aos="fade-right" data-aos-delay="500">
+            <div className="p-4 bg-gray-100" data-aos="fade-right"  data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
                 1000+ new jobs every week ✅
               </div>
               <div
-                className="leading-relaxed tracking-wide font-thin"
+                className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
                 We are constantly monitoring social media, news sites and top
@@ -157,12 +165,12 @@ export default function Teachingjobs() {
                 we post thousands of new opportunities for remote work.
               </div>
             </div>
-            <div className="p-4 bg-gray-100" data-aos="fade-left" data-aos-delay="500">
+            <div className="p-4 bg-gray-100" data-aos="fade-left"  data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
                 Expert assistance available 😊
               </div>
               <div
-                className="leading-relaxed tracking-wide font-thin"
+                className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
                 Our dedicated and helpful customer support team is always at
@@ -265,9 +273,9 @@ export default function Teachingjobs() {
             <div className="w-full md:w-1/2" data-aos="fade-in">
               <img src={teachingjobs} alt="" className="w-full" />
             </div>
-            <div className="w-full md:w-1/2 flex flex-col md:px-10">
+            <div className="w-full md:w-1/2 flex flex-col md:px-10 overflow-hidden">
               <div
-                className="text-lg font-thin tracking-wide text-left m-2 mt-5"
+                className="text-lg font-normal tracking-wide text-left m-2 mt-5"
                 style={{ color: "#404040" }}
                 data-aos="slide-left"
               >
@@ -303,7 +311,7 @@ export default function Teachingjobs() {
               </button>
 
               <div
-                className="font-thin text-blue-500 hover:cursor-pointer mt-5 hover:underline"
+                className="font-normal text-blue-500 hover:cursor-pointer mt-5 hover:underline"
                 data-aos="slide-left"
               >
                 view full details
@@ -321,7 +329,7 @@ export default function Teachingjobs() {
               Join now
             </div>
             <div
-              className="font-thin text-center tracking-wide mt-5"
+              className="font-normal text-center tracking-wide mt-5"
               style={{ color: "#040404" }}
               data-aos="fade-up"
             >

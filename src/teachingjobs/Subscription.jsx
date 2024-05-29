@@ -54,33 +54,59 @@ export default function Subscription() {
       return;
     }
 
-    const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
-      amount: plan.price , // converting to paisa
-    });
+    try {
+      const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
+        amount: plan.price, // converting to paisa
+      });
 
-    const options = {
-      key: "rzp_test_jH3t9W8Up3P2iW",
-      amount: plan.price , // amount in paisa
-      currency: "INR",
-      name: user.name || "Sample User",
-      description: `${plan.name} Plan Purchase`,
-      image: image,
-      order_id: data.order.id,
-      callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
-      prefill: {
+      const options = {
+        key: "rzp_test_jH3t9W8Up3P2iW",
+        amount: plan.price, // amount in paisa
+        currency: "INR",
         name: user.name || "Sample User",
-        email: user.email || "Sample@gmail.com",
-        contact: user.mobile || "0000000000",
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#121212",
-      },
-    };
-    const razor = new window.Razorpay(options);
-    razor.open();
+        description: `${plan.name} Plan Purchase`,
+        image: image,
+        order_id: data.order.id,
+        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+        prefill: {
+          name: user.name || "Sample User",
+          email: user.email || "Sample@gmail.com",
+          contact: user.mobile || "0000000000",
+        },
+        notes: {
+          address: "Razorpay Corporate Office",
+        },
+        theme: {
+          color: "#121212",
+        },
+        handler: function (response) {
+          const paymentDetails = {
+            paymentDate: new Date().toLocaleString(),
+            plan: plan.name,
+            amount: plan.price,
+            status: "Completed",
+            user: user.email,
+            ...response,
+          };
+          console.log("Payment Successful", paymentDetails);
+          // Send payment details to server or handle UI update
+          // axios.post("/your-server-endpoint", paymentDetails);
+          axios.post("http://localhost:3000/addPayment", paymentDetails).then((response) => {
+            console.log("Payment details saved:", response.data);
+          });
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Payment form closed");
+          },
+        },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+    }
   };
 
   return (

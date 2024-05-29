@@ -224,10 +224,10 @@ export default function UserPage() {
                 alt="Profile pic"
                 className="w-2/4 rounded-full my-5"
               />
-              <div className="text-2xl font-semibold my-3 text-center">
+              <div className="text-2xl font-semibold my-3 text-center flex justify-center items-center">
                 {userData?.name}
                 {userData?.isPremium && (
-                  <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl">
+                  <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl mt-1">
                     PRO 
                   </div>
                 )}
@@ -322,11 +322,12 @@ export default function UserPage() {
                 <div className="flex items-center space-x-4 w-full">
                   <div className="flex-1">
                     <h2 className="text-xl font-semibold">{job.title}</h2>
-                    <p className="text-gray-600 mt-2">{job.description}</p>
+                    {/* dont show complete description */}
+                    <p className="text-gray-600 mt-2 ">{job.description}</p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="bg-gray-100 rounded-lg p-2">
-                      <span className="font-semibold">
+                      <span className="">
                         {job.minAmountPerHour}-
                       </span>
                       <span>{job.maxAmountPerHour}/Hour</span>

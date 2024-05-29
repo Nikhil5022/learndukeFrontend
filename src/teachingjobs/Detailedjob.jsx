@@ -131,6 +131,9 @@ export default function Detailedjob() {
           {similarJobs.length === 0 && !isLoading &&(
             <div className="text-lg text-gray-600">No similar jobs found</div>
           )}
+          {similarJobs.length > 0 && !isLoading && (
+            <div className="text-lg text-gray-600">Similar Jobs</div>
+          )}
           <div className="grid grid-cols-1 gap-4">
             {similarJobs.map((job, index) => (
               <div

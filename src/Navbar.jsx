@@ -78,15 +78,16 @@ export default function Navbar() {
         <img
           src={learnDuke}
           alt="Learn Duke Logo"
-          className="h-10 md:h-16 cursor-pointer"
+          className="h-16 cursor-pointer"
           onClick={() => navigate("/")}
         />
-        <div className="hidden md:block h-10 md:h-16 w-1 bg-orange-500"></div>
+        {/* <div className="hidden md:block h-10 md:h-16 w-1 bg-orange-500"></div>
         <div className="text-base md:text-2xl font-normal text-left">
           Worlds only <span className="text-orange-500 font-semibold">instant tutoring</span> platform
-        </div>
+        </div> */}
         <div className="hidden md:flex space-x-4 items-center">
-        <FaSearch className="text-xl cursor-pointer" onClick={() => navigate("/teachingjobs")} />
+        {/* <FaSearch className="text-xl cursor-pointer" onClick={() => navigate("/teachingjobs")} /> */}
+        <div className="cursor-pointer hover:underline" onClick={()=>{navigate('/teachingjobs')}}>Explore Jobs</div>
       </div>
       </div>
      

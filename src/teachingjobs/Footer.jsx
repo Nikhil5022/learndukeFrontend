@@ -22,36 +22,36 @@ export default function Footer() {
         <div className="w-full flex flex-col md:flex-row text-center md:text-left ">
           <div className="w-full md:w-1/2 flex flex-col">
             <div className="text-xl font-semibold my-5">Resources</div>
-            <div className="font-thin hover:underline my-3">
+            <div className="font-normal hover:underline my-3">
               Find Your online and offline Job
             </div>
             <div
-              className="font-thin hover:underline my-3"
+              className="font-normal hover:underline my-3"
               onClick={() => {
                 navigator("/reviews");
               }}
             >
               Customer Reviews
             </div>
-            <div className="font-thin hover:underline my-3">Our Story</div>
-            <div className="font-thin hover:underline my-3">
+            <div className="font-normal hover:underline my-3">Our Story</div>
+            <div className="font-normal hover:underline my-3">
               <a href="https://learnduke.com/live">Learnduke upskill program</a>
             </div>
           </div>
           <div className="w-full md:w-1/2">
             <div className="text-xl font-semibold my-5">Contact Us</div>
             <div
-              className="font-thin hover:underline my-3 hover:cursor-pointer"
+              className="font-normal hover:underline my-3 hover:cursor-pointer"
               onClick={() => {
                 navigator("/contactus");
               }}
             >
               Contact Us
             </div>
-            <div className="font-thin hover:underline my-3"
+            <div className="font-normal hover:underline my-3"
               onClick={() => {navigator("/faq")}}
             >FAQ</div>
-            <div className="font-thin hover:underline my-3">Terms & Policy</div>
+            <div className="font-normal hover:underline my-3">Terms & Policy</div>
           </div>
         </div>
         <div className="flex justify-center space-x-10 text-xl mb-5">
@@ -84,7 +84,7 @@ export default function Footer() {
             <FaCcDiscover className="text-xl" />
             <FaApplePay className="text-xl" />
           </div>
-          <div className=" font-thin text-sm m-5" style={{ color: "#404040" }}>
+          <div className=" font-normal text-sm m-5" style={{ color: "#404040" }}>
             © 2021 LearnDuke. All rights reserved.
           </div>
         </div>
