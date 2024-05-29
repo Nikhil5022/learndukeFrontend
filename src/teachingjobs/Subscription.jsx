@@ -91,7 +91,7 @@ export default function Subscription() {
           console.log("Payment Successful", paymentDetails);
           // Send payment details to server or handle UI update
           // axios.post("/your-server-endpoint", paymentDetails);
-          axios.post("http://localhost:3000/addPayment", paymentDetails).then((response) => {
+          axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
             console.log("Payment details saved:", response.data);
           });
         },
