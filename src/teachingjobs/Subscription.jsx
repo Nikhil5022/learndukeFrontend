@@ -9,6 +9,7 @@ export default function Subscription() {
       name: "Basic",
       price: 99, // in INR
       benefits: ["Call to HR directly", "100 days access limit"],
+      days: 100
     },
     {
       name: "Advance",
@@ -20,6 +21,7 @@ export default function Subscription() {
         "Call to HR",
         "1-year access period",
       ],
+      days: 365
     },
     {
       name: "Premium",
@@ -33,6 +35,7 @@ export default function Subscription() {
         "100% placement with our side",
         "Upskill program for 6 months",
       ],
+      days: 180
     },
     {
       name: "Teacher Pro",
@@ -44,6 +47,7 @@ export default function Subscription() {
         "Online tuition connect",
         "24*7 support",
       ],
+      days: 100
     },
   ];
 
@@ -61,7 +65,7 @@ export default function Subscription() {
 
       const options = {
         key: "rzp_test_jH3t9W8Up3P2iW",
-        amount: plan.price, // amount in paisa
+        amount: plan.price * 100, // amount in paisa
         currency: "INR",
         name: user.name || "Sample User",
         description: `${plan.name} Plan Purchase`,
@@ -80,17 +84,22 @@ export default function Subscription() {
           color: "#121212",
         },
         handler: function (response) {
+          const paymentDate = new Date();
+          const expirationDate = new Date(paymentDate);
+          expirationDate.setDate(expirationDate.getDate() + plan.days);
+
           const paymentDetails = {
-            paymentDate: new Date().toLocaleString(),
+            paymentDate: paymentDate.toLocaleString(),
             plan: plan.name,
             amount: plan.price,
             status: "Completed",
             user: user.email,
+            expirationDate: expirationDate.toLocaleString(),
+            transactionId: response.razorpay_payment_id, // Ensure transaction ID is unique
             ...response,
           };
           console.log("Payment Successful", paymentDetails);
           // Send payment details to server or handle UI update
-          // axios.post("/your-server-endpoint", paymentDetails);
           axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
             console.log("Payment details saved:", response.data);
           });

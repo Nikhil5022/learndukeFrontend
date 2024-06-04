@@ -114,7 +114,7 @@ export default function Tutorial({
           >
             <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
             <span>
-              &#8377;{minAmountPerHour}-&#8377;{maxAmountPerHour}/Hour
+              &#8377;{minAmountPerHour}-&#8377;{maxAmountPerHour}/Month
             </span>
           </div>
           <div

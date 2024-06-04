@@ -82,8 +82,39 @@ export default function CreateJob() {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
 
+    if (name === "isDifferentWhatsappNumber" && !newValue) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        isDifferentWhatsappNumber: newValue,
+        whatsappNumber: prevFormData.phoneNumber,
+      }));
+    }
+
+    if (name === "phoneNumber" && !formData.isDifferentWhatsappNumber) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        phoneNumber: newValue,
+        whatsappNumber: newValue,
+      }));
+    }
+
+    // if the user has checked the checkbox then the whatsapp number should be different means keep empty
+      if (name === "isDifferentWhatsappNumber" && newValue) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          whatsappNumber: "",
+        }));
+      }
+
+    if (formData.isDifferentWhatsappNumber && name !== "isDifferentWhatsappNumber") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        whatsappNumber: formData.whatsappNumber,
+      }));
+    }
+
     if (name === "tags") {
-      const tagsArray = value.split(",").map((tag) => tag.trim());
+      const tagsArray = value.split(" ").map((tag) => tag.trim());
       setFormData({ ...formData, [name]: tagsArray });
     } else {
       setFormData({ ...formData, [name]: newValue });
@@ -172,14 +203,14 @@ export default function CreateJob() {
         }
         break;
       case 5:
-        if (!formData.phoneNumber) {
-          updatedFormErrors.phoneNumber = true;
+        if (!formData.phoneNumber || formData.phoneNumber.length !== 10) {
+          updatedFormErrors.phoneNumber = "Please enter a valid 10 digit phone number";
           errors = true;
         } else {
           updatedFormErrors.phoneNumber = false;
         }
-        if (formData.isDifferentWhatsappNumber && !formData.whatsappNumber) {
-          updatedFormErrors.whatsappNumber = true;
+        if (formData.isDifferentWhatsappNumber && (!formData.whatsappNumber || formData.whatsappNumber.length !== 10)) {
+          updatedFormErrors.whatsappNumber = "Please enter a valid 10 digit phone number";
           errors = true;
         } else {
           updatedFormErrors.whatsappNumber = false;
@@ -313,7 +344,7 @@ export default function CreateJob() {
                   htmlFor="minAmountPerHour"
                   className="block text-gray-700 font-semibold mb-2"
                 >
-                  Minimum Amount per Hour
+                  Minimum Amount per Month
                 </label>
                 <input
                   type="number"
@@ -339,7 +370,7 @@ export default function CreateJob() {
                   htmlFor="maxAmountPerHour"
                   className="block text-gray-700 font-semibold mb-2"
                 >
-                  Maximum Amount per Hour
+                  Maximum Amount per Month
                 </label>
                 <input
                   type="number"
@@ -486,11 +517,12 @@ export default function CreateJob() {
                 type="text"
                 id="tags"
                 name="tags"
-                value={formData.tags.join(", ")}
+                value={formData.tags.join(" ")}
                 onChange={handleChange}
                 className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
                   formErrors.tags && submitted ? "border-red-500" : ""
                 }`}
+                placeholder="Enter tags separated by space"
               />
               {formErrors.tags && submitted && (
                 <p className="text-red-500 text-xs mt-1">
@@ -513,77 +545,96 @@ export default function CreateJob() {
       case 5:
         return (
           <>
-            <div className="mb-4">
-              <label htmlFor="countryCode" className="block text-gray-700 font-semibold mb-2">
-                Country Code
-              </label>
+          {/* Phone Number */}
+          <div className="mb-4">
+            <label htmlFor="phoneNumber" className="block text-gray-700 font-semibold mb-2">
+              Phone Number
+            </label>
+            <div className="flex">
               <select
                 id="countryCode"
                 name="countryCode"
                 value={formData.countryCode}
                 onChange={handleChange}
-                className="border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+                className="border rounded-l py-2 px-3 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
               >
-                <option value="">Select Country Code</option>
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name} ({country.code})
+                {countryCodes.map((code) => (
+                  <option key={code.code} value={code.code}>
+                    {code.name} ({code.code})
                   </option>
                 ))}
               </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="phoneNumber" className="block text-gray-700 font-semibold mb-2">
-                Phone Number
-              </label>
               <input
-                type="tel"
+                type="number"
                 id="phoneNumber"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                className={`border rounded-r py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
                   formErrors.phoneNumber && submitted ? "border-red-500" : ""
                 }`}
+                pattern="\d{10}"
+                placeholder="1234567890"
               />
-              {formErrors.phoneNumber && submitted && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.phoneNumber}</p>
-              )}
             </div>
+            {formErrors.phoneNumber && submitted && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.phoneNumber}</p>
+            )}
+          </div>
+          {/* Is Different WhatsApp Number */}
+          <div className="mb-4">
+            <label htmlFor="isDifferentWhatsappNumber" className="block text-gray-700 font-semibold mb-2">
+              Is your WhatsApp number different from your phone number?
+            </label>
+            <input
+              type="checkbox"
+              id="isDifferentWhatsappNumber"
+              name="isDifferentWhatsappNumber"
+              checked={formData.isDifferentWhatsappNumber}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span>Yes</span>
+          </div>
+          {/* WhatsApp Number */}
+          {formData.isDifferentWhatsappNumber && (
             <div className="mb-4">
-              <label htmlFor="isDifferentWhatsappNumber" className="block text-gray-700 font-semibold mb-2">
-                Use a different number for WhatsApp?
+              <label htmlFor="whatsappNumber" className="block text-gray-700 font-semibold mb-2">
+                WhatsApp Number
               </label>
-              <input
-                type="checkbox"
-                id="isDifferentWhatsappNumber"
-                name="isDifferentWhatsappNumber"
-                checked={formData.isDifferentWhatsappNumber}
-                onChange={handleChange}
-                className="mr-2 leading-tight"
-              />
-            </div>
-            {formData.isDifferentWhatsappNumber && (
-              <div className="mb-4">
-                <label htmlFor="whatsappNumber" className="block text-gray-700 font-semibold mb-2">
-                  WhatsApp Number
-                </label>
+              <div className="flex">
+                <select
+                  id="countryCode"
+                  name="countryCode"
+                  value={formData.countryCode}
+                  onChange={handleChange}
+                  className="border rounded-l py-2 px-3 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+                >
+                  {countryCodes.map((code) => (
+                    <option key={code.code} value={code.code}>
+                      {code.name} ({code.code})
+                    </option>
+                  ))}
+                </select>
                 <input
                   type="tel"
                   id="whatsappNumber"
                   name="whatsappNumber"
                   value={formData.whatsappNumber}
                   onChange={handleChange}
-                  className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  className={`border rounded-r py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
                     formErrors.whatsappNumber && submitted ? "border-red-500" : ""
                   }`}
+                  pattern="\d{10}"
+                  placeholder="1234567890"
                 />
-                {formErrors.whatsappNumber && submitted && (
-                  <p className="text-red-500 text-xs mt-1">{formErrors.whatsappNumber}</p>
-                )}
               </div>
-            )}
-          </>
+              {formErrors.whatsappNumber && submitted && (
+                <p className="text-red-500 text-xs mt-1">{formErrors.whatsappNumber}</p>
+              )}
+            </div>
+          )}
+        </>
         );
       default:
         return null;

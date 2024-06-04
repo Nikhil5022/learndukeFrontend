@@ -184,7 +184,7 @@ export default function Detailedjob() {
         <div className="w-full flex flex-wrap justify-center mb-3 space-x-8">
           <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
             <FaMoneyBillWave className="mr-2 text-gray-500" />
-            {job.minAmountPerHour}-{job.maxAmountPerHour}/Hour
+            {job.minAmountPerHour}-{job.maxAmountPerHour}/Month
           </div>
           <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
             <FaBriefcase className="mr-2 text-gray-500" />

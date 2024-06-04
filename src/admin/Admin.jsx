@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from '../Modal'
+import emailjs from "emailjs-com";
 
 export default function Admin() {
   const [users, setUsers] = useState([]);
@@ -12,7 +12,9 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [view, setView] = useState("users"); // New state for switching views
-  const [setModalOpen, setIsModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const tokenfe = localStorage.getItem("token");
@@ -36,7 +38,6 @@ export default function Admin() {
       axios
         .get("https://learndukeserver.vercel.app/getJobs") // Fetching job data
         .then((response) => {
-
           setJobs(response.data);
         })
         .catch((error) => {
@@ -121,6 +122,94 @@ export default function Admin() {
     const query = searchQuery.toLowerCase();
     return (job.title || "").toLowerCase().includes(query);
   });
+
+  const handleReview = (job) => {
+    console.log("Reviewing job:", job);
+    setSelectedJob(job);
+    setModalOpen(true);
+  };
+
+  const handleAccept = async () => {
+    // Logic for accepting the job, ensuring required data is provided
+
+  
+    try {
+      const response = await axios.post(
+        `https://learndukeserver.vercel.app/approveJob/${selectedJob._id}` // Use template literal for clarity
+      );
+      console.log(response.data);
+  
+      emailjs.send(
+        "service_u8g5efc", // Replace with your actual service ID
+        "template_1f02q6q", // Replace with your actual template ID
+        {
+          to_email: selectedJob.email,
+          message: `Your job having title: ${selectedJob.title}`,
+          reply_to: selectedJob.email,
+          from_name: "learnduke admin",
+        },
+        "Mwms6Vebtr7VYP1Hr" // Replace with your actual user ID
+      )
+      .then((response) => {
+        console.log("EMAIL SENT!", response.status, response.text);
+        // Optionally handle successful email sending here, e.g., display a success message
+      })
+      .catch((error) => {
+        console.error("ERROR SENDING EMAIL:", error);
+        // Handle email sending errors here, e.g., display an error message to the user
+      });
+      
+
+      
+      // Update jobs state with reviewed flag
+      setJobs((prevJobs) =>
+        prevJobs.map((job) => (job._id === selectedJob._id ? { ...job, isReviewed: true } : job))
+      );
+    } catch (error) {
+      console.error("Error reviewing job:", error);
+    }
+  
+    console.log("Job accepted:", selectedJob);
+    setModalOpen(false);
+  };
+  
+
+  const handleReject = () => {
+    // Logic for rejecting the job
+    axios
+      .post("https://learndukeserver.vercel.app/rejectJob/" + selectedJob._id)
+      .then((response) => {
+        console.log(response.data);
+        
+        setJobs((prevJobs) =>
+          prevJobs.map((j) =>
+            j._id === selectedJob._id
+              ? { ...j, isReviewed: false, isRejected: true }
+              : j
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error reviewing job:", error);
+      });
+    emailjs.send(
+      "service_u8g5efc",
+      "template_fjpzhe8",
+      {
+        to_email: selectedJob.email,
+        message: `Your job having title: ${selectedJob.title} has been rejected`,
+        reply_to: selectedJob.email,
+        from_name: "learnduke admin",
+      },
+      "Mwms6Vebtr7VYP1Hr"
+    ).then((response) => {
+      console.log("EMAIL SENT!", response.status, response.text);
+    }).catch((error) => {
+      console.error("ERROR SENDING EMAIL:", error);
+    });
+    console.log("Job rejected:", selectedJob);
+    setModalOpen(false);
+  };
 
   return (
     <>
@@ -207,9 +296,15 @@ export default function Admin() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredUsers.map((user) => (
                     <tr key={user._id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-                      <td className="px-4 py-4 whitespace-nowrap">{user.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{user.phoneNumber}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {user.name}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        {user.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {user.phoneNumber}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <label
                           htmlFor={`toggle-${user._id}`}
@@ -255,47 +350,130 @@ export default function Admin() {
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Job Title
                     </th>
-                    {/* email */}
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Email
+                      Whatsapp Number
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      jobtype
+                      Job Type
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Location
                     </th>
-                    {/* delete  */}
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Review
+                    </th>
+
+                    <th
+                      scope="col"
+                      className="px-2 py-3 text-left text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Delete
                     </th>
-                    
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredJobs.map((job) => (
                     <tr key={job._id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.title}</td>
-                      <td className="px-4 py-4 whitespace-nowrap">{job.email}</td>
-                      <td className="px-4 py-4 whitespace-nowrap">{job.jobType}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.location}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {job.title}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {job.whatsappNumber}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {job.jobType}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {job.location}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap">
+                        {job.isReviewed ? (
+                          <span
+                            className="px-2 py-1 bg-green-500 text-white rounded cursor-pointer"
+                            onClick={() =>
+                              axios
+                                .post(
+                                  `https://learndukeserver.vercel.app/undoReview/${job._id}`
+                                )
+                                .then((response) => {
+                                  console.log(response.data);
+                                  setJobs((prevJobs) =>
+                                    prevJobs.map((j) =>
+                                      j._id === job._id
+                                        ? {
+                                            ...j,
+                                            isReviewed: false,
+                                            isRejected: false,
+                                          }
+                                        : j
+                                    )
+                                  );
+                                })
+                                .catch((error) => {
+                                  console.error("Error undoing review:", error);
+                                })
+                            }
+                          >
+                            Undo
+                          </span>
+                        ) : job.isRejected ? (
+                          <button
+                            onClick={() =>
+                              axios
+                                .post(
+                                  `https://learndukeserver.vercel.app/undoReject/${job._id}`
+                                )
+                                .then((response) => {
+                                  console.log(response.data);
+                                  setJobs((prevJobs) =>
+                                    prevJobs.map((j) =>
+                                      j._id === job._id
+                                        ? { ...j, isRejected: false }
+                                        : j
+                                    )
+                                  );
+                                })
+                                .catch((error) => {
+                                  console.error(
+                                    "Error undoing rejection:",
+                                    error
+                                  );
+                                })
+                            }
+                            className="bg-red-500 text-white py-1 px-2 rounded"
+                          >
+                            Undo Reject
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleReview(job)}
+                              className="bg-blue-500 text-white py-1 px-2 rounded mr-2"
+                            >
+                              Review
+                            </button>
+                            
+                          </>
+                        )}
+                      </td>
+
+                      <td className="px-2 py-4 whitespace-nowrap">
                         <button
                           onClick={() => {
                             axios
@@ -308,12 +486,11 @@ export default function Admin() {
                                 setJobs((prevJobs) =>
                                   prevJobs.filter((j) => j._id !== job._id)
                                 );
-
                               })
                               .catch((error) => {
                                 console.error("Error deleting job:", error);
                               });
-                              setModalOpen(true);
+                            setIsModalOpen(true);
                           }}
                           className="bg-red-500 text-white py-1 px-2 rounded"
                         >
@@ -326,12 +503,6 @@ export default function Admin() {
               </table>
             )}
           </div>
-          <Modal open={setModalOpen} onClose={() => setModalOpen(false)}>
-            <div className="p-4 bg-white rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Job Deleted</h2>
-              <p>Job has been deleted successfully</p>
-            </div>
-          </Modal>
         </div>
       ) : (
         <div className="flex justify-center items-center h-svh bg-gray-100">
@@ -379,6 +550,43 @@ export default function Admin() {
               Login
             </button>
           </form>
+        </div>
+      )}
+      {modalOpen && (
+        // job detail modal
+        <div className="fixed h-screen inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg w-2/3">
+            <h2 className="text-xl font-semibold mb-4">Job Details</h2>
+            <div className="mb-4">
+              <strong>Title:</strong> {selectedJob.title}
+            </div>
+            <div className="mb-4">
+              <strong>Email:</strong> {selectedJob.email}
+            </div>
+            <div className="mb-4">
+              <strong>Job Type:</strong> {selectedJob.jobType}
+            </div>
+            <div className="mb-4">
+              <strong>Location:</strong> {selectedJob.location}
+            </div>
+            <div className="mb-4">
+              <strong>Description:</strong> {selectedJob.description}
+            </div>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleReject}
+                className="bg-red-500 text-white py-2 px-4 rounded mr-2"
+              >
+                Reject
+              </button>
+              <button
+                onClick={handleAccept}
+                className="bg-green-500 text-white py-2 px-4 rounded"
+              >
+                Accept
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
