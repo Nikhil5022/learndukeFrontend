@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import teachingjobs from "../assets/teachingjobs.jpg";
 import companies from "../assets/companies.jpg";
 import DosAndDonts from "./DosAndDonts";
@@ -13,6 +13,7 @@ import "aos/dist/aos.css";
 export default function Teachingjobs() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [userData, setUserData] = useState();
   
 
   useEffect(() => {
@@ -25,6 +26,11 @@ export default function Teachingjobs() {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
+    });
+
+    axios.get("https://learndukeserver.vercel.app/getUser/"+user.email).then((res) => {
+      console.log(res.data);
+      setUserData(res.data);
     });
   }, []);
 
@@ -201,7 +207,12 @@ export default function Teachingjobs() {
               className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                navigate("/findteachingjobs");
+                if(userData.isPremium){
+                  navigate("/teachingjobs");
+                }
+                else{
+                  navigate("/subscription");
+                }
               }}
             >
               Find jobs now
@@ -337,10 +348,15 @@ export default function Teachingjobs() {
               online and offline jobs.
             </div>
             <button
-              className="bg-blue-500 text-white w-fit p-2 px-4 hover:scale-105 mt-5"
+              className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                navigate("/findteachingjobs");
+                if(userData.isPremium){
+                  navigate("/teachingjobs");
+                }
+                else{
+                  navigate("/subscription");
+                }
               }}
             >
               Find jobs now

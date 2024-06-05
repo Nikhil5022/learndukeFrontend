@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaWallet } from "react-icons/fa";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -17,12 +18,14 @@ export default function UserPage() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data);
           setUserData(response.data);
-          axios.get(`https://learndukeserver.vercel.app/getJobs/${user.email}`).then((jobsResponse) => {
-            console.log(jobsResponse.data);
-            setJobs(jobsResponse.data);
-          });
+          axios
+            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+            .then((jobsResponse) => {
+              console.log(jobsResponse.data);
+              setJobs(jobsResponse.data);
+            });
           setLoading(false);
         })
         .catch((error) => {
@@ -64,9 +67,12 @@ export default function UserPage() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUserData({ ...userData, profilephoto:{
-          url: e.target.result,
-        } });
+        setUserData({
+          ...userData,
+          profilephoto: {
+            url: e.target.result,
+          },
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -75,11 +81,16 @@ export default function UserPage() {
   const handleSaveProfile = () => {
     console.log("User Data:", userData);
     // Save the updated profile data to the server
-    axios.post(`https://learndukeserver.vercel.app/editUserData/${user.email}`, userData).then((response) => {
-      console.log("Profile data updated successfully:", response.data);
-      alert("Profile data updated successfully");
-      setIsEditEnabled(false);
-    });
+    axios
+      .post(
+        `https://learndukeserver.vercel.app/editUserData/${user.email}`,
+        userData
+      )
+      .then((response) => {
+        console.log("Profile data updated successfully:", response.data);
+        alert("Profile data updated successfully");
+        setIsEditEnabled(false);
+      });
   };
 
   if (loading) {
@@ -119,20 +130,24 @@ export default function UserPage() {
           {isEditEnabled ? (
             <div className="bg-orange-100 p-6 rounded-lg shadow-lg">
               <div className="flex justify-between">
-              <div className="text-2xl font-semibold">Edit Profile</div>
-              <button
-                onClick={() => setIsEditEnabled(false)}
-                className=" bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-              >Cancel</button>
+                <div className="text-2xl font-semibold">Edit Profile</div>
+                <button
+                  onClick={() => setIsEditEnabled(false)}
+                  className=" bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+                >
+                  Cancel
+                </button>
               </div>
               <div className="flex justify-center m-5">
-                <label htmlFor="profilePhotoInput" className="relative cursor-pointer group">
+                <label
+                  htmlFor="profilePhotoInput"
+                  className="relative cursor-pointer group"
+                >
                   <img
                     src={userData.profilephoto.url}
                     alt=""
                     className="w-20 rounded-full"
                   />
-                  
                 </label>
                 <input
                   type="file"
@@ -148,7 +163,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.name}
-                    onChange={(e) => setUserData({ ...userData, name: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, name: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -157,7 +174,9 @@ export default function UserPage() {
                   <input
                     type="email"
                     value={userData.email}
-                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, email: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -166,7 +185,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.linkedin}
-                    onChange={(e) => setUserData({ ...userData, linkedin: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, linkedin: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -175,7 +196,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.github}
-                    onChange={(e) => setUserData({ ...userData, github: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, github: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -184,7 +207,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.phoneNumber}
-                    onChange={(e) => setUserData({ ...userData, phoneNumber: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, phoneNumber: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -193,7 +218,12 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.whatsappNumber}
-                    onChange={(e) => setUserData({ ...userData, whatsappNumber: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        whatsappNumber: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -201,89 +231,93 @@ export default function UserPage() {
                   <label className="block font-semibold">Bio</label>
                   <textarea
                     value={userData.bio}
-                    onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, bio: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                     rows={10}
                   />
                 </div>
               </div>
               <div className="flex justify-end">
-              <button
-                className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-                onClick={handleSaveProfile}
-              >
-                Save
-              </button>
+                <button
+                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+                  onClick={handleSaveProfile}
+                >
+                  Save
+                </button>
               </div>
             </div>
           ) : (
             <div className="flex flex-col md:flex-row">
-            <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-none md:rounded-l-3xl shadow-lg">
-              <img
-                src={userData?.profilephoto.url}
-                alt="Profile pic"
-                className="w-2/4 rounded-full my-5"
-              />
-              <div className="text-2xl font-semibold my-3 text-center flex justify-center items-center">
-                {userData?.name}
-                {userData?.isPremium && (
-                  <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl mt-1">
-                    PRO 
+              <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-none md:rounded-l-3xl shadow-lg">
+                <img
+                  src={userData?.profilephoto.url}
+                  alt="Profile pic"
+                  className="w-2/4 rounded-full my-5"
+                />
+                <div className="text-2xl font-semibold my-3 text-center flex justify-center items-center">
+                  {userData?.name}
+                  {userData?.isPremium && (
+                    <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl mt-1">
+                      PRO
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-none md:rounded-r-3xl">
+                <div className="flex justify-between">
+                  <div className="text-2xl font-semibold my-3 text-orange-500">
+                    About Me
+                  </div>
+                  <button
+                    className="text-white bg-orange-500 px-5 h-12  rounded-md"
+                    onClick={() => setIsEditEnabled(true)}
+                  >
+                    Edit
+                  </button>
+                </div>
+                <div className="flex items-center space-x-5 my-5">
+                  <div
+                    className="p-3 rounded-lg cursor-pointer"
+                    onClick={() => window.open(userData.linkedin, "_blank")}
+                  >
+                    <FaLinkedin className="text-3xl text-blue-800" />
+                  </div>
+                  <div
+                    className="p-3 rounded-lg cursor-pointer"
+                    onClick={() => window.open(userData.github, "_blank")}
+                  >
+                    <FaGithub className="text-3xl text-gray-800" />
+                  </div>
+                  {userData.isPremium && (
+                    <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
+                      Premium Member
+                    </div>
+                  )}
+                </div>
+                <div>{userData.bio}</div>
+                {userData && (
+                  <div>
+                    <div className="text-2xl font-semibold my-3 text-orange-600">
+                      Contact
+                    </div>
+                    <div className="text-lg mb-2">
+                      <span className="mr-2">Phone:</span>
+                      {userData.phoneNumber}
+                    </div>
+                    <div className="text-lg mb-2">
+                      <span className="mr-2">WhatsApp:</span>
+                      {userData.whatsappNumber}
+                    </div>
+                    <div className="text-lg mb-2">
+                      <span className="mr-2">Email:</span>
+                      {userData.email}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-            <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-none md:rounded-r-3xl">
-              <div className="flex justify-between">
-                <div className="text-2xl font-semibold my-3 text-orange-500">About Me</div>
-                <button
-                  className="text-white bg-orange-500 px-5 h-12  rounded-md"
-                  onClick={() => setIsEditEnabled(true)}
-                >
-                  Edit
-                </button>
-              </div>
-              <div className="flex items-center space-x-5 my-5">
-                <div
-                  className="p-3 rounded-lg cursor-pointer"
-                  onClick={() => window.open(userData.linkedin, "_blank")}
-                >
-                  <FaLinkedin className="text-3xl text-blue-800" />
-                </div>
-                <div
-                  className="p-3 rounded-lg cursor-pointer"
-                  onClick={() => window.open(userData.github, "_blank")}
-                >
-                  <FaGithub className="text-3xl text-gray-800" />
-                </div>
-                {userData.isPremium && (
-                  <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
-                    Premium Member
-                  </div>
-                )}
-              </div>
-              <div>{userData.bio}</div>
-              {userData && (
-                <div>
-                  <div className="text-2xl font-semibold my-3 text-orange-600">
-                    Contact
-                  </div>
-                  <div className="text-lg mb-2">
-                    <span className="mr-2">Phone:</span>
-                    {userData.phoneNumber}
-                  </div>
-                  <div className="text-lg mb-2">
-                    <span className="mr-2">WhatsApp:</span>
-                    {userData.whatsappNumber}
-                  </div>
-                  <div className="text-lg mb-2">
-                    <span className="mr-2">Email:</span>
-                    {userData.email}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
           )}
         </div>
         <h1 className="text-2xl font-bold mt-10 mb-5">Your Jobs</h1>
@@ -311,47 +345,66 @@ export default function UserPage() {
           </select>
         </div>
         <div className="w-full">
-          {filteredJobs.length === 0 ? (
-            <p className="text-lg">No jobs available</p>
-          ) : (
-            filteredJobs.map((job) => (
-              <div
-                key={job._id}
-                className="border rounded-lg p-4 my-2 flex justify-between items-center shadow-lg"
-              >
-                <div className="flex items-center space-x-4 w-full">
-                  <div className="flex-1">
-                    <h2 className="text-xl font-semibold">{job.title}</h2>
-                    {/* dont show complete description */}
-                    <p className="text-gray-600 mt-2 ">{job.description}</p>
+  {filteredJobs.length === 0 ? (
+    <p className="text-lg">No jobs available</p>
+  ) : (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {filteredJobs.map((job) => (
+        <div
+          key={job._id}
+          className="rounded-xl border-2 border-slate-300 p-5"
+          style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+        >
+          <div>
+            <div className="flex flex-col mb-4">
+              <div className="flex justify-between items-center">
+                <div className="ml-2 text-lg font-semibold">{job.title}</div>
+                {job.isReviewed && (
+                  <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                    Accepted
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gray-100 rounded-lg p-2">
-                      <span className="">
-                        {job.minAmountPerHour}-
-                      </span>
-                      <span>{job.maxAmountPerHour}/Hour</span>
-                    </div>
-                    <div className="bg-gray-100 rounded-lg p-2">
-                      {job.jobType}
-                    </div>
-                    {job.location && (
-                      <div className="bg-gray-100 rounded-lg p-2">
-                        {job.location}
-                      </div>
-                    )}
-                    <button
-                      className="bg-red-500 text-white px-4 py-2 h-10 rounded hover:bg-red-600 transition-all duration-200"
-                      onClick={() => handleDelete(job._id)}
-                    >
-                      Delete
-                    </button>
+                )}
+                {job.isRejected && (
+                  <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                    Rejected
                   </div>
-                </div>
+                )}
               </div>
-            ))
-          )}
+              <div className="mt-3 text-gray-700">
+                {job.description.slice(0, 100) + "...."}
+              </div>
+              <div className="flex flex-wrap mt-3 space-x-2">
+                <div className="flex items-center mt-3">
+                  <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                  <span>
+                    &#8377;{job.minAmountPerHour}-&#8377;{job.maxAmountPerHour}/Month
+                  </span>
+                </div>
+                <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                  {job.jobType}
+                </div>
+                {job.location && (
+                  <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                    {job.location}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <button
+              onClick={() => handleDelete(job._id)}
+              className="bg-red-500 text-white px-4 py-3 rounded-3xl text-center"
+            >
+              Delete
+            </button>
+          </div>
         </div>
+      ))}
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );

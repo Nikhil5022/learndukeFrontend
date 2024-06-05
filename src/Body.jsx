@@ -68,6 +68,8 @@ export default function Body() {
         console.error("Error fetching jobs:", error);
         setLoading(false);
       });
+
+      window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
