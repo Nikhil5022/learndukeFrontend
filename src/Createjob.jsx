@@ -7,7 +7,50 @@ export default function CreateJob() {
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-
+  const domainOptions = [
+    "Information Technology (IT)",
+    "Finance",
+    "Healthcare",
+    "Education",
+    "Manufacturing",
+    "Retail",
+    "Telecommunications",
+    "Construction",
+    "Hospitality",
+    "Transportation and Logistics",
+    "Real Estate",
+    "Media and Entertainment",
+    "Marketing and Advertising",
+    "Energy and Utilities",
+    "Government",
+    "Non-Profit",
+    "Consulting",
+    "Legal",
+    "Automotive",
+    "Pharmaceuticals",
+    "Consumer Goods",
+    "Agriculture",
+    "Aerospace and Defense",
+    "Insurance",
+    "Human Resources",
+    "Research and Development (R&D)",
+    "Biotechnology",
+    "Food and Beverage",
+    "Environmental Services",
+    "Sports and Recreation"
+  ];
+  
+  const filterOptions = [
+    
+    "Remote",
+    "Offline",
+    "Part-time",
+    "Full-time",
+    "Internship",
+    "Contract",
+    "Hometuition",
+    "Onlinetuition",
+  ];
   useEffect(() => {
     window.scrollTo(0, 0);
     const data = localStorage.getItem("user");
@@ -100,14 +143,17 @@ export default function CreateJob() {
     }
 
     // if the user has checked the checkbox then the whatsapp number should be different means keep empty
-      if (name === "isDifferentWhatsappNumber" && newValue) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          whatsappNumber: "",
-        }));
-      }
+    if (name === "isDifferentWhatsappNumber" && newValue) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        whatsappNumber: "",
+      }));
+    }
 
-    if (formData.isDifferentWhatsappNumber && name !== "isDifferentWhatsappNumber") {
+    if (
+      formData.isDifferentWhatsappNumber &&
+      name !== "isDifferentWhatsappNumber"
+    ) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         whatsappNumber: formData.whatsappNumber,
@@ -205,13 +251,18 @@ export default function CreateJob() {
         break;
       case 5:
         if (!formData.phoneNumber || formData.phoneNumber.length !== 10) {
-          updatedFormErrors.phoneNumber = "Please enter a valid 10 digit phone number";
+          updatedFormErrors.phoneNumber =
+            "Please enter a valid 10 digit phone number";
           errors = true;
         } else {
           updatedFormErrors.phoneNumber = false;
         }
-        if (formData.isDifferentWhatsappNumber && (!formData.whatsappNumber || formData.whatsappNumber.length !== 10)) {
-          updatedFormErrors.whatsappNumber = "Please enter a valid 10 digit phone number";
+        if (
+          formData.isDifferentWhatsappNumber &&
+          (!formData.whatsappNumber || formData.whatsappNumber.length !== 10)
+        ) {
+          updatedFormErrors.whatsappNumber =
+            "Please enter a valid 10 digit phone number";
           errors = true;
         } else {
           updatedFormErrors.whatsappNumber = false;
@@ -241,8 +292,6 @@ export default function CreateJob() {
       console.log("Form submitted successfully");
     }
   };
-
-  
 
   const renderStep = () => {
     switch (step) {
@@ -315,19 +364,19 @@ export default function CreateJob() {
                 }`}
               >
                 <option value="">Select Domain</option>
-                <option value="IT">IT</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Finance">Finance</option>
-                <option value="Management">Management</option>
+                {domainOptions.map((domain, index) => (
+                  <option key={index} value={domain}>
+                    {domain}
+                  </option>
+                ))}
               </select>
+
               {formErrors.domain && submitted && (
                 <p className="text-red-500 text-xs mt-1">
                   This field is required
                 </p>
               )}
             </div>
-            
-
           </>
         );
       case 2:
@@ -406,10 +455,12 @@ export default function CreateJob() {
                 }`}
               >
                 <option value="">Select Job Type</option>
-                <option value="Part-Time">Part-Time</option>
-                <option value="Full-Time">Full-Time</option>
-                <option value="Internship">Internship</option>
-                <option value="Contract">Contract</option>
+                {filterOptions.map((option, index) => (
+                  // add a null option to show by default
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               {formErrors.jobType && submitted && (
                 <p className="text-red-500 text-xs mt-1">
@@ -541,72 +592,85 @@ export default function CreateJob() {
       case 5:
         return (
           <>
-          {/* Phone Number */}
-          <div className="mb-4">
-            <label htmlFor="phoneNumber" className="block text-gray-700 font-semibold mb-2">
-              Phone Number
-            </label>
-            <div className="flex">
-              
-              <input
-                type="number"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className={`border rounded-r py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                  formErrors.phoneNumber && submitted ? "border-red-500" : ""
-                }`}
-                pattern="\d{10}"
-                placeholder="1234567890"
-              />
-            </div>
-            {formErrors.phoneNumber && submitted && (
-              <p className="text-red-500 text-xs mt-1">{formErrors.phoneNumber}</p>
-            )}
-          </div>
-          {/* Is Different WhatsApp Number */}
-          <div className="mb-4">
-            <label htmlFor="isDifferentWhatsappNumber" className="block text-gray-700 font-semibold mb-2">
-              Is your WhatsApp number different from your phone number?
-            </label>
-            <input
-              type="checkbox"
-              id="isDifferentWhatsappNumber"
-              name="isDifferentWhatsappNumber"
-              checked={formData.isDifferentWhatsappNumber}
-              onChange={handleChange}
-              className="mr-2"
-            />
-            <span>Yes</span>
-          </div>
-          {/* WhatsApp Number */}
-          {formData.isDifferentWhatsappNumber && (
+            {/* Phone Number */}
             <div className="mb-4">
-              <label htmlFor="whatsappNumber" className="block text-gray-700 font-semibold mb-2">
-                WhatsApp Number
+              <label
+                htmlFor="phoneNumber"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Phone Number
               </label>
               <div className="flex">
-               
                 <input
-                  type="tel"
-                  id="whatsappNumber"
-                  name="whatsappNumber"
-                  value={formData.whatsappNumber}
+                  type="number"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   onChange={handleChange}
                   className={`border rounded-r py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
-                    formErrors.whatsappNumber && submitted ? "border-red-500" : ""
+                    formErrors.phoneNumber && submitted ? "border-red-500" : ""
                   }`}
                   pattern="\d{10}"
                   placeholder="1234567890"
                 />
               </div>
-              {formErrors.whatsappNumber && submitted && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.whatsappNumber}</p>
+              {formErrors.phoneNumber && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.phoneNumber}
+                </p>
               )}
             </div>
-          )}
-        </>
+            {/* Is Different WhatsApp Number */}
+            <div className="mb-4">
+              <label
+                htmlFor="isDifferentWhatsappNumber"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Is your WhatsApp number different from your phone number?
+              </label>
+              <input
+                type="checkbox"
+                id="isDifferentWhatsappNumber"
+                name="isDifferentWhatsappNumber"
+                checked={formData.isDifferentWhatsappNumber}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              <span>Yes</span>
+            </div>
+            {/* WhatsApp Number */}
+            {formData.isDifferentWhatsappNumber && (
+              <div className="mb-4">
+                <label
+                  htmlFor="whatsappNumber"
+                  className="block text-gray-700 font-semibold mb-2"
+                >
+                  WhatsApp Number
+                </label>
+                <div className="flex">
+                  <input
+                    type="tel"
+                    id="whatsappNumber"
+                    name="whatsappNumber"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    className={`border rounded-r py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                      formErrors.whatsappNumber && submitted
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                    pattern="\d{10}"
+                    placeholder="1234567890"
+                  />
+                </div>
+                {formErrors.whatsappNumber && submitted && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.whatsappNumber}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
         );
       default:
         return null;
@@ -629,78 +693,79 @@ export default function CreateJob() {
 
   return (
     <div className="h-screen flex flex-col">
-    <div className="flex justify-end p-4">
-      <button
-        onClick={() => {
-          navigate("/teachingJobs");
-        }}
-        className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-      >
-        X
-      </button>
-    </div>
-    <div className="flex justify-center mb-4">
-      <div className="flex justify-center items-center w-full md:w-3/4 lg:w-1/2 px-4">
-        <div className="flex w-full">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div
-              key={index}
-              className={`flex-1 h-2 mx-1 rounded ${
-                step > index + 1
-                  ? "bg-green-500"
-                  : step === index + 1
-                  ? "bg-orange-500"
-                  : "bg-gray-300"
-              }`}
-            ></div>
-          ))}
+      <div className="flex justify-end p-4">
+        <button
+          onClick={() => {
+            navigate("/teachingJobs");
+          }}
+          className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+        >
+          X
+        </button>
+      </div>
+      <div className="flex justify-center mb-4">
+        <div className="flex justify-center items-center w-full md:w-3/4 lg:w-1/2 px-4">
+          <div className="flex w-full">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className={`flex-1 h-2 mx-1 rounded ${
+                  step > index + 1
+                    ? "bg-green-500"
+                    : step === index + 1
+                    ? "bg-orange-500"
+                    : "bg-gray-300"
+                }`}
+              ></div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-    <div className="flex justify-center items-center flex-grow">
-      <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 w-full md:w-3/4 lg:w-1/2">
-        <h2 className="text-2xl font-semibold mb-4 text-black">
-          Create a Job - Step {step}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {renderStep()}
-          <div className="flex justify-between mt-4">
-            {step > 1 && (
-              <button
-                type="button"
-                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-                onClick={prevStep}
-              >
-                Previous
-              </button>
-            )}
-            {step < 5 ? (
-              <button
-                type="button"
-                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-                onClick={nextStep}
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-              >
-                Submit
-              </button>
-            )}
-          </div>
-        </form>
+      <div className="flex justify-center items-center flex-grow">
+        <div className="bg-orange-100 shadow-md rounded px-8 pt-6 pb-8 w-full md:w-3/4 lg:w-1/2">
+          <h2 className="text-2xl font-semibold mb-4 text-black">
+            Create a Job - Step {step}
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {renderStep()}
+            <div className="flex justify-between mt-4">
+              {step > 1 && (
+                <button
+                  type="button"
+                  className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                  onClick={prevStep}
+                >
+                  Previous
+                </button>
+              )}
+              {step < 5 ? (
+                <button
+                  type="button"
+                  className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                  onClick={nextStep}
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-    {showModal && (
+      {showModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+            &#8203;
             <div
               className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
               role="dialog"
@@ -737,7 +802,8 @@ export default function CreateJob() {
                     <div className="mt-2">
                       {/* Modal content */}
                       <p className="text-sm text-gray-500">
-                        Your job has been created successfully. What would you like to do next?
+                        Your job has been created successfully. What would you
+                        like to do next?
                       </p>
                     </div>
                   </div>
@@ -763,6 +829,6 @@ export default function CreateJob() {
           </div>
         </div>
       )}
-  </div>
+    </div>
   );
 }

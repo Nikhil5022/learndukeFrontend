@@ -13,6 +13,7 @@ export default function UserPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
+  const [activeSubscriptions, setActiveSubscriptions] = useState([]);
 
   useEffect(() => {
     if (user && user.email) {
@@ -33,6 +34,13 @@ export default function UserPage() {
           setError("There was an error fetching the user data.");
           console.error(error);
           setLoading(false);
+        });
+
+      axios
+        .get(`https://learndukeserver.vercel.app/getSubscriptions/${user.email}`)
+        .then((response) => {
+          console.log("Active Subscriptions:", response.data);
+          setActiveSubscriptions(response.data);
         });
     } else {
       setLoading(false);
@@ -92,6 +100,29 @@ export default function UserPage() {
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
       });
+  };
+
+  const calculateDaysLeft = (expirationDate) => {
+    const today = new Date();
+    const expiration = new Date(expirationDate);
+    const diffTime = Math.abs(expiration - today);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const isSubscriptionActive = (expirationDate) => {
+    const today = new Date();
+    const expiration = new Date(expirationDate);
+    return expiration >= today;
+  };
+  const renewSubscription = (plan) => {
+    console.log("Renew subscription for plan:", plan);
+    // Add logic for renewing subscription
+  };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
   };
 
   if (loading) {
@@ -279,18 +310,22 @@ export default function UserPage() {
                   </button>
                 </div>
                 <div className="flex items-center space-x-5 my-5">
-                  <div
-                    className="p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.linkedin, "_blank")}
-                  >
-                    <FaLinkedin className="text-3xl text-blue-800" />
-                  </div>
-                  <div
-                    className="p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.github, "_blank")}
-                  >
-                    <FaGithub className="text-3xl text-gray-800" />
-                  </div>
+                  {userData.linkedin && (
+                    <div
+                      className="p-3 rounded-lg cursor-pointer"
+                      onClick={() => window.open(userData.linkedin, "_blank")}
+                    >
+                      <FaLinkedin className="text-3xl text-blue-800" />
+                    </div>
+                  )}
+                  {userData.github && (
+                    <div
+                      className="p-3 rounded-lg cursor-pointer"
+                      onClick={() => window.open(userData.github, "_blank")}
+                    >
+                      <FaGithub className="text-3xl text-gray-800" />
+                    </div>
+                  )}
                   {userData.isPremium && (
                     <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
                       Premium Member
@@ -303,24 +338,96 @@ export default function UserPage() {
                     <div className="text-2xl font-semibold my-3 text-orange-600">
                       Contact
                     </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Phone:</span>
-                      {userData.phoneNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">WhatsApp:</span>
-                      {userData.whatsappNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Email:</span>
-                      {userData.email}
-                    </div>
+                    {userData.phoneNumber && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">Phone:</span>
+                        {userData.phoneNumber}
+                      </div>
+                    )}
+                    {userData.whatsappNumber && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">WhatsApp:</span>
+                        {userData.whatsappNumber}
+                      </div>
+                    )}
+                    {userData.email && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">Email:</span>
+                        {userData.email}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
           )}
         </div>
+        {/* Active subscriptions */}
+        <div>
+          {activeSubscriptions.length > 0 && (
+            <div className="mt-10">
+              <h1 className="text-2xl font-bold">Active Subscriptions</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+                {activeSubscriptions.map((subscription) => (
+                  <div
+                    key={subscription._id}
+                    className="rounded-xl border-2 border-slate-300 p-5"
+                    style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                  >
+                    <div>
+                      <div className="flex flex-col mb-4">
+                        <div className="flex justify-between items-center">
+                          <div className="ml-2 text-lg font-semibold">
+                            {subscription.plan}
+                          </div>
+                          {isSubscriptionActive(subscription.expirationDate) ? (
+                            <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                              Active
+                            </div>
+                          ) : (
+                            <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                              Expired
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-3 text-gray-700">
+                          <span className="font-semibold">Start Date</span>:{" "}
+                        {formatDate(subscription.paymentDate)}
+                        </div>
+                        <div className="mt-3 text-gray-700">
+                          <span className="font-semibold">End Date</span>:{" "}
+                          {formatDate(subscription.expirationDate)}
+                        </div>
+                        <div className="flex flex-wrap mt-3 space-x-2">
+                          <div className="flex items-center mt-3">
+                            <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                            <span>₹{subscription.amount}</span>
+                          </div>
+                          {isSubscriptionActive(subscription.expirationDate) ? (
+                            <div className="mt-3">
+                              Days Left:{" "}
+                              {calculateDaysLeft(subscription.expirationDate)}
+                            </div>
+                          ) : (
+                            <button
+                              className="mt-3 px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                              onClick={() =>
+                                renewSubscription(subscription.plan)
+                              }
+                            >
+                              Renew Subscription
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         <h1 className="text-2xl font-bold mt-10 mb-5">Your Jobs</h1>
         <div className="flex items-center mb-4">
           <input
@@ -370,6 +477,11 @@ export default function UserPage() {
                         {job.isRejected && (
                           <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
                             Rejected
+                          </div>
+                        )}
+                        {!job.isReviewed && !job.isRejected && (
+                          <div className="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-md">
+                            Pending
                           </div>
                         )}
                       </div>
@@ -425,7 +537,9 @@ export default function UserPage() {
                 className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-200"
                 onClick={() => {
                   setConfirmModal(false);
-                  handleDelete(jobs.find((job) => job._id === confirmModal)._id);
+                  handleDelete(
+                    jobs.find((job) => job._id === confirmModal)._id
+                  );
                 }}
               >
                 Delete
