@@ -17,6 +17,7 @@ export default function Teachingjobs() {
   
 
   useEffect(() => {
+    
    
     AOS.init({
       duration: 1200,
@@ -28,10 +29,12 @@ export default function Teachingjobs() {
       behavior: "smooth",
     });
 
-    axios.get("https://learndukeserver.vercel.app/getUser/"+user.email).then((res) => {
+    if(user){
+      axios.get("https://learndukeserver.vercel.app/getUser/"+user.email).then((res) => {
       console.log(res.data);
       setUserData(res.data);
     });
+    }
   }, []);
 
   const checkoutHandler = async () => {
@@ -93,7 +96,6 @@ export default function Teachingjobs() {
           className="w-full md:w-10/12 lg:w-9/12 flex flex-col md:flex-row px-4"
           data-aos="fade-in"
           data-aos-duration="1000"
-          data-aos-anchor-placement="center-center"
         >
           <img src={teachingjobs} alt="" className="w-full mb-5 md:mb-0" />
           <div className="flex flex-col md:p-10">
