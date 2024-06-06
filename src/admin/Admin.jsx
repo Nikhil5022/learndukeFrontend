@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import emailjs from "emailjs-com";
+import Modal from "../Modal";
 
 export default function Admin() {
   const [users, setUsers] = useState([]);
@@ -15,8 +16,13 @@ export default function Admin() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userDataUpdateModal, setUserDataUpdateModal] = useState(false);
+  const [inValidCredentials, setInValidCredentials] = useState(false);  
+  const [userNotfound, setUserNotfound] = useState(false);
+
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const tokenfe = localStorage.getItem("token");
     if (tokenfe) {
       setIsLogged(true);
@@ -59,7 +65,7 @@ export default function Admin() {
         })
         .then((response) => {
           console.log(response.data);
-          alert("User updated successfully");
+          setUserDataUpdateModal(true);
         });
 
       setUsers((prevUsers) =>
@@ -93,13 +99,13 @@ export default function Admin() {
           setToken(response.data.token);
         }
         if (response.data.message === "Invalid credentials") {
-          alert("Invalid credentials");
+          setInValidCredentials(true);
           setEmail("");
           setPassword("");
         }
 
         if (response.data.message === "Admin not found") {
-          alert("User not found");
+          setUserNotfound(true);
           setEmail("");
           setPassword("");
         }
@@ -213,6 +219,9 @@ export default function Admin() {
 
   return (
     <>
+    {/* Modal with message */}
+   
+
       {isLogged ? (
         <div className="container mx-auto p-4 md:p-8">
           <h2 className="text-2xl font-semibold mb-4">
@@ -476,20 +485,7 @@ export default function Admin() {
                       <td className="px-2 py-4 whitespace-nowrap">
                         <button
                           onClick={() => {
-                            axios
-                              .delete(
-                                `https://learndukeserver.vercel.app/deleteJob/${job._id}`
-                              )
-                              .then((response) => {
-                                console.log(response.data);
-                                // update jobs state
-                                setJobs((prevJobs) =>
-                                  prevJobs.filter((j) => j._id !== job._id)
-                                );
-                              })
-                              .catch((error) => {
-                                console.error("Error deleting job:", error);
-                              });
+                            
                             setIsModalOpen(true);
                           }}
                           className="bg-red-500 text-white py-1 px-2 rounded"
@@ -588,6 +584,88 @@ export default function Admin() {
             </div>
           </div>
         </div>
+      )}
+      {userDataUpdateModal && (
+        <Modal
+          isOpen={userDataUpdateModal}
+          onClose={() => setUserDataUpdateModal(false)}
+        >
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-4">User data updated!</h2>
+            <button
+              onClick={() => setUserDataUpdateModal(false)}
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+      {inValidCredentials && (
+        <Modal
+          isOpen={inValidCredentials}
+          onClose={() => setInValidCredentials(false)}
+        >
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-4">Invalid credentials!</h2>
+            <button
+              onClick={() => setInValidCredentials(false)}
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+      {userNotfound && (
+        <Modal
+          isOpen={userNotfound}
+          onClose={() => setUserNotfound(false)}
+        >
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-4">Admin not found!</h2>
+            <button
+              onClick={() => setUserNotfound(false)}
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-4">Are you sure?</h2>
+            <button
+              onClick={() => {
+                axios
+                  .post(
+                    `https://learndukeserver.vercel.app/deleteJob/${selectedJob._id}`
+                  )
+                  .then((response) => {
+                    console.log(response.data);
+                    setJobs((prevJobs) =>
+                      prevJobs.filter((job) => job._id !== selectedJob._id)
+                    );
+                    setIsModalOpen(false);
+                  })
+                  .catch((error) => {
+                    console.error("Error deleting job:", error);
+                  });
+              }}
+              className="bg-red-500 text-white py-2 px-4 rounded mr-2"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </Modal>
       )}
     </>
   );

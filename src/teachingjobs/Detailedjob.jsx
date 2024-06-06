@@ -144,6 +144,17 @@ export default function Detailedjob() {
                 }}
               >
                 <div className="text-xl font-bold text-gray-700 mb-2">{job.title}</div>
+                
+                <div className="flex space-x-5">
+                <div className="flex items-center mb-1 text-gray-600">
+                  <FaMapMarkerAlt className="mr-2 text-gray-500" />
+                  {job.location}
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <FaBriefcase className="mr-2 text-gray-500" />
+                  {job.jobType}
+                </div>
+                </div>
                 <div className="flex flex-wrap mb-2">
                   {job.tags.map((tag, idx) => (
                     <span
@@ -153,14 +164,6 @@ export default function Detailedjob() {
                       <FaTag className="mr-1" /> {tag}
                     </span>
                   ))}
-                </div>
-                <div className="flex items-center mb-1 text-gray-600">
-                  <FaMapMarkerAlt className="mr-2 text-gray-500" />
-                  {job.location}
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <FaBriefcase className="mr-2 text-gray-500" />
-                  {job.jobType}
                 </div>
               </div>
             ))}
@@ -182,10 +185,7 @@ export default function Detailedjob() {
         <div className="text-lg font-semibold text-gray-700 m-3 text-center">{user}</div>
         <div className="text-2xl font-semibold text-gray-700 mb-3 text-center">{job.title}</div>
         <div className="w-full flex flex-wrap justify-center mb-3 space-x-8">
-          <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
-            <FaMoneyBillWave className="mr-2 text-gray-500" />
-            {job.minAmountPerHour}-{job.maxAmountPerHour}/Month
-          </div>
+          
           <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
             <FaBriefcase className="mr-2 text-gray-500" />
             {job.jobType}
@@ -193,6 +193,10 @@ export default function Detailedjob() {
           <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-3/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
             <FaMapMarkerAlt className="mr-2 text-gray-500" />
             {job.location}
+          </div>
+          <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
+            <FaMoneyBillWave className="mr-2 text-gray-500" />
+            {job.minAmountPerHour}-{job.maxAmountPerHour}/Month
           </div>
         </div>
         <div className="mb-3">

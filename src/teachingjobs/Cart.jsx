@@ -11,6 +11,7 @@ export default function Cart() {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             const userdata = JSON.parse(storedUser);

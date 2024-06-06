@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
 import axios from "axios";
 import image from "../assets/learnDuke.png";
 
 export default function Subscription() {
+  const [userData, setUserData] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
   const plans = [
     {
       name: "Basic",
       price: 99, // in INR
       benefits: ["Call to HR directly", "100 days access limit"],
-      days: 100
+      days: 100,
     },
     {
       name: "Advance",
@@ -21,7 +25,7 @@ export default function Subscription() {
         "Call to HR",
         "1-year access period",
       ],
-      days: 365
+      days: 365,
     },
     {
       name: "Premium",
@@ -35,7 +39,7 @@ export default function Subscription() {
         "100% placement with our side",
         "Upskill program for 6 months",
       ],
-      days: 180
+      days: 180,
     },
     {
       name: "Teacher Pro",
@@ -47,11 +51,24 @@ export default function Subscription() {
         "Online tuition connect",
         "24*7 support",
       ],
-      days: 100
+      days: 100,
     },
   ];
 
   const user = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    if (user) {
+      axios.get(`https://learndukeserver.vercel.app/getUser/${user.email}`).then((response) => {
+        setUserData(response.data);
+      });
+    }
+  }, [user]);
+
+  const openModal = (plan) => {
+    setSelectedPlan(plan);
+    setShowModal(true);
+  };
 
   const checkoutHandler = async (plan) => {
     if (!user) {
@@ -60,7 +77,7 @@ export default function Subscription() {
 
     try {
       const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
-        amount: plan.price, // converting to paisa
+        amount: plan.price, // amount in paisa
       });
 
       const options = {
@@ -118,14 +135,16 @@ export default function Subscription() {
     }
   };
 
-  return (
+  return user ? (
     <div className="flex justify-center py-10 bg-white text-black">
       <div className="w-full md:w-11/12 lg:w-9/12 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`w-full p-6 border border-black rounded-lg shadow-lg bg-white ${index > 1 ? 'md:h-fit' : ''}`}
+              className={`w-full p-6 border border-black rounded-lg shadow-lg bg-white ${
+                index > 1 ? "md:h-fit" : ""
+              }`}
             >
               <div className="flex justify-between items-center mb-4">
                 <div className="text-xl font-semibold">{plan.name}</div>
@@ -143,7 +162,7 @@ export default function Subscription() {
                 <div>
                   <button
                     className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
-                    onClick={() => checkoutHandler(plan)}
+                    onClick={() => openModal(plan)}
                   >
                     Pay
                   </button>
@@ -153,6 +172,48 @@ export default function Subscription() {
           ))}
         </div>
       </div>
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+        <div className="bg-white p-6 rounded shadow-lg relative w-full max-w-md">
+          <button
+            className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+            onClick={() => setShowModal(false)}
+          >
+            <span className="text-2xl">&times;</span>
+          </button>
+          <h2 className="text-xl font-semibold mb-4">Your Subscriptions</h2>
+          {userData?.plans.includes(selectedPlan.name) ? (
+            <p>You are already subscribed to the {selectedPlan.name} plan.</p>
+          ) : (
+            <div>
+              <h3 className="text-lg font-semibold">{selectedPlan.name}</h3>
+              <p>Price: ₹{selectedPlan.price}</p>
+              <ul className="list-disc list-inside mb-4">
+                {selectedPlan.benefits.map((benefit, index) => (
+                  <li key={index}>{benefit}</li>
+                ))}
+              </ul>
+              <div className="flex justify-end">
+                <button
+                  className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                  onClick={() => {
+                    checkoutHandler(selectedPlan);
+                    setShowModal(false);
+                  }}
+                >
+                  Pay
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      )}
+    </div>
+  ) : (
+    <div className="flex items-center justify-center h-screen text-2xl font-semibold text-gray-500">
+      Please login to view subscription plans
     </div>
   );
 }

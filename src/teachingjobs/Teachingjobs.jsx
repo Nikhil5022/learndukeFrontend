@@ -207,12 +207,7 @@ export default function Teachingjobs() {
               className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                if(userData.isPremium){
-                  navigate("/teachingjobs");
-                }
-                else{
-                  navigate("/subscription");
-                }
+                navigate("/teachingjobs");
               }}
             >
               Find jobs now
@@ -316,7 +311,9 @@ export default function Teachingjobs() {
               <button
                 className="w-full text-white bg-blue-500 py-4 mt-2 hover:scale-105"
                 data-aos="slide-left"
-                onClick={checkoutHandler}
+                onClick={()=>{
+                  navigate("/subscription");
+                }}
               >
                 Buy it now
               </button>
@@ -351,12 +348,7 @@ export default function Teachingjobs() {
               className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                if(userData.isPremium){
-                  navigate("/teachingjobs");
-                }
-                else{
-                  navigate("/subscription");
-                }
+                navigate("/teachingjobs");
               }}
             >
               Find jobs now

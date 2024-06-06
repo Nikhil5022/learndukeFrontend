@@ -20,11 +20,26 @@ const filterOptions = [
 ];
 const domainOptions = [
   "Domain",
-  "Math",
-  "Science",
-  "English",
-  "Programming",
-  "Music",
+  "Home tution",
+  "Online tution",
+  "Software Development",
+  "Data Science",
+  "Machine Learning",
+  "Artificial Intelligence",
+  "Web Development",
+  "Mobile Development",
+  "Game Development",
+  "UI/UX Design",
+  "Digital Marketing",
+  "Content Writing",
+  "Video Editing",
+  "Graphic Design",
+  "3D Modelling",
+  "Animation",
+  "Photography",
+  "Music Production",
+  "Interior Design",
+
 ];
 
 export default function Body() {
@@ -225,7 +240,7 @@ function FilterOptions({
       <select
         value={selectedDomain}
         onChange={onDomainChange}
-        className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm"
+        className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28"
       >
         {domainOptions.map((option, index) => (
           <option key={index} value={option}>

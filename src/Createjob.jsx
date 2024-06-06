@@ -9,6 +9,7 @@ export default function CreateJob() {
 
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const data = localStorage.getItem("user");
     if (data) {
       const user = JSON.parse(data);
@@ -241,12 +242,7 @@ export default function CreateJob() {
     }
   };
 
-  const countryCodes = [
-    { code: "+1", name: "United States" },
-    { code: "+91", name: "India" },
-    { code: "+44", name: "United Kingdom" },
-    // Add more country codes as needed
-  ];
+  
 
   const renderStep = () => {
     switch (step) {
@@ -551,19 +547,7 @@ export default function CreateJob() {
               Phone Number
             </label>
             <div className="flex">
-              <select
-                id="countryCode"
-                name="countryCode"
-                value={formData.countryCode}
-                onChange={handleChange}
-                className="border rounded-l py-2 px-3 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
-              >
-                {countryCodes.map((code) => (
-                  <option key={code.code} value={code.code}>
-                    {code.name} ({code.code})
-                  </option>
-                ))}
-              </select>
+              
               <input
                 type="number"
                 id="phoneNumber"
@@ -603,19 +587,7 @@ export default function CreateJob() {
                 WhatsApp Number
               </label>
               <div className="flex">
-                <select
-                  id="countryCode"
-                  name="countryCode"
-                  value={formData.countryCode}
-                  onChange={handleChange}
-                  className="border rounded-l py-2 px-3 bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
-                >
-                  {countryCodes.map((code) => (
-                    <option key={code.code} value={code.code}>
-                      {code.name} ({code.code})
-                    </option>
-                  ))}
-                </select>
+               
                 <input
                   type="tel"
                   id="whatsappNumber"

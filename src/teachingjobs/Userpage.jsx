@@ -12,6 +12,7 @@ export default function UserPage() {
   const [isEditEnabled, setIsEditEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   useEffect(() => {
     if (user && user.email) {
@@ -345,67 +346,94 @@ export default function UserPage() {
           </select>
         </div>
         <div className="w-full">
-  {filteredJobs.length === 0 ? (
-    <p className="text-lg">No jobs available</p>
-  ) : (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      {filteredJobs.map((job) => (
-        <div
-          key={job._id}
-          className="rounded-xl border-2 border-slate-300 p-5"
-          style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
-        >
-          <div>
-            <div className="flex flex-col mb-4">
-              <div className="flex justify-between items-center">
-                <div className="ml-2 text-lg font-semibold">{job.title}</div>
-                {job.isReviewed && (
-                  <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
-                    Accepted
+          {filteredJobs.length === 0 ? (
+            <p className="text-lg">No jobs available</p>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {filteredJobs.map((job) => (
+                <div
+                  key={job._id}
+                  className="rounded-xl border-2 border-slate-300 p-5"
+                  style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                >
+                  <div>
+                    <div className="flex flex-col mb-4">
+                      <div className="flex justify-between items-center">
+                        <div className="ml-2 text-lg font-semibold">
+                          {job.title}
+                        </div>
+                        {job.isReviewed && (
+                          <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                            Accepted
+                          </div>
+                        )}
+                        {job.isRejected && (
+                          <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                            Rejected
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-3 text-gray-700">
+                        {job.description.slice(0, 100) + "...."}
+                      </div>
+                      <div className="flex flex-wrap mt-3 space-x-2">
+                        <div className="flex items-center mt-3">
+                          <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                          <span>
+                            &#8377;{job.minAmountPerHour}-&#8377;
+                            {job.maxAmountPerHour}/Month
+                          </span>
+                        </div>
+                        <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                          {job.jobType}
+                        </div>
+                        {job.location && (
+                          <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                            {job.location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                )}
-                {job.isRejected && (
-                  <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
-                    Rejected
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setConfirmModal(job._id)}
+                      className="bg-red-500 text-white px-4 py-3 rounded-3xl text-center"
+                    >
+                      Delete
+                    </button>
                   </div>
-                )}
-              </div>
-              <div className="mt-3 text-gray-700">
-                {job.description.slice(0, 100) + "...."}
-              </div>
-              <div className="flex flex-wrap mt-3 space-x-2">
-                <div className="flex items-center mt-3">
-                  <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
-                  <span>
-                    &#8377;{job.minAmountPerHour}-&#8377;{job.maxAmountPerHour}/Month
-                  </span>
                 </div>
-                <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
-                  {job.jobType}
-                </div>
-                {job.location && (
-                  <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
-                    {job.location}
-                  </div>
-                )}
-              </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      {confirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+              onClick={() => setConfirmModal(false)}
+            >
+              <span className="text-2xl">&times;</span>
+            </button>
+            <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete this job?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-200"
+                onClick={() => {
+                  setConfirmModal(false);
+                  handleDelete(jobs.find((job) => job._id === confirmModal)._id);
+                }}
+              >
+                Delete
+              </button>
             </div>
           </div>
-          <div className="flex justify-end">
-            <button
-              onClick={() => handleDelete(job._id)}
-              className="bg-red-500 text-white px-4 py-3 rounded-3xl text-center"
-            >
-              Delete
-            </button>
-          </div>
         </div>
-      ))}
-    </div>
-  )}
-</div>
-
-      </div>
+      )}
     </div>
   );
 }
