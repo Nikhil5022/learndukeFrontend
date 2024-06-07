@@ -107,13 +107,15 @@ export default function Detailedjob() {
   const handleGoogleLogin = () => {
     window.location.href = "https://learndukeserver.vercel.app/auth/google";
   };
-  
+
+  const splitTextIntoBullets = (text) => {
+    return text.split('.').filter(sentence => sentence.trim().length > 0);
+  };
 
   if(isLoadingJobs) {
     return <div className="h-screen items-center flex justify-center">
       {/* loading circle with animatin */}
       <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      
     </div>;
   }
 
@@ -126,7 +128,6 @@ export default function Detailedjob() {
       <div className="w-full md:w-1/3 mb-5 md:mb-0 animate-fade-in-left">
         <div className="mt-5">
           {isLoading && <div className="text-lg text-gray-600">Loading...</div>
-          
           }
           {similarJobs.length === 0 && !isLoading &&(
             <div className="text-lg text-gray-600">No similar jobs found</div>
@@ -144,7 +145,6 @@ export default function Detailedjob() {
                 }}
               >
                 <div className="text-xl font-bold text-gray-700 mb-2">{job.title}</div>
-                
                 <div className="flex space-x-5">
                 <div className="flex items-center mb-1 text-gray-600">
                   <FaMapMarkerAlt className="mr-2 text-gray-500" />
@@ -185,7 +185,6 @@ export default function Detailedjob() {
         <div className="text-lg font-semibold text-gray-700 m-3 text-center">{user}</div>
         <div className="text-2xl font-semibold text-gray-700 mb-3 text-center">{job.title}</div>
         <div className="w-full flex flex-wrap justify-center mb-3 space-x-8">
-          
           <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
             <FaBriefcase className="mr-2 text-gray-500" />
             {job.jobType}
@@ -203,15 +202,27 @@ export default function Detailedjob() {
           <div className="text-lg font-semibold mb-2 text-gray-700">About The Job</div>
           <div className="mb-3">
             <div className="font-semibold">Description:</div>
-            <div className="m-3">{job.description}</div>
+            <ul className="list-disc m-3">
+              {splitTextIntoBullets(job.description).map((desc, index) => (
+                <li key={index}>{desc.trim()}</li>
+              ))}
+            </ul>
           </div>
           <div className="mb-3">
             <div className="font-semibold">Responsibilities</div>
-            <div className="m-3">{job.responsibilities}</div>
+            <ul className="list-disc m-3">
+              {splitTextIntoBullets(job.responsibilities).map((resp, index) => (
+                <li key={index}>{resp.trim()}</li>
+              ))}
+            </ul>
           </div>
           <div className="mb-3">
             <div className="font-semibold">Requirements</div>
-            <div className="m-3">{job.requirements}</div>
+            <ul className="list-disc m-3">
+              {splitTextIntoBullets(job.requirements).map((req, index) => (
+                <li key={index}>{req.trim()}</li>
+              ))}
+            </ul>
           </div>
           <div className="mb-3">
             <div className="font-semibold">Tags</div>
@@ -237,7 +248,6 @@ export default function Detailedjob() {
                     setIsModal(true);
                   }
                 } else {
-
                   setIsLoginModal(true);}
               }}
             >

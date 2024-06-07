@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaWallet, FaPhone, FaWhatsapp } from "react-icons/fa";
-import whatsapp from "./assets/whatsapp2.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
@@ -35,8 +34,9 @@ export default function Tutorial({
     const isLogin = JSON.parse(localStorage.getItem("user"))
       ? setIsLogin(true)
       : setIsLogin(false);
+      const userData=JSON.parse(localStorage.getItem("user"))
     axios
-      .get(`https://learndukeserver.vercel.app/getUser/${email}`)
+      .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
       .then((userResponse) => {
         setUser(userResponse.data);
         setIsPremium(userResponse.data.isPremium);
@@ -153,7 +153,8 @@ export default function Tutorial({
           </div>
         </button>
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="flex flex-col justify-center items-center">
         <p className="font-semibold text-xl">{modalMessage}</p>
         {isLogin && !isPremium && (
@@ -170,7 +171,7 @@ export default function Tutorial({
           </button>
         )}
         </div>
-      </Modal>
+      </Modal>)}
       {loginModal && (
         <Modal isOpen={loginModal} onClose={closeModal}>
           <div className="flex flex-col justify-center items-center">

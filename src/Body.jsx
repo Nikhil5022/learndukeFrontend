@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useRef, useEffect } from "react";
 import Tutorial from "./Tutorial";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
@@ -49,9 +49,10 @@ const domainOptions = [
   "Biotechnology",
   "Food and Beverage",
   "Environmental Services",
-  "Sports and Recreation"
+  "Sports and Recreation",
+  "Date entry",
+  "Content writing"
 ];
-
 
 export default function Body() {
   const navigate = useNavigate();
@@ -246,30 +247,111 @@ function FilterOptions({
   selectedDomain,
   onDomainChange,
 }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsToShow, setItemsToShow] = useState(3); // Default number of items to show in the carousel
+  const containerRef = useRef(null);
+  const optionRef = useRef(null);
+
+  const updateItemsToShow = () => {
+    if (containerRef.current && optionRef.current) {
+      const containerWidth = containerRef.current.offsetWidth;
+      const optionWidth = optionRef.current.offsetWidth + 50; // Include margin and padding
+      const newItemsToShow = Math.floor(containerWidth / optionWidth);
+      setItemsToShow(newItemsToShow > 0 ? newItemsToShow : 1);
+      setCurrentIndex(0); // Reset the index to start when resizing
+    }
+  };
+
+  useEffect(() => {
+    updateItemsToShow();
+    window.addEventListener("resize", updateItemsToShow);
+
+    return () => {
+      window.removeEventListener("resize", updateItemsToShow);
+    };
+  }, []);
+
+  const handleNext = () => {
+    const newIndex = currentIndex + itemsToShow;
+    setCurrentIndex(newIndex >= filterOptions.length ? filterOptions.length - itemsToShow : newIndex);
+  };
+
+  const handlePrev = () => {
+    const newIndex = currentIndex - itemsToShow;
+    setCurrentIndex(newIndex < 0 ? 0 : newIndex);
+  };
+
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2">
-      <select
-        value={selectedDomain}
-        onChange={onDomainChange}
-        className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28"
-      >
-        {domainOptions.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      {filterOptions.map((option, index) => (
-        <button
-          key={index}
-          className={`px-4 py-1 bg-gray-200 rounded-2xl font-semibold text-sm ${
-            selectedFilter === option ? "bg-gray-400 text-black" : ""
-          }`}
-          onClick={() => onFilterChange(option)}
+    <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col-reverse lg:flex-row  w-full lg:hidden">
+        <div className="flex items-center overflow-hidden w-full mt-3" ref={containerRef}>
+          <button
+            className="p-2 transition-transform transform hover:scale-110"
+            onClick={handlePrev}
+            disabled={currentIndex === 0}
+          >
+            <FaArrowLeft />
+          </button>
+          <div className="flex gap-2 overflow-hidden transition-all duration-500 ease-in-out">
+            {filterOptions.slice(currentIndex, currentIndex + itemsToShow).map((option, index) => (
+              <button
+                key={index}
+                ref={index === 0 ? optionRef : null} // Reference the first visible option
+                className={`px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm ${
+                  selectedFilter === option ? "bg-gray-400 text-black" : ""
+                }`}
+                onClick={() => onFilterChange(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <button
+            className="p-2 transition-transform transform hover:scale-110"
+            onClick={handleNext}
+            disabled={currentIndex >= filterOptions.length - itemsToShow}
+          >
+            <FaArrowRight />
+          </button>
+        </div>
+        <select
+          value={selectedDomain}
+          onChange={onDomainChange}
+          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28 ml-4"
         >
-          {option}
-        </button>
-      ))}
+          {domainOptions.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="hidden lg:flex justify-between w-full items-center mt-4">
+        <div className="flex gap-2">
+          {filterOptions.map((option, index) => (
+            <button
+              key={index}
+              className={`px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm ${
+                selectedFilter === option ? "bg-gray-400 text-black" : ""
+              }`}
+              onClick={() => onFilterChange(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <select
+          value={selectedDomain}
+          onChange={onDomainChange}
+          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28 ml-4"
+        >
+          {domainOptions.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
