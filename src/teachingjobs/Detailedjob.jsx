@@ -239,7 +239,7 @@ export default function Detailedjob() {
           </div>
           <div className="flex flex-wrap justify-center space-x-3 mt-3">
             <button
-              className="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+              className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
               onClick={() => {
                 if (isLogin) {
                   if (isPremium) {
@@ -255,7 +255,7 @@ export default function Detailedjob() {
               Call
             </button>
             <button
-              className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+              className="bg-white border border-green-500 text-green-500  hover:bg-green-500 hover:text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
               onClick={() => {
                 if (isLogin) {
                   if (isPremium) {
