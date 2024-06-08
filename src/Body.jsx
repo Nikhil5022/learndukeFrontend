@@ -6,6 +6,8 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import crying from "./assets/crying.gif";
 import "./App.css";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+
 
 // Define the filter options
 const filterOptions = [
@@ -21,6 +23,8 @@ const filterOptions = [
 ];
 const domainOptions = [
   "Information Technology (IT)",
+  "Engineering",
+  "Technician",
   "Finance",
   "Healthcare",
   "Education",
@@ -52,6 +56,11 @@ const domainOptions = [
   "Sports and Recreation",
   "Data entry",
   "Content writing",
+  "Security Guard",
+  "Driver",
+  "Plumber",
+  "Domestic",
+  "Others",
 ];
 
 export default function Body() {
@@ -301,6 +310,7 @@ function FilterOptions({
             onClick={() => setOpenModal(true)}
           >
             Select Domain
+            <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
           </button>
         </div>
         {/* Optional: Add a fade effect to indicate scrollability */}
@@ -311,7 +321,7 @@ function FilterOptions({
           {filterOptions.map((option, index) => (
             <button
               key={index}
-              className={`px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm ${
+              className={`px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm ${
                 selectedFilter === option ? "bg-gray-400 text-black" : ""
               }`}
               onClick={() => onFilterChange(option)}
@@ -321,10 +331,11 @@ function FilterOptions({
           ))}
         </div>
         <button
-          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm"
+          className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
           onClick={() => setOpenModal(true)}
         >
           Select Domain
+          <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
         </button>
       </div>
       {openModal && (

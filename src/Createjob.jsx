@@ -752,11 +752,40 @@ export default function CreateJob() {
                 }`}
               >
                 <option value="">Select Education</option>
-                <option value="High School">High School</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Bachelor's Degree">Bachelor's Degree</option>
-                <option value="Master's Degree">Master's Degree</option>
-                <option value="Doctorate">Doctorate</option>
+                <option value="10 pass">10 pass</option>
+                <option value="12 pass">12 pass</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Deploma">Deploma</option>
+                <option value="ITI">ITI</option>
+                <option value="BTech">BTech</option>
+                <option value="MTech">MTech</option>
+                <option value="Phd">Phd</option>
+                {/* medical */}
+                <option value="Paramedical">Paramedical</option>
+                <option value="Nursing">Nursing</option>
+                <option value="Vocational Training">Vocational Training</option>
+                <option value="Certification Programs">
+                  Certification Programs
+                </option>
+                <option
+                  value="Associate Degree
+"
+                >
+                  Associate Degree
+                </option>
+                <option
+                  value="Postgraduate Diploma
+"
+                >
+                  Postgraduate Diploma
+                </option>
+                <option value="Chartered Accountancy">
+                  Chartered Accountancy
+                </option>
+                <option value="Company Secretary">Company Secretary</option>
+                <option value="Military Training">Military Training</option>
+                <option value="Aviation Training">Aviation Training</option>
+                <option value="Online Courses">Online Courses</option>
               </select>
 
               {formErrors.education && submitted && (

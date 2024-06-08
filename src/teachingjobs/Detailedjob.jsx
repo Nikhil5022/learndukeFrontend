@@ -318,9 +318,9 @@ export default function Detailedjob() {
               ))}
             </div>
 
-            <div className="flex flex-wrap justify-center space-x-3 mt-3">
+            <div className="flex flex-col md:flex-row  md:space-x-3 mt-3">
               <button
-                className="bg-blue-800 hover:bg-blue-900 text-white px-5 py-2 rounded-lg flex items-center  m-2"
+                className="bg-blue-800 hover:bg-blue-900 text-white px-6 py-3 rounded-lg flex items-center  m-2"
                 onClick={() => {
                   if (isLogin) {
                     if (isPremium) {
@@ -334,10 +334,10 @@ export default function Detailedjob() {
                 }}
               >
                 <FaPhoneAlt className="mr-2" />
-                Call
+                Call Employeer
               </button>
               <button
-                className="bg-blue-800 hover:bg-blue-900 text-white px-5 py-2 rounded-lg flex items-center m-2"
+                className="bg-blue-800 hover:bg-blue-900 text-white px-6 py-3 rounded-lg flex items-center m-2"
                 onClick={() => {
                   if (isLogin) {
                     if (isPremium) {
@@ -350,8 +350,8 @@ export default function Detailedjob() {
                   }
                 }}
               >
-                <FaWhatsapp className="mr-2" />
-                WhatsApp
+                <FaWhatsapp className="mr-2 text-xl" />
+                WhatsApp Employeer
               </button>
             </div>
           </div>

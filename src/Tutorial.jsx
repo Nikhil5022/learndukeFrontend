@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaWallet, FaPhone, FaWhatsapp } from "react-icons/fa";
+import { FaWallet, FaPhone, FaWhatsapp,FaMapMarkerAlt,FaBriefcase } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
@@ -110,23 +110,25 @@ export default function Tutorial({
         </div>
         <div className="flex flex-wrap mt-4 space-x-3 md:space-x-8">
           <div
-            className={`border-2 border-${borderColor} p-2 rounded-3xl mt-3 flex items-center`}
+            className={`border-2 border-${borderColor}  rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
           >
-            <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+            <FaWallet className="w-6 h-6 mr-2 text-gray-400" />
             <span>
               &#8377;{minAmountPerHour}-&#8377;{maxAmountPerHour}/Month
             </span>
           </div>
           <div
-            className={`border-2 border-${borderColor} items-center mt-3 pl-1 pr-1 rounded-3xl flex text-center`}
+            className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold items-center mt-3  rounded-lg flex text-center`}
           >
+            <FaBriefcase className="w-4 h-4 mr-2 text-gray-400" />
             {jobType}
           </div>
           <div className="">
             {jobType !== "Remote" && (
               <div
-                className={`border-2 border-${borderColor} mt-3 p-2 rounded-3xl flex items-center flex-wrap`}
+                className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold mt-3  rounded-lg flex items-center flex-wrap`}
               >
+                <FaMapMarkerAlt className="w-4 h-4 mr-2 text-gray-400" />
                 {location}
               </div>
             )}
@@ -136,7 +138,7 @@ export default function Tutorial({
       <div className="flex mt-4 space-x-3 md:space-x-8">
         <button
           onClick={handleCallNow}
-          className="bg-orange-400 text-white px-4 py-3 rounded-3xl text-center"
+          className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
         >
           <div className="flex justify-center items-center">
             <FaPhone style={{ transform: "rotateY(180deg)" }} />
@@ -145,7 +147,7 @@ export default function Tutorial({
         </button>
         <button
           onClick={handleWhatsApp}
-          className="bg-green-400 text-white px-4 py-3 rounded-3xl text-center"
+          className="bg-green-400 text-white px-2 py-1 rounded-3xl text-center"
         >
           <div className="flex justify-center items-center">
             <FaWhatsapp style={{ transform: "rotateY(180deg)" }} />
