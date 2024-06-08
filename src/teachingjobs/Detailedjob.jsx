@@ -6,7 +6,7 @@ import {
   FaBriefcase,
   FaMapMarkerAlt,
   FaShareAlt,
-  FaTag
+  FaTag,
 } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ import "../App.css";
 import Modal from "../Modal";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-
 
 export default function Detailedjob() {
   const navigate = useNavigate();
@@ -24,8 +23,8 @@ export default function Detailedjob() {
   const [user, setUser] = useState(null);
   const [similarJobs, setSimilarJobs] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); 
-  const[isLoadingJobs, setIsLoadingJobs] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [setModal, setIsModal] = useState(false);
   const [setLoginModal, setIsLoginModal] = useState(false);
 
@@ -33,33 +32,36 @@ export default function Detailedjob() {
     // when ever this page renders i need to scroll up
     window.scrollTo(0, 0);
     const jobId = window.location.pathname.split("/").pop();
-    axios.get(`https://learndukeserver.vercel.app/getJobById/${jobId}`).then((response) => {
-      axios
-        .get(`https://learndukeserver.vercel.app/getUser/${response.data.email}`)
-        .then((userResponse) => {
-          setPhoto(userResponse.data.profilephoto.url);
-          setUser(userResponse.data.name);
-          if(userResponse.data) {
-            setIsLoadingJobs(false);
-          }
-        });
-      setJob(response.data);
-    });
     axios
-    .get(`https://learndukeserver.vercel.app/getSimilarJobs/${jobId}`)
-    .then((response) => {
-      setSimilarJobs(response.data);
-      // Check if there are similar jobs
-      if (response.data.length === 0 || response.data.length>0) {
-        setIsLoading(false); // Stop loading if there are no similar jobs
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching similar jobs:", error);
-      // Handle error and stop loading
-      setIsLoading(false);
-    });
-  
+      .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
+      .then((response) => {
+        axios
+          .get(
+            `https://learndukeserver.vercel.app/getUser/${response.data.email}`
+          )
+          .then((userResponse) => {
+            setPhoto(userResponse.data.profilephoto.url);
+            setUser(userResponse.data.name);
+            if (userResponse.data) {
+              setIsLoadingJobs(false);
+            }
+          });
+        setJob(response.data);
+      });
+    axios
+      .get(`https://learndukeserver.vercel.app/getSimilarJobs/${jobId}`)
+      .then((response) => {
+        setSimilarJobs(response.data);
+        // Check if there are similar jobs
+        if (response.data.length === 0 || response.data.length > 0) {
+          setIsLoading(false); // Stop loading if there are no similar jobs
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching similar jobs:", error);
+        // Handle error and stop loading
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -77,6 +79,10 @@ export default function Detailedjob() {
         });
     }
   }, [isLogin, user]);
+
+  const formatNumber = (num) => {
+    return num.toLocaleString();
+  };
 
   const handleShare = () => {
     if (navigator.share && isLogin) {
@@ -109,14 +115,16 @@ export default function Detailedjob() {
   };
 
   const splitTextIntoBullets = (text) => {
-    return text.split('.').filter(sentence => sentence.trim().length > 0);
+    return text.split(".").filter((sentence) => sentence.trim().length > 0);
   };
 
-  if(isLoadingJobs) {
-    return <div className="h-screen items-center flex justify-center">
-      {/* loading circle with animatin */}
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-    </div>;
+  if (isLoadingJobs) {
+    return (
+      <div className="h-screen items-center flex justify-center">
+        {/* loading circle with animatin */}
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   if (!job || isLoadingJobs) {
@@ -124,36 +132,39 @@ export default function Detailedjob() {
   }
 
   return (
-    <div className="flex flex-col-reverse w-full p-5 justify-start text-gray-800 space-y-5 md:flex-row">
-      <div className="w-full md:w-1/3 mb-5 md:mb-0 animate-fade-in-left">
+    <div className="flex flex-col-reverse w-full p-5 justify-start text-gray-800  md:flex-row">
+      <div className="w-full md:w-1/2 mb-5 md:mb-0 animate-fade-in-left">
         <div className="mt-5">
-          {isLoading && <div className="text-lg text-gray-600">Loading...</div>
-          }
-          {similarJobs.length === 0 && !isLoading &&(
+          {isLoading && <div className="text-lg text-gray-600">Loading...</div>}
+          {similarJobs.length === 0 && !isLoading && (
             <div className="text-lg text-gray-600">No similar jobs found</div>
           )}
           {similarJobs.length > 0 && !isLoading && (
-            <div className="text-lg text-gray-600">Similar Jobs</div>
+            <div className="text-lg text-gray-600 font-semibold mb-5 md:hidden">
+              Similar Jobs
+            </div>
           )}
           <div className="grid grid-cols-1 gap-4">
             {similarJobs.map((job, index) => (
               <div
                 key={index}
-                className="border-2 border-gray-400 rounded-lg shadow-md p-4 bg-white w-full hover:bg-gray-50 transition-colors cursor-pointer transform hover:scale-105 duration-1000 "
+                className=" rounded-lg shadow-md p-4 bg-gray-50 w-full hover:bg-gray-100 transition-colors cursor-pointer transform  transition-300 "
                 onClick={() => {
                   window.location.href = `/detailedjob/${job._id}`;
                 }}
               >
-                <div className="text-xl font-bold text-gray-700 mb-2">{job.title}</div>
+                <div className="text-xl font-bold text-gray-700 mb-2">
+                  {job.title}
+                </div>
                 <div className="flex space-x-5">
-                <div className="flex items-center mb-1 text-gray-600">
-                  <FaMapMarkerAlt className="mr-2 text-gray-500" />
-                  {job.location}
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <FaBriefcase className="mr-2 text-gray-500" />
-                  {job.jobType}
-                </div>
+                  <div className="flex items-center mb-1 text-gray-600">
+                    <FaMapMarkerAlt className="mr-2 text-gray-500" />
+                    {job.location}
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <FaBriefcase className="mr-2 text-gray-500" />
+                    {job.jobType}
+                  </div>
                 </div>
                 <div className="flex flex-wrap mb-2">
                   {job.tags.map((tag, idx) => (
@@ -170,127 +181,204 @@ export default function Detailedjob() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col border-2 border-gray-400 rounded-lg p-5 bg-white shadow-md mt-12 animate-fade-in-right md:mt-0 md:ml-5 relative">
-        <div className="absolute top-4 right-4">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full flex items-center transform hover:scale-105 duration-300"
-            onClick={handleShare}
-          >
-            <FaShareAlt />
-          </button>
-        </div>
-        <div className="p-3 rounded-lg m-3 flex justify-center">
-          <img src={photo} alt="" className="w-24 h-24 shadow-lg rounded-full" />
-        </div>
-        <div className="text-lg font-semibold text-gray-700 m-3 text-center">{user}</div>
-        <div className="text-2xl font-semibold text-gray-700 mb-3 text-center">{job.title}</div>
-        <div className="w-full flex flex-wrap justify-center mb-3 space-x-8">
-          <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
-            <FaBriefcase className="mr-2 text-gray-500" />
-            {job.jobType}
+      <div className="w-full md:m-3">
+        <div className="w-full flex flex-col  rounded-lg p-5 bg-gray-50  animate-fade-in-right md:mt-0 md:ml-5 relative">
+          <div className="absolute top-4 right-4">
+            <button
+              className="bg-gray-500 hover:bg-grat-600 text-white p-2 rounded-full flex items-center transform hover:scale-105 duration-300"
+              onClick={handleShare}
+            >
+              <FaShareAlt />
+            </button>
           </div>
-          <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-3/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
-            <FaMapMarkerAlt className="mr-2 text-gray-500" />
-            {job.location}
+
+          <div className="flex items-center p-3 rounded-lg">
+            <img src={photo} alt="" className="w-12 h-12 rounded-full" />
+            <div className="text-lg font-semibold text-gray-800 ml-3">
+              {user}
+            </div>
           </div>
-          <div className="flex items-center border border-gray-400 px-3 py-1 rounded-lg text-sm w-fit md:w-4/12 m-2 lg:m-0 justify-center h-fit lg:h-20">
-            <FaMoneyBillWave className="mr-2 text-gray-500" />
-            {job.minAmountPerHour}-{job.maxAmountPerHour}/Month
+
+          <div className="text-2xl font-semibold text-gray-800 mb-3">
+            {job.title}
           </div>
-        </div>
-        <div className="mb-3">
-          <div className="text-lg font-semibold mb-2 text-gray-700">About The Job</div>
-          <div className="mb-3">
-            <div className="font-semibold">Description:</div>
-            <ul className="list-disc m-3">
-              {splitTextIntoBullets(job.description).map((desc, index) => (
-                <li key={index}>{desc.trim()}</li>
+
+          <div className="mb-5">
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Job Details
+            </div>
+            <hr className="border-t-2 border-gray-200" />
+
+            <div className="w-full p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center font-bold text-xl text-gray-800 mb-2">
+                <FaMoneyBillWave className="mr-2 text-gray-500" />
+                <div>Pay</div>
+              </div>
+              <div className="flex items-center text-gray-700 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
+                <span className="text-gray-600 mr-1">&#8377;</span>
+                {formatNumber(job.minAmountPerHour)}
+                <span className="mx-1">-</span>
+                <span className="text-gray-600 mr-1">&#8377;</span>
+                {formatNumber(job.maxAmountPerHour)}
+              </div>
+            </div>
+
+            <div className="w-full p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center font-bold text-xl text-gray-800 mb-2">
+                <FaBriefcase className="mr-2 text-gray-500" />
+                <div>Job Type</div>
+              </div>
+              <div className="text-gray-700 bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">
+                {job.jobType}
+              </div>
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Location
+            </div>
+            <hr className="border-t-2 border-gray-200" />
+            <div className="w-full p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center text-gray-700">
+                <FaMapMarkerAlt className="mr-2 text-gray-500" />
+                <span className="text-base">{job.location}</span>
+              </div>
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Languages
+            </div>
+            <hr className="border-t-2 border-gray-200 " />
+            <div className="w-full p-4 bg-gray-50 rounded-lg ">
+              {job.languages.map((language, index) => (
+                <div key={index} className="flex items-center text-gray-700">
+                  <span className="text-base">&#8226;</span>
+                  <span className="text-base ml-2">{language}</span>
+                </div>
               ))}
-            </ul>
-          </div>
-          <div className="mb-3">
-            <div className="font-semibold">Responsibilities</div>
-            <ul className="list-disc m-3">
-              {splitTextIntoBullets(job.responsibilities).map((resp, index) => (
-                <li key={index}>{resp.trim()}</li>
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Education
+            </div>
+            <hr className="border-t-2 border-gray-200 " />
+            <div className="w-full p-4 bg-gray-50 rounded-lg ">
+              <div>{job.education}</div>
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Benefits
+            </div>
+            <hr className="border-t-2 border-gray-200" />
+            <div className="w-full p-4 bg-gray-50 rounded-lg mb-4">
+              {job.benifits.map((benefit, index) => (
+                <div key={index} className="flex items-center text-gray-700">
+                  <span className="text-base">&#8226;</span>
+                  <span className="text-base ml-2">{benefit}</span>.
+                </div>
               ))}
-            </ul>
-          </div>
-          <div className="mb-3">
-            <div className="font-semibold">Requirements</div>
-            <ul className="list-disc m-3">
-              {splitTextIntoBullets(job.requirements).map((req, index) => (
-                <li key={index}>{req.trim()}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="mb-3">
-            <div className="font-semibold">Tags</div>
-            <div className="flex flex-wrap m-3">
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Full Job Description
+            </div>
+            <hr className="border-t-2 border-gray-200 mb-4" />
+            <div className="text-gray-700 tracking-wide mb-4">
+              {job.description}
+            </div>
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Responsibilities
+            </div>
+            {splitTextIntoBullets(job.responsibilities).map((bullet, index) => (
+              <div key={index} className="flex items-center text-gray-700 mb-1">
+                <span className="text-base">&#8226;</span>
+                <span className="text-base ml-2">{bullet}</span>.
+              </div>
+            ))}
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">
+              Requirements
+            </div>
+            {splitTextIntoBullets(job.requirements).map((bullet, index) => (
+              <div key={index} className="flex items-center text-gray-700 mb-1">
+                <span className="text-base">&#8226;</span>
+                <span className="text-base ml-2">{bullet}</span>.
+              </div>
+            ))}
+
+            <div className="text-lg font-semibold text-gray-800 mb-2">Tags</div>
+            <div className="flex flex-wrap mb-4">
               {job.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="border border-gray-400 px-2 py-1 rounded-2xl m-1"
+                  className="border border-gray-400 w-fit px-2 py-1 rounded-2xl m-1 text-sm text-gray-600 flex items-center"
                 >
-                  {tag}
+                  <FaTag className="mr-1" /> {tag}
                 </span>
               ))}
             </div>
-          </div>
-          <div className="flex flex-wrap justify-center space-x-3 mt-3">
-            <button
-              className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
-              onClick={() => {
-                if (isLogin) {
-                  if (isPremium) {
-                    window.location.href = `tel:${job.phoneNumber}`;
+
+            <div className="flex flex-wrap justify-center space-x-3 mt-3">
+              <button
+                className="bg-blue-800 hover:bg-blue-900 text-white px-5 py-2 rounded-lg flex items-center  m-2"
+                onClick={() => {
+                  if (isLogin) {
+                    if (isPremium) {
+                      window.location.href = `tel:${job.phoneNumber}`;
+                    } else {
+                      setIsModal(true);
+                    }
                   } else {
-                    setIsModal(true);
+                    setIsLoginModal(true);
                   }
-                } else {
-                  setIsLoginModal(true);}
-              }}
-            >
-              <FaPhoneAlt className="mr-2" />
-              Call
-            </button>
-            <button
-              className="bg-white border border-green-500 text-green-500  hover:bg-green-500 hover:text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
-              onClick={() => {
-                if (isLogin) {
-                  if (isPremium) {
-                    window.location.href = `https://wa.me/${job.whatsappNumber}`;
+                }}
+              >
+                <FaPhoneAlt className="mr-2" />
+                Call
+              </button>
+              <button
+                className="bg-blue-800 hover:bg-blue-900 text-white px-5 py-2 rounded-lg flex items-center m-2"
+                onClick={() => {
+                  if (isLogin) {
+                    if (isPremium) {
+                      window.location.href = `https://wa.me/${job.whatsappNumber}`;
+                    } else {
+                      setIsModal(true);
+                    }
                   } else {
-                    setIsModal(true);
+                    setIsLoginModal(true);
                   }
-                } else {
-                  setIsLoginModal(true);}
-              }}
-            >
-              <FaWhatsapp className="mr-2" />
-              WhatsApp
-            </button>
+                }}
+              >
+                <FaWhatsapp className="mr-2" />
+                WhatsApp
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <Modal isOpen={setModal} onClose={() => setIsModal(false)}>
         <div className="flex flex-col justify-center items-center">
-        <div className="text-lg text-gray-700 mt-3 mb-3">You need to be a premium user to access this feature</div>
-        {/* button to upgrade to premiumuser */}
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
-          onClick={() => {
-            navigate("/subscription");
-          }}
-        >
-          <MdOutlineWorkspacePremium className=" text-xl" />
-          <div>Upgrade to Premium</div>
-        </button>
+          <div className="text-lg text-gray-700 mt-3 mb-3">
+            You need to be a premium user to access this feature
+          </div>
+          {/* button to upgrade to premiumuser */}
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={() => {
+              navigate("/subscription");
+            }}
+          >
+            <MdOutlineWorkspacePremium className=" text-xl" />
+            <div>Upgrade to Premium</div>
+          </button>
         </div>
       </Modal>
       <Modal isOpen={setLoginModal} onClose={() => setIsLoginModal(false)}>
         <div className="flex flex-col justify-center items-center ">
-          <div className="text-lg text-gray-700 mt-3 mb-3">You need to login to access this feature</div>
+          <div className="text-lg text-gray-700 mt-3 mb-3">
+            You need to login to access this feature
+          </div>
           {/* button to login */}
           <button
             className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"

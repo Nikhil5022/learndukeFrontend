@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { MdClose } from "react-icons/md";
 
 export default function CreateJob() {
   const navigator = useNavigate();
@@ -37,11 +38,10 @@ export default function CreateJob() {
     "Biotechnology",
     "Food and Beverage",
     "Environmental Services",
-    "Sports and Recreation"
+    "Sports and Recreation",
   ];
-  
+
   const filterOptions = [
-    
     "Remote",
     "Offline",
     "Part-time",
@@ -50,6 +50,50 @@ export default function CreateJob() {
     "Contract",
     "Hometuition",
     "Onlinetuition",
+  ];
+
+  const languageOptions = [
+    "English",
+    "Spanish",
+    "French",
+    "German",
+    "Chinese",
+    "Japanese",
+    "Russian",
+    "Arabic",
+    "Portuguese",
+    "Italian",
+    "Dutch",
+    "Turkish",
+    "Polish",
+    "Swedish",
+    "Danish",
+    "Norwegian",
+    "Finnish",
+    "Greek",
+    "Hebrew",
+    "Hindi",
+    "Bengali",
+    "Urdu",
+    "Tamil",
+    "Telugu",
+    "Kannada",
+    "Malayalam",
+    "Gujarati",
+    "Punjabi",
+    "Marathi",
+    "Odia",
+    "Assamese",
+    "Nepali",
+    "Sindhi",
+    "Sanskrit",
+    "Persian",
+    "Pashto",
+    "Kurdish",
+    "Balochi",
+    "Sindhi",
+    "Sinhala",
+    "Burmese",
   ];
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -78,6 +122,9 @@ export default function CreateJob() {
       responsibilities: "",
       tags: [],
       domain: "",
+      benifits: [],
+      education: "",
+      languages: [],
     });
     setShowModal(false);
     setStep(1);
@@ -102,6 +149,9 @@ export default function CreateJob() {
     responsibilities: "",
     tags: [],
     domain: "",
+    benifits: [],
+    education: "",
+    languages: [],
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -117,6 +167,9 @@ export default function CreateJob() {
     responsibilities: false,
     tags: false,
     domain: false,
+    benifits: false,
+    education: false,
+    languages: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -174,6 +227,26 @@ export default function CreateJob() {
         }));
       }
     }
+  };
+  const handleAddBenefit = () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      benifits: [...prevFormData.benifits, ""],
+    }));
+  };
+
+  const handleBenefitChange = (index, value) => {
+    const updatedBenefits = formData.benifits.map((benefit, i) =>
+      i === index ? value : benefit
+    );
+    setFormData({ ...formData, benifits: updatedBenefits });
+  };
+
+  const handleLanguageChange = (language) => {
+    const updatedLanguages = formData.languages.includes(language)
+      ? formData.languages.filter((lang) => lang !== language)
+      : [...formData.languages, language];
+    setFormData({ ...formData, languages: updatedLanguages });
   };
 
   const validateStep = () => {
@@ -250,6 +323,26 @@ export default function CreateJob() {
         }
         break;
       case 5:
+        if (!formData.benifits.length) {
+          updatedFormErrors.benifits = true;
+          errors = true;
+        } else {
+          updatedFormErrors.benifits = false;
+        }
+        if (!formData.education) {
+          updatedFormErrors.education = true;
+          errors = true;
+        } else {
+          updatedFormErrors.education = false;
+        }
+        if (!formData.languages.length) {
+          updatedFormErrors.languages = true;
+          errors = true;
+        } else {
+          updatedFormErrors.languages = false;
+        }
+        break;
+      case 6:
         if (!formData.phoneNumber || formData.phoneNumber.length !== 10) {
           updatedFormErrors.phoneNumber =
             "Please enter a valid 10 digit phone number";
@@ -592,6 +685,121 @@ export default function CreateJob() {
       case 5:
         return (
           <>
+            {/* Benefits */}
+            <div className="mb-4">
+              <label
+                htmlFor="benifits"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Benefits
+              </label>
+              <div className="flex flex-wrap">
+                {formData.benifits.map((benefit, index) => (
+                  <div key={index} className="relative mb-2">
+                    <input
+                      type="text"
+                      value={benefit}
+                      onChange={(e) =>
+                        handleBenefitChange(index, e.target.value)
+                      }
+                      className={`border rounded py-2 px-3 pr-10 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200`}
+                      placeholder="Enter a benefit"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedBenefits = formData.benifits.filter(
+                          (_, i) => i !== index
+                        );
+                        setFormData({ ...formData, benifits: updatedBenefits });
+                      }}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                      <MdClose />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddBenefit}
+                className="bg-orange-500 text-white rounded py-2 px-4 mt-2"
+              >
+                Add Benefit
+              </button>
+              {formErrors.benifits && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  Please add at least one benefit
+                </p>
+              )}
+            </div>
+            {/* Education */}
+            <div className="mb-4">
+              <label
+                htmlFor="education"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Education
+              </label>
+              {/* dropdown for education */}
+              <select
+                id="education"
+                name="education"
+                value={formData.education}
+                onChange={handleChange}
+                className={`border rounded py-2 px-3 w-full text-black bg-orange-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 ${
+                  formErrors.education && submitted ? "border-red-500" : ""
+                }`}
+              >
+                <option value="">Select Education</option>
+                <option value="High School">High School</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                <option value="Master's Degree">Master's Degree</option>
+                <option value="Doctorate">Doctorate</option>
+              </select>
+
+              {formErrors.education && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  This field is required
+                </p>
+              )}
+            </div>
+            {/* Languages */}
+            <div className="mb-4">
+              <label
+                htmlFor="languages"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Languages
+              </label>
+              <div className="flex flex-wrap">
+                {languageOptions.map((language, index) => (
+                  <div key={index} className="flex items-center mr-4 mb-2">
+                    <input
+                      type="checkbox"
+                      id={`language-${index}`}
+                      name={`language-${index}`}
+                      value={language}
+                      checked={formData.languages.includes(language)}
+                      onChange={() => handleLanguageChange(language)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`language-${index}`}>{language}</label>
+                  </div>
+                ))}
+              </div>
+              {formErrors.languages && submitted && (
+                <p className="text-red-500 text-xs mt-1">
+                  Please select at least one language
+                </p>
+              )}
+            </div>
+          </>
+        );
+      case 6:
+        return (
+          <>
             {/* Phone Number */}
             <div className="mb-4">
               <label
@@ -706,7 +914,7 @@ export default function CreateJob() {
       <div className="flex justify-center mb-4">
         <div className="flex justify-center items-center w-full md:w-3/4 lg:w-1/2 px-4">
           <div className="flex w-full">
-            {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
                 className={`flex-1 h-2 mx-1 rounded ${
@@ -738,7 +946,7 @@ export default function CreateJob() {
                   Previous
                 </button>
               )}
-              {step < 5 ? (
+              {step < 6 ? (
                 <button
                   type="button"
                   className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"

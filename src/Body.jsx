@@ -1,10 +1,11 @@
-import React, { useState,useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tutorial from "./Tutorial";
-import { FaSearch, FaMapMarkerAlt, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import crying from "./assets/crying.gif";
+import "./App.css";
 
 // Define the filter options
 const filterOptions = [
@@ -19,7 +20,6 @@ const filterOptions = [
   "Onlinetuition",
 ];
 const domainOptions = [
-  "Domain",
   "Information Technology (IT)",
   "Finance",
   "Healthcare",
@@ -50,15 +50,15 @@ const domainOptions = [
   "Food and Beverage",
   "Environmental Services",
   "Sports and Recreation",
-  "Date entry",
-  "Content writing"
+  "Data entry",
+  "Content writing",
 ];
 
 export default function Body() {
   const navigate = useNavigate();
   const [showFullContent, setShowFullContent] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
-  const [selectedDomain, setSelectedDomain] = useState("Domain");
+  const [selectedDomains, setSelectedDomains] = useState([]);
   const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -96,12 +96,12 @@ export default function Body() {
         setLoading(false);
       });
 
-      window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
     handleSearch();
-  }, [searchTitle, searchLocation, selectedFilter, selectedDomain]);
+  }, [searchTitle, searchLocation, selectedFilter, selectedDomains]);
 
   const handleSearch = () => {
     let filteredJobs = [...tutorialJobs];
@@ -128,11 +128,9 @@ export default function Body() {
       console.log("After job type filter:", filteredJobs);
     }
 
-    if (selectedDomain !== "Domain") {
-      filteredJobs = filteredJobs.filter(
-        (job) =>
-          job.domain &&
-          job.domain.toLowerCase() === selectedDomain.toLowerCase()
+    if (selectedDomains.length > 0) {
+      filteredJobs = filteredJobs.filter((job) =>
+        selectedDomains.includes(job.domain)
       );
       console.log("After domain filter:", filteredJobs);
     }
@@ -148,8 +146,8 @@ export default function Body() {
     setSelectedFilter(filter);
   };
 
-  const handleDomainChange = (event) => {
-    setSelectedDomain(event.target.value);
+  const handleDomainChange = (newDomains) => {
+    setSelectedDomains(newDomains);
   };
 
   return (
@@ -157,8 +155,8 @@ export default function Body() {
       <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
         <div className="flex flex-col ">
           <div className="flex flex-col md:flex-row  space-y-3 md:space-x-3 w-full">
-            <div
-              className="w-full flex flex-col md:flex-row border border-gray-300 items-center rounded-lg shadow"
+            <div className="w-full flex flex-col md:flex-row border border-gray-300 items-center rounded-lg "
+             style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
             >
               <div className="w-full md:w-1/2 flex">
                 <FaSearch className="text-gray-500 m-4 text-xl" />
@@ -171,6 +169,7 @@ export default function Body() {
                 />
               </div>
               <div className="border-r-2 h-10 w-0.5 m-1 hidden md:flex"></div>
+              <div className="border-t border-gray-300 w-full h-0.5 md:hidden"></div>
               <div className="w-full md:w-1/2 flex">
                 <FaMapMarkerAlt className="text-gray-500 m-4 text-xl" />
                 <input
@@ -183,17 +182,17 @@ export default function Body() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row mt-5  w-full">
-            <div className="text-2xl font-semibold ">
+          <div className="flex flex-col md:flex-row mt-5 w-full">
+            <div className="text-2xl font-semibold">
               Search remote and offline jobs near your location
             </div>
           </div>
           <div className="flex flex-col mt-4 w-full">
-            <div className="flex flex-wrap  gap-2">
+            <div className="flex flex-wrap gap-2">
               <FilterOptions
                 selectedFilter={selectedFilter}
                 onFilterChange={handleFilterChange}
-                selectedDomain={selectedDomain}
+                selectedDomains={selectedDomains}
                 onDomainChange={handleDomainChange}
               />
             </div>
@@ -236,7 +235,6 @@ export default function Body() {
           </div>
         </div>
       </div>
-     
     </div>
   );
 }
@@ -244,87 +242,69 @@ export default function Body() {
 function FilterOptions({
   selectedFilter,
   onFilterChange,
-  selectedDomain,
+  selectedDomains,
   onDomainChange,
 }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsToShow, setItemsToShow] = useState(3); // Default number of items to show in the carousel
   const containerRef = useRef(null);
-  const optionRef = useRef(null);
-
-  const updateItemsToShow = () => {
-    if (containerRef.current && optionRef.current) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const optionWidth = optionRef.current.offsetWidth + 50; // Include margin and padding
-      const newItemsToShow = Math.floor(containerWidth / optionWidth);
-      setItemsToShow(newItemsToShow > 0 ? newItemsToShow : 1);
-      setCurrentIndex(0); // Reset the index to start when resizing
-    }
-  };
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedDomainOptions, setSelectedDomainOptions] =
+    useState(selectedDomains);
 
   useEffect(() => {
-    updateItemsToShow();
-    window.addEventListener("resize", updateItemsToShow);
+    const handleResize = () => {
+      containerRef.current.scrollLeft = 0; // Reset scroll position on resize
+    };
 
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", updateItemsToShow);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const handleNext = () => {
-    const newIndex = currentIndex + itemsToShow;
-    setCurrentIndex(newIndex >= filterOptions.length ? filterOptions.length - itemsToShow : newIndex);
+  const handleDomainCheckboxChange = (option) => {
+    setSelectedDomainOptions((prevSelected) =>
+      prevSelected.includes(option)
+        ? prevSelected.filter((item) => item !== option)
+        : [...prevSelected, option]
+    );
   };
 
-  const handlePrev = () => {
-    const newIndex = currentIndex - itemsToShow;
-    setCurrentIndex(newIndex < 0 ? 0 : newIndex);
+  const handleApplyDomains = () => {
+    onDomainChange(selectedDomainOptions);
+    setOpenModal(false);
   };
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="flex flex-col-reverse lg:flex-row  w-full lg:hidden">
-        <div className="flex items-center overflow-hidden w-full mt-3" ref={containerRef}>
+      <div className="flex flex-row-reverse space-x-2 w-full lg:hidden relative">
+        <div
+          className="flex items-center overflow-x-auto w-full space-x-2 ml-2 hide-scrollbar"
+          ref={containerRef}
+        >
+          {filterOptions.map((option, index) => (
+            <button
+              key={index}
+              className={`px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm ${
+                selectedFilter === option ? "bg-gray-400 text-black" : ""
+              }`}
+              onClick={() => onFilterChange(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        {/* horizontal line */}
+        <div className="border-r-2 h-10 w-0.5 m-1"></div>
+        <div className="mt-2.5">
           <button
-            className="p-2 transition-transform transform hover:scale-110"
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
+            className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
+            onClick={() => setOpenModal(true)}
           >
-            <FaArrowLeft />
-          </button>
-          <div className="flex gap-2 overflow-hidden transition-all duration-500 ease-in-out">
-            {filterOptions.slice(currentIndex, currentIndex + itemsToShow).map((option, index) => (
-              <button
-                key={index}
-                ref={index === 0 ? optionRef : null} // Reference the first visible option
-                className={`px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm ${
-                  selectedFilter === option ? "bg-gray-400 text-black" : ""
-                }`}
-                onClick={() => onFilterChange(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          <button
-            className="p-2 transition-transform transform hover:scale-110"
-            onClick={handleNext}
-            disabled={currentIndex >= filterOptions.length - itemsToShow}
-          >
-            <FaArrowRight />
+            Select Domain
           </button>
         </div>
-        <select
-          value={selectedDomain}
-          onChange={onDomainChange}
-          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28 ml-4"
-        >
-          {domainOptions.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        {/* Optional: Add a fade effect to indicate scrollability */}
+        <div className="absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-white pointer-events-none"></div>
       </div>
       <div className="hidden lg:flex justify-between w-full items-center mt-4">
         <div className="flex gap-2">
@@ -340,18 +320,65 @@ function FilterOptions({
             </button>
           ))}
         </div>
-        <select
-          value={selectedDomain}
-          onChange={onDomainChange}
-          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold focus:outline-none text-sm w-28 ml-4"
+        <button
+          className="px-4 py-1 bg-gray-200 rounded-2xl font-semibold whitespace-nowrap text-sm"
+          onClick={() => setOpenModal(true)}
         >
-          {domainOptions.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+          Select Domain
+        </button>
       </div>
+      {openModal && (
+        <div className="fixed top-10 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-x-auto z-50">
+            <div className="flex justify-between items-center">
+              <div className="text-xl font-semibold">Select Domain</div>
+              <div className="flex items-center space-x-2">
+                <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => setSelectedDomainOptions([])}
+                >
+                  Clear
+                </button>
+
+                <button onClick={() => setOpenModal(false)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col mt-4">
+              {domainOptions.map((option, index) => (
+                <label key={index} className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedDomainOptions.includes(option)}
+                    onChange={() => handleDomainCheckboxChange(option)}
+                    className="mr-2"
+                  />
+                  {option}
+                </label>
+              ))}
+              <button
+                onClick={handleApplyDomains}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg sticky bottom-0"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

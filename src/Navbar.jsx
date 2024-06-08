@@ -73,7 +73,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="p-4 flex justify-between items-center sticky top-0 bg-white h-20 border-b border-gray-200 z-50 mb-6">
+    <div className="p-4 flex justify-between items-center sticky top-0 bg-white h-20 border-b border-gray-200 z-50 mb-0">
       <div className="flex items-center space-x-4 lg:space-x-6">
         <img
           src={learnDuke}

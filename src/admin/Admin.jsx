@@ -485,7 +485,7 @@ export default function Admin() {
                       <td className="px-2 py-4 whitespace-nowrap">
                         <button
                           onClick={() => {
-                            
+                            setSelectedJob(job);
                             setIsModalOpen(true);
                           }}
                           className="bg-red-500 text-white py-1 px-2 rounded"
@@ -639,8 +639,9 @@ export default function Admin() {
             <h2 className="text-xl font-semibold mb-4">Are you sure?</h2>
             <button
               onClick={() => {
+                console.log("Deleting job:", selectedJob);
                 axios
-                  .post(
+                  .delete(
                     `https://learndukeserver.vercel.app/deleteJob/${selectedJob._id}`
                   )
                   .then((response) => {
