@@ -92,7 +92,7 @@ export default function UserPage() {
     // Save the updated profile data to the server
     axios
       .post(
-        `https://learndukeserver.vercel.app/editUserData/${user.email}`,
+        `http://localhost:3000/editUserData/${user.email}`,
         userData
       )
       .then((response) => {
@@ -127,11 +127,15 @@ export default function UserPage() {
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center h-screen items-center">
-        <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col px-4">
-          <p className="text-center text-4xl font-bold">Loading...</p>
+      <>
+        {/* loader animation */}
+
+        <div className="w-full flex justify-center h-screen items-center">
+          <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col px-4">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -291,7 +295,7 @@ export default function UserPage() {
                 <div className="text-2xl font-semibold my-3 text-center flex justify-center items-center">
                   {userData?.name}
                   {userData?.isPremium && (
-                    <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl mt-1">
+                    <div className="text-xs text-center items-center flex justify-center  mx-2 border-2 w-1/5 border-orange-500 py-1 px-4 rounded-xl mt-1">
                       PRO
                     </div>
                   )}
@@ -326,11 +330,11 @@ export default function UserPage() {
                       <FaGithub className="text-3xl text-gray-800" />
                     </div>
                   )}
-                  {userData.isPremium && (
+                  {/* {userData.isPremium && (
                     <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
                       Premium Member
                     </div>
-                  )}
+                  )} */}
                 </div>
                 <div>{userData.bio}</div>
                 {userData && (
@@ -489,18 +493,18 @@ export default function UserPage() {
                         {job.description.slice(0, 100) + "...."}
                       </div>
                       <div className="flex flex-wrap mt-3 space-x-2">
-                        <div className="flex items-center mt-3">
-                          <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                        <div className="flex items-center mt-3 bg-gray-100 px-2 py-1 rounded-lg text-gray-500">
+                          <FaWallet className="w-6 h-6 mr-2 " />
                           <span>
                             &#8377;{job.minAmountPerHour}-&#8377;
                             {job.maxAmountPerHour}/Month
                           </span>
                         </div>
-                        <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                        <div className="bg-gray-100 text-gray-500 items-center mt-3 pl-3 pr-3 rounded-lg flex text-center">
                           {job.jobType}
                         </div>
                         {job.location && (
-                          <div className="border-2 border-gray-600 items-center mt-3 pl-3 pr-3 rounded-3xl flex text-center">
+                          <div className="bg-gray-100 text-gray-500 items-center mt-3 pl-3 pr-3 rounded-lg flex text-center">
                             {job.location}
                           </div>
                         )}
