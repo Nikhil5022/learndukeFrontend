@@ -92,7 +92,7 @@ export default function UserPage() {
     // Save the updated profile data to the server
     axios
       .post(
-        `http://localhost:3000/editUserData/${user.email}`,
+        `https://learndukeserver.vercel.app/editUserData/${user.email}`,
         userData
       )
       .then((response) => {
