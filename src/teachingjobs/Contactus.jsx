@@ -28,11 +28,7 @@ export default function Contactus() {
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-center mt-10">
-        <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col space-y-6 px-4">
-          <Footer />
-        </div>
-      </div>
+      
     </div>
   );
 }

@@ -45,13 +45,13 @@ export default function Teachingjobs() {
     const { data } = await axios.post(
       "https://learndukeserver.vercel.app/checkout",
       {
-        amount: 999,
+        amount: 99,
       }
     );
 
     const options = {
       key: "rzp_test_jH3t9W8Up3P2iW",
-      amount: 99900 / 100,
+      amount: 9900 / 100,
       currency: "INR",
       name: user.name ? user.name : "Sample User",
       description: "Tutorial of RazorPay",
@@ -146,7 +146,7 @@ export default function Teachingjobs() {
             </div>
             <div className="p-4 bg-gray-100" data-aos="fade-left" data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
-                Apply directly to the employer 👩🏻‍💼
+                Call directly to the employer 👩🏻‍💼
               </div>
               <div
                 className="leading-relaxed tracking-wide font-normal"
@@ -175,7 +175,7 @@ export default function Teachingjobs() {
             </div>
             <div className="p-4 bg-gray-100" data-aos="fade-left"  data-aos-anchor-placement="center-center">
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
-                Expert assistance available 😊
+                Mentorship assistance available 😊
               </div>
               <div
                 className="leading-relaxed tracking-wide font-normal"
@@ -297,7 +297,7 @@ export default function Teachingjobs() {
                 Find an authentic remote job for you
               </div>
               <div className="text-left m-2" data-aos="slide-left">
-                <span className="text-lg font-bold">Rs. 999.00</span>
+                <span className="text-lg font-bold">Rs. 99.00</span>
                 <span className="text-white text-sm bg-orange-600 rounded-lg px-2 py-1 ml-2">
                   sale
                 </span>

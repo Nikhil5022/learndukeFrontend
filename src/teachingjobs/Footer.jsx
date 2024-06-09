@@ -51,7 +51,6 @@ export default function Footer() {
             <div className="font-normal hover:underline my-3"
               onClick={() => {navigator("/faq")}}
             >FAQ</div>
-            <div className="font-normal hover:underline my-3">Terms & Policy</div>
           </div>
         </div>
         <div className="flex justify-center space-x-10 text-xl mb-5">

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
+import "./App.css";
 
 export default function CreateJob() {
   const navigator = useNavigate();
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [loaderAfterSubmit, setLoaderAfterSubmit] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -214,7 +216,9 @@ export default function CreateJob() {
     }
 
     if (name === "tags") {
-      const tagsArray = value.split(" ").map((tag) => tag.trim());
+      const tagsArray = value
+        .split(" ")
+        .map((tag) => tag.trim())
       setFormData({ ...formData, [name]: tagsArray });
     } else {
       setFormData({ ...formData, [name]: newValue });
@@ -372,9 +376,11 @@ export default function CreateJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
+    setLoaderAfterSubmit(true);
 
     if (validateStep()) {
-      const jobData = { ...formData, email: email };
+      const cleanedTags = formData.tags.filter((tag) => tag.trim() !== "");
+      const jobData = { ...formData, tags: cleanedTags, email: email };
       console.log("Creating job with data:", jobData);
       await axios
         .post("https://learndukeserver.vercel.app/addJob", jobData)
@@ -384,6 +390,7 @@ export default function CreateJob() {
       setShowModal(true);
       console.log("Form submitted successfully");
     }
+    setLoaderAfterSubmit(false);
   };
 
   const renderStep = () => {
@@ -988,7 +995,12 @@ export default function CreateJob() {
                   type="submit"
                   className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
                 >
-                  Submit
+                  {/* i need circle animation */}
+                  {loaderAfterSubmit ? (
+                    <div class="loader ease-linear rounded-full border-2 border-t-2 border-gray-200 h-5 w-5 border-t-blue-500 animate-spin"></div>
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               )}
             </div>

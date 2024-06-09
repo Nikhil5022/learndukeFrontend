@@ -141,7 +141,7 @@ export default function Tutorial({
           className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
         >
           <div className="flex justify-center items-center">
-            <FaPhone style={{ transform: "rotateY(180deg)" }} />
+            <FaPhone style={{ transform: "rotateY(180deg)", zIndex:"-1000"}} />
             <div className="ml-2">Call Now</div>
           </div>
         </button>

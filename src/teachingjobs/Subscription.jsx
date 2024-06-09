@@ -8,6 +8,10 @@ export default function Subscription() {
   const [showModal, setShowModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top when the component mounts
+  }, []);
+
   const plans = [
     {
       name: "Basic",

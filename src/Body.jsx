@@ -8,7 +8,6 @@ import crying from "./assets/crying.gif";
 import "./App.css";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
-
 // Define the filter options
 const filterOptions = [
   "All",
@@ -60,7 +59,17 @@ const domainOptions = [
   "Driver",
   "Plumber",
   "Domestic",
+  "Sales and Marketing",
+  "BPO",
   "Others",
+];
+
+const educationOptions = [
+  "High School",
+  "Diploma",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctorate",
 ];
 
 export default function Body() {
@@ -68,6 +77,7 @@ export default function Body() {
   const [showFullContent, setShowFullContent] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedDomains, setSelectedDomains] = useState([]);
+  const [selectedEducations, setSelectedEducations] = useState([]);
   const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -110,7 +120,7 @@ export default function Body() {
 
   useEffect(() => {
     handleSearch();
-  }, [searchTitle, searchLocation, selectedFilter, selectedDomains]);
+  }, [searchTitle, searchLocation, selectedFilter, selectedDomains, selectedEducations]);
 
   const handleSearch = () => {
     let filteredJobs = [...tutorialJobs];
@@ -144,6 +154,13 @@ export default function Body() {
       console.log("After domain filter:", filteredJobs);
     }
 
+    if (selectedEducations.length > 0) {
+      filteredJobs = filteredJobs.filter((job) =>
+        selectedEducations.includes(job.education)
+      );
+      console.log("After education filter:", filteredJobs);
+    }
+
     setNewTutorialJobs(filteredJobs);
   };
 
@@ -159,13 +176,18 @@ export default function Body() {
     setSelectedDomains(newDomains);
   };
 
+  const handleEducationChange = (newEducations) => {
+    setSelectedEducations(newEducations);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
         <div className="flex flex-col ">
           <div className="flex flex-col md:flex-row  space-y-3 md:space-x-3 w-full">
-            <div className="w-full flex flex-col md:flex-row border border-gray-300 items-center rounded-lg "
-             style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+            <div
+              className="w-full flex flex-col md:flex-row border border-gray-300 items-center rounded-lg "
+              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
             >
               <div className="w-full md:w-1/2 flex">
                 <FaSearch className="text-gray-500 m-4 text-xl" />
@@ -203,6 +225,8 @@ export default function Body() {
                 onFilterChange={handleFilterChange}
                 selectedDomains={selectedDomains}
                 onDomainChange={handleDomainChange}
+                selectedEducations={selectedEducations}
+                onEducationChange={handleEducationChange}
               />
             </div>
             {loading ? (
@@ -253,11 +277,15 @@ function FilterOptions({
   onFilterChange,
   selectedDomains,
   onDomainChange,
+  selectedEducations,
+  onEducationChange,
 }) {
   const containerRef = useRef(null);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedDomainOptions, setSelectedDomainOptions] =
-    useState(selectedDomains);
+  const [selectedDomainOptions, setSelectedDomainOptions] = useState(selectedDomains);
+  const [selectedEducationOptions, setSelectedEducationOptions] = useState(selectedEducations);
+
+  const [selectedDomain, setSelectedDomain] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -278,9 +306,23 @@ function FilterOptions({
     );
   };
 
-  const handleApplyDomains = () => {
+  const handleEducationCheckboxChange = (option) => {
+    setSelectedEducationOptions((prevSelected) =>
+      prevSelected.includes(option)
+        ? prevSelected.filter((item) => item !== option)
+        : [...prevSelected, option]
+    );
+  };
+
+  const handleApplyFilters = () => {
     onDomainChange(selectedDomainOptions);
+    onEducationChange(selectedEducationOptions);
     setOpenModal(false);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedDomainOptions([]);
+    setSelectedEducationOptions([]);
   };
 
   return (
@@ -339,52 +381,83 @@ function FilterOptions({
         </button>
       </div>
       {openModal && (
-        <div className="fixed top-10 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-x-auto z-50">
-            <div className="flex justify-between items-center">
-              <div className="text-xl font-semibold">Select Domain</div>
-              <div className="flex items-center space-x-2">
-                <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => setSelectedDomainOptions([])}
-                >
-                  Clear
-                </button>
-
-                <button onClick={() => setOpenModal(false)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
+            style={{zIndex: 1000}}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <div
+                className={`text-xl font-semibold cursor-pointer ${selectedDomain ? "text-blue-500" : "text-black"}`}
+                onClick={() => setSelectedDomain(true)}
+              >
+                Select Domain
               </div>
-            </div>
-            <div className="flex flex-col mt-4">
-              {domainOptions.map((option, index) => (
-                <label key={index} className="flex items-center mt-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedDomainOptions.includes(option)}
-                    onChange={() => handleDomainCheckboxChange(option)}
-                    className="mr-2"
+              {/* vertical line */}
+              <div className="border-r-2 h-10 w-0.5 mx-2"></div>
+              <div
+                className={`text-xl font-semibold cursor-pointer ${!selectedDomain ? "text-blue-500" : "text-black"}`}
+                onClick={() => setSelectedDomain(false)}
+              >
+                Select Education
+              </div>
+              <button onClick={() => setOpenModal(false)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
                   />
-                  {option}
-                </label>
-              ))}
+                </svg>
+              </button>
+            </div>
+            {selectedDomain ? (
+              <div className="flex flex-col">
+                {domainOptions.map((option, index) => (
+                  <label key={index} className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedDomainOptions.includes(option)}
+                      onChange={() => handleDomainCheckboxChange(option)}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {educationOptions.map((option, index) => (
+                  <label key={index} className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedEducationOptions.includes(option)}
+                      onChange={() => handleEducationCheckboxChange(option)}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            )}
+            <div className="flex space-x-1 sticky bottom-0  py-2">
               <button
-                onClick={handleApplyDomains}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg sticky bottom-0"
+                onClick={handleApplyFilters}
+                className="w-1/2 px-4 py-2 bg-blue-500 text-white rounded-lg"
               >
                 Apply
+              </button>
+              <button
+                onClick={handleClearFilters}
+                className="w-1/2 px-4 py-2 bg-red-500 text-white rounded-lg"
+              >
+                Clear
               </button>
             </div>
           </div>
