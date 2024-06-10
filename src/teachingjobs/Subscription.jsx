@@ -16,7 +16,7 @@ export default function Subscription() {
     {
       name: "Basic",
       price: 99, // in INR
-      benefits: ["Call to HR directly", "100 days access limit"],
+      benefits: ["Call to HR directly", "100 days access limit", "24/7 Job Alert"],
       days: 100,
     },
     {
@@ -28,6 +28,7 @@ export default function Subscription() {
         "Job update every day",
         "Call to HR",
         "1-year access period",
+        "24/7 Job Alert"
       ],
       days: 365,
     },
@@ -42,6 +43,7 @@ export default function Subscription() {
         "Mock interview",
         "100% placement with our side",
         "Upskill program for 6 months",
+        "24/7 Job Alert"
       ],
       days: 180,
     },
@@ -53,7 +55,8 @@ export default function Subscription() {
         "Direct connection to parents",
         "Minimum 10k earning",
         "Online tuition connect",
-        "24*7 support",
+        "24/7 support",
+        "24/7 Job Alert"
       ],
       days: 100,
     },
@@ -76,6 +79,7 @@ export default function Subscription() {
 
   const checkoutHandler = async (plan) => {
     if (!user) {
+      alert("Please login first to proceed to checkout");
       return;
     }
 
@@ -93,6 +97,7 @@ export default function Subscription() {
         image: image,
         order_id: data.order.id,
         callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+        redirect: true,
         prefill: {
           name: user.name || "Sample User",
           email: user.email || "Sample@gmail.com",
@@ -121,9 +126,10 @@ export default function Subscription() {
           };
           console.log("Payment Successful", paymentDetails);
           // Send payment details to server or handle UI update
-          axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
+           axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
             console.log("Payment details saved:", response.data);
           });
+          
         },
         modal: {
           ondismiss: function () {

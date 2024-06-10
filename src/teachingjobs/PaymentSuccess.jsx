@@ -14,10 +14,9 @@ const PaymentSuccess = () => {
     >
       <h1 className="text-3xl m-4 font-semibold"> Order Successful</h1>
       <p>The payment was successful. </p>
-      <p>You now have access to premium membership.</p>
-      <p className="m-2">Reference No:- XPsfsj38r8489</p>
-      <Link to={"/"}>
-      <button className="border-2 p-4 rounded-xl border-black">Go to Home</button>
+      <p >You now have access to premium membership.</p>
+      <Link to={"/teachingjobs"}>
+      <button className="border-2 mt-3 p-4 rounded-xl border-black">Go to Jobs</button>
       </Link>
     </div>
   );

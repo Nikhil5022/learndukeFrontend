@@ -31,7 +31,7 @@ export default function Tutorial({
   const [loginModal, setLoginModal] = useState(false);
 
   useEffect(() => {
-    const isLogin = JSON.parse(localStorage.getItem("user"))
+    JSON.parse(localStorage.getItem("user"))
       ? setIsLogin(true)
       : setIsLogin(false);
       const userData=JSON.parse(localStorage.getItem("user"))
