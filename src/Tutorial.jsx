@@ -35,7 +35,8 @@ export default function Tutorial({
       ? setIsLogin(true)
       : setIsLogin(false);
       const userData=JSON.parse(localStorage.getItem("user"))
-    axios
+    if(userData){
+      axios
       .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
       .then((userResponse) => {
         setUser(userResponse.data);
@@ -44,6 +45,7 @@ export default function Tutorial({
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
+    }
   }, [email, isLogin]);
 
   const handleCallNow = () => {
@@ -141,7 +143,7 @@ export default function Tutorial({
           className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
         >
           <div className="flex justify-center items-center">
-            <FaPhone style={{ transform: "rotateY(180deg)", zIndex:"-1000"}} />
+            <FaPhone style={{ transform: "rotateY(180deg)"}} />
             <div className="ml-2">Call Now</div>
           </div>
         </button>

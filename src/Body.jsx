@@ -80,8 +80,8 @@ export default function Body() {
   const [selectedEducations, setSelectedEducations] = useState([]);
   const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
-  const userData = JSON.parse(localStorage.getItem("user"));
-  const [user, setUser] = useState(userData);
+  // const userData = JSON.parse(localStorage.getItem("user"));
+  // const [user, setUser] = useState(userData);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [premium, setPremium] = useState(false);
