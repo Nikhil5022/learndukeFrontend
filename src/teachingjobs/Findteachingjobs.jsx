@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Findteachingjobsbody from "./Findteachingjobsbody";
 import Reviews from "./Reviews";
 import Footer from "./Footer";
+
 export default function Findteachingjobs() {
+  useEffect(() => {
+    // Scroll to the top of the page smoothly when the component mounts
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }, []);
+
   return (
     <div>
       <div className="w-full flex justify-center">

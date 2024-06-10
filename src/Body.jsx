@@ -1,44 +1,168 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tutorial from "./Tutorial";
-import { FaAngleDown, FaSearch, FaMapMarkerAlt, FaAngleUp } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
+import crying from "./assets/crying.gif";
+import "./App.css";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 // Define the filter options
-const filterOptions = ["All", "School", "College", "HomeTuition", "Remote"];
+const filterOptions = [
+  "All",
+  "Remote",
+  "Offline",
+  "Part-time",
+  "Full-time",
+  "Internship",
+  "Contract",
+  "Hometuition",
+  "Onlinetuition",
+];
+const domainOptions = [
+  "Information Technology (IT)",
+  "Engineering",
+  "Technician",
+  "Finance",
+  "Healthcare",
+  "Education",
+  "Manufacturing",
+  "Retail",
+  "Telecommunications",
+  "Construction",
+  "Hospitality",
+  "Transportation and Logistics",
+  "Real Estate",
+  "Media and Entertainment",
+  "Marketing and Advertising",
+  "Energy and Utilities",
+  "Government",
+  "Non-Profit",
+  "Consulting",
+  "Legal",
+  "Automotive",
+  "Pharmaceuticals",
+  "Consumer Goods",
+  "Agriculture",
+  "Aerospace and Defense",
+  "Insurance",
+  "Human Resources",
+  "Research and Development (R&D)",
+  "Biotechnology",
+  "Food and Beverage",
+  "Environmental Services",
+  "Sports and Recreation",
+  "Data entry",
+  "Content writing",
+  "Security Guard",
+  "Driver",
+  "Plumber",
+  "Domestic",
+  "Sales and Marketing",
+  "BPO",
+  "Others",
+];
+
+const educationOptions = [
+  "High School",
+  "Diploma",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctorate",
+];
 
 export default function Body() {
   const navigate = useNavigate();
   const [showFullContent, setShowFullContent] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
+  const [selectedDomains, setSelectedDomains] = useState([]);
+  const [selectedEducations, setSelectedEducations] = useState([]);
   const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(userData);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [premium, setPremium] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     axios
-      .get("http://localhost:3000/getJobs")
+      .get("https://learndukeserver.vercel.app/getReviewedJobs")
       .then((response) => {
+        console.log("Jobs fetched:", response.data);
         setTutorialJobs(response.data);
 
-        // Iterate over tutorialJobs after setting the state
-        response.data.forEach((job) => {
+        const jobPromises = response.data.map((job) =>
           axios
-            .get(`http://localhost:3000/getUser/${job.email}`)
+            .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
             .then((userResponse) => {
-              // i need to add name into the job object as userName
               job.userName = userResponse.data.name;
               job.imageLink = userResponse.data.profilephoto.url;
-              setNewTutorialJobs((prevJobs) => [...prevJobs, job]);
+              return job;
             })
-            .catch((error) => {
-              console.error("Error fetching user data:", error);
-            });
+        );
+
+        Promise.all(jobPromises).then((jobsWithUserData) => {
+          setNewTutorialJobs(jobsWithUserData);
+          setLoading(false);
         });
       })
       .catch((error) => {
         console.error("Error fetching jobs:", error);
+        setLoading(false);
       });
+
+    window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchTitle, searchLocation, selectedFilter, selectedDomains, selectedEducations]);
+
+  const handleSearch = () => {
+    let filteredJobs = [...tutorialJobs];
+    console.log("Initial Jobs:", filteredJobs);
+
+    if (searchTitle) {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.title.toLowerCase().includes(searchTitle.toLowerCase())
+      );
+      console.log("After title filter:", filteredJobs);
+    }
+
+    if (searchLocation) {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.location.toLowerCase().includes(searchLocation.toLowerCase())
+      );
+      console.log("After location filter:", filteredJobs);
+    }
+
+    if (selectedFilter !== "All") {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.jobType.toLowerCase() === selectedFilter.toLowerCase()
+      );
+      console.log("After job type filter:", filteredJobs);
+    }
+
+    if (selectedDomains.length > 0) {
+      filteredJobs = filteredJobs.filter((job) =>
+        selectedDomains.includes(job.domain)
+      );
+      console.log("After domain filter:", filteredJobs);
+    }
+
+    if (selectedEducations.length > 0) {
+      filteredJobs = filteredJobs.filter((job) =>
+        selectedEducations.includes(job.education)
+      );
+      console.log("After education filter:", filteredJobs);
+    }
+
+    setNewTutorialJobs(filteredJobs);
+  };
 
   const toggleContent = () => {
     setShowFullContent(!showFullContent);
@@ -48,103 +172,99 @@ export default function Body() {
     setSelectedFilter(filter);
   };
 
-  const shortContent =
-    "On Preply's tutoring jobs page you can always find open requests for qualified teachers of different languages and subjects to offer tuition to learners in general...";
-  const fullContent =
-    "On Preply's tutoring jobs page you can always find open requests for qualified teachers of different languages and subjects to offer tuition to learners in general, as well as those who participate in our corporate language training programs and business English courses. Preply offers the chance to teach online with a flexible schedule, access to students from all over the world and constant customer service! In order to reply to student requests, you need to have a profile that shows your hourly price and your availability. Just check our tutoring jobs and find new students here!";
+  const handleDomainChange = (newDomains) => {
+    setSelectedDomains(newDomains);
+  };
 
-  // Filter tutorial jobs based on the selected filter option
-  const filteredTutorialJobs =
-    selectedFilter === "All"
-      ? tutorialJobs
-      : tutorialJobs.filter((job) => job.locationtype === selectedFilter);
+  const handleEducationChange = (newEducations) => {
+    setSelectedEducations(newEducations);
+  };
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="w-full lg:w-10/12 p-4">
-        <div className="flex flex-col">
-          <div className="flex flex-col md:flex-row justify-center items-center space-x-3">
-            {/* input for search */}
-            <div className="w-full flex flex-col md:flex-row border border-gray-300  items-center rounded-lg"
-            style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
+        <div className="flex flex-col ">
+          <div className="flex flex-col md:flex-row  space-y-3 md:space-x-3 w-full">
+            <div
+              className="w-full flex flex-col md:flex-row border border-gray-300 items-center rounded-lg "
+              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
             >
-              <div className="w-full md:w-1/2 md:w- flex">
+              <div className="w-full md:w-1/2 flex">
                 <FaSearch className="text-gray-500 m-4 text-xl" />
                 <input
                   type="text"
                   placeholder="Search for a job"
-                  className="border-2 border-none rounded-l-lg p-4 w-full   focus:outline-none"
+                  value={searchTitle}
+                  onChange={(e) => setSearchTitle(e.target.value)}
+                  className="border-none rounded-l-lg p-4 w-full focus:outline-none"
                 />
               </div>
-              {/* vertical line */}
               <div className="border-r-2 h-10 w-0.5 m-1 hidden md:flex"></div>
-              <div className="w-full md:w-1/2  flex">
+              <div className="border-t border-gray-300 w-full h-0.5 md:hidden"></div>
+              <div className="w-full md:w-1/2 flex">
                 <FaMapMarkerAlt className="text-gray-500 m-4 text-xl" />
-                {/* input by location */}
                 <input
                   type="text"
                   placeholder="Search by location"
-                  className="border-2 border-none rounded-r-lg p-4 w-full   focus:outline-none"
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  className="border-none rounded-r-lg p-4 w-full focus:outline-none"
                 />
               </div>
-              <button className="bg-blue-700 text-white px-4 h-10 rounded-md m-2">
-                Find
-              </button>
-            </div>
-            <button
-              className=" text-white  rounded-2xl items-center m-3 md:m-0 md:ml-2 w-32"
-              onClick={() => navigate("/createjob")}
-            >
-              <div className="bg-orange-500 rounded-2xl px-5 py-3">Create Job</div>
-            </button>
-          </div>
-
-          <div
-            className={`mt-4 ${showFullContent ? "" : "overflow-hidden"}`}
-            style={{ color: "#4D4C5C" }}
-          >
-            {showFullContent ? fullContent : shortContent}
-            <button
-              onClick={toggleContent}
-              className="cursor-pointer ml-2 underline font-semibold"
-            >
-              {showFullContent ? "Read Less" : "Read More"}
-            </button>
-          </div>
-          <div className="flex flex-col md:flex-row mt-3 justify-start md:justify-between md:items-center">
-            <div className="text-2xl font-bold">
-              Latest online tutoring jobs
             </div>
           </div>
-          <div className="flex flex-col md:flex-row">
-            <div className="md:w-1/4 md:mr-4 mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row mt-5 w-full">
+            <div className="text-2xl font-semibold">
+              Search remote and offline jobs near your location
+            </div>
+          </div>
+          <div className="flex flex-col mt-4 w-full">
+            <div className="flex flex-wrap gap-2">
               <FilterOptions
                 selectedFilter={selectedFilter}
                 onFilterChange={handleFilterChange}
+                selectedDomains={selectedDomains}
+                onDomainChange={handleDomainChange}
+                selectedEducations={selectedEducations}
+                onEducationChange={handleEducationChange}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 mt-3 md:w-2/3">
-              {filteredTutorialJobs.map((job, index) => (
-                <Tutorial
-                  key={index}
-                  imageLink={job.imageLink} // Pass the image link from the job object
-                  userName={job.userName} // Assuming userName is coming from the user data
-                  title={job.title} // Pass other relevant props accordingly
-                  description={job.description}
-                  minAmountPerHour={job.minAmountPerHour}
-                  maxAmountPerHour={job.maxAmountPerHour}
-                  jobType={job.jobType}
-                  phoneNumber={job.phoneNumber}
-                  location={job.location}
-                  whatsappNumber={job.whatsappNumber}
-                  email={job.email}
-                  requirements={job.requirements}
-                  responsibilities={job.responsibilities}
-                  tags={job.tags}
-                  id={job._id}
-                />
-              ))}
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center mt-10">
+                <ClipLoader size={50} color={"#123abc"} loading={loading} />
+              </div>
+            ) : newTutorialJobs.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                {newTutorialJobs.map((job, index) => (
+                  <Tutorial
+                    key={index}
+                    imageLink={job.imageLink}
+                    userName={job.userName}
+                    title={job.title}
+                    description={job.description}
+                    minAmountPerHour={job.minAmountPerHour}
+                    maxAmountPerHour={job.maxAmountPerHour}
+                    jobType={job.jobType}
+                    phoneNumber={job.phoneNumber}
+                    location={job.location}
+                    whatsappNumber={job.whatsappNumber}
+                    email={job.email}
+                    requirements={job.requirements}
+                    responsibilities={job.responsibilities}
+                    tags={job.tags}
+                    id={job._id}
+                    isPremium={job.isPremium}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center mt-10">
+                <img src={crying} alt="No jobs found" className="w-32" />
+                <div className="text-center text-lg font-semibold text-gray-500">
+                  No jobs found
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -152,84 +272,195 @@ export default function Body() {
   );
 }
 
-function FilterOptions({ selectedFilter, onFilterChange }) {
-  const [visibleOptions, setVisibleOptions] = useState(
-    filterOptions.slice(0, 3)
-  );
-  const [dropdownOptions, setDropdownOptions] = useState(
-    filterOptions.slice(3)
-  );
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const dropdownRef = useRef(null);
+function FilterOptions({
+  selectedFilter,
+  onFilterChange,
+  selectedDomains,
+  onDomainChange,
+  selectedEducations,
+  onEducationChange,
+}) {
+  const containerRef = useRef(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedDomainOptions, setSelectedDomainOptions] = useState(selectedDomains);
+  const [selectedEducationOptions, setSelectedEducationOptions] = useState(selectedEducations);
+
+  const [selectedDomain, setSelectedDomain] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
-      const availableWidth = window.innerWidth - 30;
-      const optionWidth = 90;
-      const maxVisibleOptions = Math.floor((availableWidth - 50) / optionWidth);
-
-      setVisibleOptions(filterOptions.slice(0, maxVisibleOptions));
-      setDropdownOptions(filterOptions.slice(maxVisibleOptions));
+      containerRef.current.scrollLeft = 0; // Reset scroll position on resize
     };
 
-    handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
+  const handleDomainCheckboxChange = (option) => {
+    setSelectedDomainOptions((prevSelected) =>
+      prevSelected.includes(option)
+        ? prevSelected.filter((item) => item !== option)
+        : [...prevSelected, option]
+    );
+  };
+
+  const handleEducationCheckboxChange = (option) => {
+    setSelectedEducationOptions((prevSelected) =>
+      prevSelected.includes(option)
+        ? prevSelected.filter((item) => item !== option)
+        : [...prevSelected, option]
+    );
+  };
+
+  const handleApplyFilters = () => {
+    onDomainChange(selectedDomainOptions);
+    onEducationChange(selectedEducationOptions);
+    setOpenModal(false);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedDomainOptions([]);
+    setSelectedEducationOptions([]);
   };
 
   return (
-    <div className=" mt-8 sticky top-10">
-      <div className="flex flex-wrap md:flex-col md:items-start md:space-y-2">
-        {visibleOptions.map((option, index) => (
-          <button
-            key={index}
-            className={`px-4 py-2 bg-gray-200 rounded-lg md:w-full mr-2 md:mr-0 ${
-              selectedFilter === option ? "bg-blue-500 text-gray-500" : ""
-            }`}
-            onClick={() => onFilterChange(option)}
-          >
-            {option}
-          </button>
-        ))}
-        {dropdownOptions.length > 0 && (
-          <button
-            onClick={toggleDropdown}
-            className="px-4 py-2 bg-gray-200 rounded-lg mb-2 md:mr-0"
-          >{
-            dropdownVisible ? 
-            <FaAngleUp className="inline-block text-xl" />
-            :
-            <FaAngleDown className="inline-block text-xl" /> 
-          }
-          </button>
-        )}
-      </div>
-      {dropdownVisible && (
+    <div className="flex flex-col items-center w-full">
+      <div className="flex flex-row-reverse space-x-2 w-full lg:hidden relative">
         <div
-          className=" left-0 mt-2 rounded-lg flex space-x-3"
-          ref={dropdownRef}
+          className="flex items-center overflow-x-auto w-full space-x-2 ml-2 hide-scrollbar"
+          ref={containerRef}
         >
-          {dropdownOptions.map((option, index) => (
+          {filterOptions.map((option, index) => (
             <button
               key={index}
-              className={`px-4 py-2  text-left bg-gray-200 rounded-lg hover:bg-gray-300 ${
-                selectedFilter === option ? "bg-blue-500 text-white" : ""
+              className={`px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm ${
+                selectedFilter === option ? "bg-gray-400 text-black" : ""
               }`}
-              onClick={() => {
-                onFilterChange(option);
-                setDropdownVisible(false); // Close dropdown after selecting an option
-              }}
+              onClick={() => onFilterChange(option)}
             >
               {option}
             </button>
           ))}
+        </div>
+        {/* horizontal line */}
+        <div className="border-r-2 h-10 w-0.5 m-1"></div>
+        <div className="mt-2.5">
+          <button
+            className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
+            onClick={() => setOpenModal(true)}
+          >
+            Select Domain
+            <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
+          </button>
+        </div>
+        {/* Optional: Add a fade effect to indicate scrollability */}
+        <div className="absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-white pointer-events-none"></div>
+      </div>
+      <div className="hidden lg:flex justify-between w-full items-center mt-4">
+        <div className="flex gap-2">
+          {filterOptions.map((option, index) => (
+            <button
+              key={index}
+              className={`px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm ${
+                selectedFilter === option ? "bg-gray-400 text-black" : ""
+              }`}
+              onClick={() => onFilterChange(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <button
+          className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
+          onClick={() => setOpenModal(true)}
+        >
+          Select Domain
+          <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
+        </button>
+      </div>
+      {openModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-10">
+          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
+            style={{zIndex: 1000}}
+          >
+            <div className="flex relative justify-between items-center mb-4">
+              <div
+                className={`text-xl font-semibold cursor-pointer ${selectedDomain ? "text-blue-500" : "text-black"}`}
+                onClick={() => setSelectedDomain(true)}
+              >
+                Select Domain
+              </div>
+              {/* vertical line */}
+              <div className="border-r-2 h-10 w-0.5 mx-2"></div>
+              <div
+                className={`text-xl font-semibold cursor-pointer ${!selectedDomain ? "text-blue-500" : "text-black"}`}
+                onClick={() => setSelectedDomain(false)}
+              >
+                Select Education
+              </div>
+              <button onClick={() => setOpenModal(false)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            {selectedDomain ? (
+              <div className="flex flex-col">
+                {domainOptions.map((option, index) => (
+                  <label key={index} className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedDomainOptions.includes(option)}
+                      onChange={() => handleDomainCheckboxChange(option)}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {educationOptions.map((option, index) => (
+                  <label key={index} className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedEducationOptions.includes(option)}
+                      onChange={() => handleEducationCheckboxChange(option)}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            )}
+            <div className="flex space-x-1 p-3 -bottom-4 sticky">
+              <button
+                onClick={handleApplyFilters}
+                className="w-1/2 px-4 mx-2 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Apply
+              </button>
+              <button
+                onClick={handleClearFilters}
+                className="w-1/2 px-4 py-2 bg-red-500 text-white rounded-lg"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

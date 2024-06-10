@@ -4,12 +4,54 @@ import companies from "../assets/companies.jpg";
 import numbers2 from "../assets/numbers2.jpg";
 // import Aboutlearnduke from "../assets/Aboutlearnduke.mp4";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import image from "../assets/learnDuke.png";
+
+
 
 export default function ResponsiveComponent() {
   const [isFixed, setIsFixed] = useState(false);
+  const user=JSON.parse(localStorage.getItem("user"));
   const navigator = useNavigate();
-  const handleAddToCart = () => {
+
+  const checkoutHandler = async () => {
+
     
+    
+    const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
+      amount: 999,
+    });
+
+    const options = {
+      key: "rzp_test_jH3t9W8Up3P2iW",
+      amount: 99900 / 100,
+      currency: "INR",
+      name: user.name ? user.name : "Sample User",
+      description: "Tutorial of RazorPay",
+      image: image,
+      order_id: data.order.id,
+      callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+      prefill: {
+        name: user.name ? user.name : "Sample User",
+        email: user.email ? user.email : "Sample@gmail.com",
+        contact: user.mobile && user.mobile  ,
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
+  const handleAddToCart = () => {
+    // Scroll to the top of the page
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   
     const products = [
       { name: "Product 1", price: 999 },
@@ -40,17 +82,9 @@ export default function ResponsiveComponent() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row justify-center md:space-x-8">
+    <div className="flex flex-col md:flex-row justify-center md:space-x-8 mt-10">
       <div className="w-full md:w-1/2 md:relative">
-        {/* <video
-          loop
-          controls
-          className={`w-full p-2 ${
-            isFixed ? "md:sticky md:top-5" : "md:max-h-96"
-          }`}
-        >
-          <source src={Aboutlearnduke} type="video/mp4" />
-        </video> */}
+        <img src={teachingjobs} alt="" className="w-full sticky top-20" />
       </div>
       <div className="w-full md:w-1/2 flex flex-col items-center mt-5 md:mt-0 p-5 md:p-0">
         <div className="w-full md:w-2/3">
@@ -78,7 +112,12 @@ export default function ResponsiveComponent() {
           <button
             className="w-full text-white bg-blue-500 py-4 hover:scale-105"
             onClick={() => {
-              window.open("https://rzp.io/l/learndukeindia", "_blank");
+              if(user){
+                checkoutHandler();
+              }
+              else{
+                alert("Please login to buy the product");
+              }
             }}
           >
             Buy it now

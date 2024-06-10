@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaWallet } from "react-icons/fa";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -11,20 +12,36 @@ export default function UserPage() {
   const [isEditEnabled, setIsEditEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+  const [imageChange, setImageChange] = useState(false);
 
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`http://localhost:3000/getUser/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data);
           setUserData(response.data);
+          axios
+            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+            .then((jobsResponse) => {
+              console.log(jobsResponse.data);
+              setJobs(jobsResponse.data);
+            });
           setLoading(false);
         })
         .catch((error) => {
           setError("There was an error fetching the user data.");
           console.error(error);
           setLoading(false);
+        });
+
+      axios
+        .get(`https://learndukeserver.vercel.app/getSubscriptions/${user.email}`)
+        .then((response) => {
+          console.log("Active Subscriptions:", response.data);
+          setActiveSubscriptions(response.data);
         });
     } else {
       setLoading(false);
@@ -33,7 +50,7 @@ export default function UserPage() {
 
   const handleDelete = (jobId) => {
     axios
-      .delete(`http://localhost:3000/deleteJob/${jobId}`)
+      .delete(`https://learndukeserver.vercel.app/deleteJob/${jobId}`)
       .then((response) => {
         setJobs(jobs.filter((job) => job._id !== jobId));
       })
@@ -60,31 +77,70 @@ export default function UserPage() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUserData({ ...userData, profilephoto:{
-          url: e.target.result,
-        } });
+        setUserData({
+          ...userData,
+          profilephoto: {
+            url: e.target.result,
+          },
+        });
       };
       reader.readAsDataURL(file);
     }
+    setImageChange(true)
   };
 
   const handleSaveProfile = () => {
     console.log("User Data:", userData);
     // Save the updated profile data to the server
-    axios.post(`http://localhost:3000/editUserData/${user.email}`, userData).then((response) => {
-      console.log("Profile data updated successfully:", response.data);
-      alert("Profile data updated successfully");
-      setIsEditEnabled(false);
-    });
+    axios
+      .post(
+        `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
+          userData,
+          imageChange
+        }
+      )
+      .then((response) => {
+        console.log("Profile data updated successfully:", response.data);
+        alert("Profile data updated successfully");
+        setIsEditEnabled(false);
+        setImageChange(false);
+      });
+  };
+
+  const calculateDaysLeft = (expirationDate) => {
+    const today = new Date();
+    const expiration = new Date(expirationDate);
+    const diffTime = Math.abs(expiration - today);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const isSubscriptionActive = (expirationDate) => {
+    const today = new Date();
+    const expiration = new Date(expirationDate);
+    return expiration >= today;
+  };
+  const renewSubscription = (plan) => {
+    console.log("Renew subscription for plan:", plan);
+    // Add logic for renewing subscription
+  };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
   };
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center h-screen items-center">
-        <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col px-4">
-          <p className="text-center text-4xl font-bold">Loading...</p>
+      <>
+        {/* loader animation */}
+
+        <div className="w-full flex justify-center h-screen items-center">
+          <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col px-4">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -115,20 +171,24 @@ export default function UserPage() {
           {isEditEnabled ? (
             <div className="bg-orange-100 p-6 rounded-lg shadow-lg">
               <div className="flex justify-between">
-              <div className="text-2xl font-semibold">Edit Profile</div>
-              <button
-                onClick={() => setIsEditEnabled(false)}
-                className=" bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-              >Cancel</button>
+                <div className="text-2xl font-semibold">Edit Profile</div>
+                <button
+                  onClick={() => setIsEditEnabled(false)}
+                  className=" bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+                >
+                  Cancel
+                </button>
               </div>
               <div className="flex justify-center m-5">
-                <label htmlFor="profilePhotoInput" className="relative cursor-pointer group">
+                <label
+                  htmlFor="profilePhotoInput"
+                  className="relative cursor-pointer group"
+                >
                   <img
                     src={userData.profilephoto.url}
                     alt=""
                     className="w-20 rounded-full"
                   />
-                  
                 </label>
                 <input
                   type="file"
@@ -144,7 +204,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.name}
-                    onChange={(e) => setUserData({ ...userData, name: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, name: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -153,7 +215,9 @@ export default function UserPage() {
                   <input
                     type="email"
                     value={userData.email}
-                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, email: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -162,7 +226,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.linkedin}
-                    onChange={(e) => setUserData({ ...userData, linkedin: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, linkedin: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -171,7 +237,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.github}
-                    onChange={(e) => setUserData({ ...userData, github: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, github: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -180,7 +248,9 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.phoneNumber}
-                    onChange={(e) => setUserData({ ...userData, phoneNumber: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, phoneNumber: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -189,7 +259,12 @@ export default function UserPage() {
                   <input
                     type="text"
                     value={userData.whatsappNumber}
-                    onChange={(e) => setUserData({ ...userData, whatsappNumber: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        whatsappNumber: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -197,41 +272,45 @@ export default function UserPage() {
                   <label className="block font-semibold">Bio</label>
                   <textarea
                     value={userData.bio}
-                    onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
+                    onChange={(e) =>
+                      setUserData({ ...userData, bio: e.target.value })
+                    }
                     className="w-full p-2 border rounded"
                     rows={10}
                   />
                 </div>
               </div>
               <div className="flex justify-end">
-              <button
-                className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-                onClick={handleSaveProfile}
-              >
-                Save
-              </button>
+                <button
+                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+                  onClick={handleSaveProfile}
+                >
+                  Save
+                </button>
               </div>
             </div>
           ) : (
-            <div className="w-full flex ">
-              <div className="w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-l-3xl shadow-lg">
+            <div className="flex flex-col md:flex-row">
+              <div className="w-full md:w-1/3 flex flex-col items-center bg-orange-50 p-5 rounded-none md:rounded-l-3xl shadow-lg">
                 <img
                   src={userData?.profilephoto.url}
                   alt="Profile pic"
                   className="w-2/4 rounded-full my-5"
-                  />
-                <div className="text-2xl w-72 items-center justify-center flex font-semibold my-3  text-center">
-                  {userData?.name}  {userData?.isPremium && (
-                  <div className="text-sm text-center items-center flex justify-center h-3/5 mx-2 border-2 w-1/5 border-orange-500 py-2 px-3 rounded-xl">
-                  PRO 
+                />
+                <div className="text-2xl font-semibold my-3 text-center flex justify-center items-center">
+                  {userData?.name}
+                  {userData?.isPremium && (
+                    <div className="text-xs text-center items-center flex justify-center  mx-2 border-2 w-1/5 border-orange-500 py-1 px-4 rounded-xl mt-1">
+                      PRO
+                    </div>
+                  )}
                 </div>
-                )}
-                </div>
-                
               </div>
-              <div className="w-2/3 bg-orange-100 p-5 rounded-r-3xl">
+              <div className="w-full md:w-2/3 bg-orange-100 p-5 rounded-none md:rounded-r-3xl">
                 <div className="flex justify-between">
-                  <div className="text-2xl font-semibold my-3 text-orange-500">About Me</div>
+                  <div className="text-2xl font-semibold my-3 text-orange-500">
+                    About Me
+                  </div>
                   <button
                     className="text-white bg-orange-500 px-5 h-12  rounded-md"
                     onClick={() => setIsEditEnabled(true)}
@@ -240,52 +319,124 @@ export default function UserPage() {
                   </button>
                 </div>
                 <div className="flex items-center space-x-5 my-5">
-                  {/* linkedin icon */}
-                  <div
-                    className=" p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.linkedin, "_blank")}
-                  >
-                    <FaLinkedin className="text-3xl text-blue-800" />
-                  </div>
-
-                  {/* github icon */}
-                  <div
-                    className=" p-3 rounded-lg cursor-pointer"
-                    onClick={() => window.open(userData.github, "_blank")}
-                  >
-                    <FaGithub className="text-3xl text-gray-800" />
-                  </div>
-                  {userData.isPremium && (
-                  <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
-                    Premium Member
-                  </div>
-                )}
+                  {userData.linkedin && (
+                    <div
+                      className="p-3 rounded-lg cursor-pointer"
+                      onClick={() => window.open(userData.linkedin, "_blank")}
+                    >
+                      <FaLinkedin className="text-3xl text-blue-800" />
+                    </div>
+                  )}
+                  {userData.github && (
+                    <div
+                      className="p-3 rounded-lg cursor-pointer"
+                      onClick={() => window.open(userData.github, "_blank")}
+                    >
+                      <FaGithub className="text-3xl text-gray-800" />
+                    </div>
+                  )}
+                  {/* {userData.isPremium && (
+                    <div className="bg-green-200 border-2 border-green-300 p-2 rounded-lg ">
+                      Premium Member
+                    </div>
+                  )} */}
                 </div>
                 <div>{userData.bio}</div>
-               
-                {user && (
+                {userData && (
                   <div>
                     <div className="text-2xl font-semibold my-3 text-orange-600">
                       Contact
                     </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Phone:</span>
-                      {userData.phoneNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">WhatsApp:</span>
-                      {userData.whatsappNumber}
-                    </div>
-                    <div className="text-lg mb-2">
-                      <span className="mr-2">Email:</span>
-                      {userData.email}
-                    </div>
+                    {userData.phoneNumber && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">Phone:</span>
+                        {userData.phoneNumber}
+                      </div>
+                    )}
+                    {userData.whatsappNumber && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">WhatsApp:</span>
+                        {userData.whatsappNumber}
+                      </div>
+                    )}
+                    {userData.email && (
+                      <div className="text-lg mb-2">
+                        <span className="mr-2">Email:</span>
+                        {userData.email}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
           )}
         </div>
+        {/* Active subscriptions */}
+        <div>
+          {activeSubscriptions.length > 0 && (
+            <div className="mt-10">
+              <h1 className="text-2xl font-bold">Active Subscriptions</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+                {activeSubscriptions.map((subscription) => (
+                  <div
+                    key={subscription._id}
+                    className="rounded-xl border-2 border-slate-300 p-5"
+                    style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                  >
+                    <div>
+                      <div className="flex flex-col mb-4">
+                        <div className="flex justify-between items-center">
+                          <div className="ml-2 text-lg font-semibold">
+                            {subscription.plan}
+                          </div>
+                          {isSubscriptionActive(subscription.expirationDate) ? (
+                            <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                              Active
+                            </div>
+                          ) : (
+                            <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                              Expired
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-3 text-gray-700">
+                          <span className="font-semibold">Start Date</span>:{" "}
+                        {formatDate(subscription.paymentDate)}
+                        </div>
+                        <div className="mt-3 text-gray-700">
+                          <span className="font-semibold">End Date</span>:{" "}
+                          {formatDate(subscription.expirationDate)}
+                        </div>
+                        <div className="flex flex-wrap mt-3 space-x-2">
+                          <div className="flex items-center mt-3">
+                            <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                            <span>₹{subscription.amount}</span>
+                          </div>
+                          {isSubscriptionActive(subscription.expirationDate) ? (
+                            <div className="mt-3">
+                              Days Left:{" "}
+                              {calculateDaysLeft(subscription.expirationDate)}
+                            </div>
+                          ) : (
+                            <button
+                              className="mt-3 px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                              onClick={() =>
+                                renewSubscription(subscription.plan)
+                              }
+                            >
+                              Renew Subscription
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         <h1 className="text-2xl font-bold mt-10 mb-5">Your Jobs</h1>
         <div className="flex items-center mb-4">
           <input
@@ -314,44 +465,98 @@ export default function UserPage() {
           {filteredJobs.length === 0 ? (
             <p className="text-lg">No jobs available</p>
           ) : (
-            filteredJobs.map((job) => (
-              <div
-                key={job._id}
-                className="border rounded-lg p-4 my-2 flex justify-between items-center shadow-lg"
-              >
-                <div className="flex items-center space-x-4 w-full">
-                  <div className="flex-1">
-                    <h2 className="text-xl font-semibold">{job.title}</h2>
-                    <p className="text-gray-600 mt-2">{job.description}</p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gray-100 rounded-lg p-2">
-                      <span className="font-semibold">
-                        {job.minAmountPerHour}-
-                      </span>
-                      <span>{job.maxAmountPerHour}/Hour</span>
-                    </div>
-                    <div className="bg-gray-100 rounded-lg p-2">
-                      {job.jobType}
-                    </div>
-                    {job.location && (
-                      <div className="bg-gray-100 rounded-lg p-2">
-                        {job.location}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {filteredJobs.map((job) => (
+                <div
+                  key={job._id}
+                  className="rounded-xl border-2 border-slate-300 p-5"
+                  style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                >
+                  <div>
+                    <div className="flex flex-col mb-4">
+                      <div className="flex justify-between items-center">
+                        <div className="ml-2 text-lg font-semibold">
+                          {job.title}
+                        </div>
+                        {job.isReviewed && (
+                          <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                            Accepted
+                          </div>
+                        )}
+                        {job.isRejected && (
+                          <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                            Rejected
+                          </div>
+                        )}
+                        {!job.isReviewed && !job.isRejected && (
+                          <div className="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-md">
+                            Pending
+                          </div>
+                        )}
                       </div>
-                    )}
+                      <div className="mt-3 text-gray-700">
+                        {job.description.slice(0, 100) + "...."}
+                      </div>
+                      <div className="flex flex-wrap mt-3 space-x-2">
+                        <div className="flex items-center mt-3 bg-gray-100 px-2 py-1 rounded-lg text-gray-500">
+                          <FaWallet className="w-6 h-6 mr-2 " />
+                          <span>
+                            &#8377;{job.minAmountPerHour}-&#8377;
+                            {job.maxAmountPerHour}/Month
+                          </span>
+                        </div>
+                        <div className="bg-gray-100 text-gray-500 items-center mt-3 pl-3 pr-3 rounded-lg flex text-center">
+                          {job.jobType}
+                        </div>
+                        {job.location && (
+                          <div className="bg-gray-100 text-gray-500 items-center mt-3 pl-3 pr-3 rounded-lg flex text-center">
+                            {job.location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
                     <button
-                      className="bg-red-500 text-white px-4 py-2 h-10 rounded hover:bg-red-600 transition-all duration-200"
-                      onClick={() => handleDelete(job._id)}
+                      onClick={() => setConfirmModal(job._id)}
+                      className="bg-red-500 text-white px-4 py-3 rounded-3xl text-center"
                     >
                       Delete
                     </button>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>
+      {confirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+              onClick={() => setConfirmModal(false)}
+            >
+              <span className="text-2xl">&times;</span>
+            </button>
+            <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete this job?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-200"
+                onClick={() => {
+                  setConfirmModal(false);
+                  handleDelete(
+                    jobs.find((job) => job._id === confirmModal)._id
+                  );
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
