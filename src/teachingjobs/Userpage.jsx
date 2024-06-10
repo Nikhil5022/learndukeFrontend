@@ -163,6 +163,7 @@ export default function UserPage() {
       };
       reader.readAsDataURL(file);
     }
+    setImageChange(true)
   };
 
   const handleSaveProfile = () => {
@@ -170,13 +171,16 @@ export default function UserPage() {
     // Save the updated profile data to the server
     axios
       .post(
-        `https://learndukeserver.vercel.app/editUserData/${user.email}`,
-        userData
+        `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
+          userData,
+          imageChange
+        }
       )
       .then((response) => {
         console.log("Profile data updated successfully:", response.data);
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
+        setImageChange(false);
       });
   };
 
