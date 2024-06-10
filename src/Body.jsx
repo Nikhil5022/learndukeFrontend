@@ -381,11 +381,11 @@ function FilterOptions({
         </button>
       </div>
       {openModal && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-10">
           <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
             style={{zIndex: 1000}}
           >
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex relative justify-between items-center mb-4">
               <div
                 className={`text-xl font-semibold cursor-pointer ${selectedDomain ? "text-blue-500" : "text-black"}`}
                 onClick={() => setSelectedDomain(true)}
@@ -446,10 +446,10 @@ function FilterOptions({
                 ))}
               </div>
             )}
-            <div className="flex space-x-1 sticky bottom-0  py-2">
+            <div className="flex space-x-1 p-3 -bottom-4 sticky">
               <button
                 onClick={handleApplyFilters}
-                className="w-1/2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                className="w-1/2 px-4 mx-2 py-2 bg-blue-500 text-white rounded-lg"
               >
                 Apply
               </button>

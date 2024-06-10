@@ -31,7 +31,7 @@ export default function Tutorial({
   const [loginModal, setLoginModal] = useState(false);
 
   useEffect(() => {
-    const isLogin = JSON.parse(localStorage.getItem("user"))
+    JSON.parse(localStorage.getItem("user"))
       ? setIsLogin(true)
       : setIsLogin(false);
       const userData=JSON.parse(localStorage.getItem("user"))
@@ -141,7 +141,7 @@ export default function Tutorial({
           className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
         >
           <div className="flex justify-center items-center">
-            <FaPhone style={{ transform: "rotateY(180deg)", zIndex:"-1000"}} />
+            <FaPhone style={{ transform: "rotateY(180deg)"}} />
             <div className="ml-2">Call Now</div>
           </div>
         </button>

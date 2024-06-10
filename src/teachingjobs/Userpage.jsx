@@ -14,16 +14,17 @@ export default function UserPage() {
   const [error, setError] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+  const [imageChange, setImageChange] = useState(false);
 
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .get(`http://localhost:3000/getUser/${user.email}`)
         .then((response) => {
           console.log(response.data);
           setUserData(response.data);
           axios
-            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+            .get(`http://localhost:3000/getJobs/${user.email}`)
             .then((jobsResponse) => {
               console.log(jobsResponse.data);
               setJobs(jobsResponse.data);
@@ -37,7 +38,7 @@ export default function UserPage() {
         });
 
       axios
-        .get(`https://learndukeserver.vercel.app/getSubscriptions/${user.email}`)
+        .get(`http://localhost:3000/getSubscriptions/${user.email}`)
         .then((response) => {
           console.log("Active Subscriptions:", response.data);
           setActiveSubscriptions(response.data);
@@ -49,7 +50,7 @@ export default function UserPage() {
 
   const handleDelete = (jobId) => {
     axios
-      .delete(`https://learndukeserver.vercel.app/deleteJob/${jobId}`)
+      .delete(`http://localhost:3000/deleteJob/${jobId}`)
       .then((response) => {
         setJobs(jobs.filter((job) => job._id !== jobId));
       })
@@ -85,6 +86,7 @@ export default function UserPage() {
       };
       reader.readAsDataURL(file);
     }
+    setImageChange(true)
   };
 
   const handleSaveProfile = () => {
@@ -92,13 +94,16 @@ export default function UserPage() {
     // Save the updated profile data to the server
     axios
       .post(
-        `https://learndukeserver.vercel.app/editUserData/${user.email}`,
-        userData
+        `http://localhost:3000/editUserData/${user.email}`,{
+          userData,
+          imageChange
+        }
       )
       .then((response) => {
         console.log("Profile data updated successfully:", response.data);
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
+        setImageChange(false);
       });
   };
 
