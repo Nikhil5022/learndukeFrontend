@@ -84,7 +84,7 @@ export default function Subscription() {
     }
 
     try {
-      const { data } = await axios.post("http://localhost:3000/checkout", {
+      const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
         amount: plan.price, // amount in paisa
       });
 
@@ -96,7 +96,7 @@ export default function Subscription() {
         description: `${plan.name} Plan Purchase`,
         image: image,
         order_id: data.order.id,
-        callback_url: `http://localhost:3000/verify/payment/${user.email}`,
+        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
         redirect: true,
         prefill: {
           name: user.name || "Sample User",
@@ -126,7 +126,7 @@ export default function Subscription() {
           };
           console.log("Payment Successful", paymentDetails);
           // Send payment details to server or handle UI update
-           axios.post("http://localhost:3000/addPayment", paymentDetails).then((response) => {
+           axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
             console.log("Payment details saved:", response.data);
           });
           

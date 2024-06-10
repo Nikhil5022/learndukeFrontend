@@ -19,12 +19,12 @@ export default function UserPage() {
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`http://localhost:3000/getUser/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
           console.log(response.data);
           setUserData(response.data);
           axios
-            .get(`http://localhost:3000/getJobs/${user.email}`)
+            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
             .then((jobsResponse) => {
               console.log(jobsResponse.data);
               setJobs(jobsResponse.data);
@@ -38,7 +38,7 @@ export default function UserPage() {
         });
 
       axios
-        .get(`http://localhost:3000/getSubscriptions/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getSubscriptions/${user.email}`)
         .then((response) => {
           console.log("Active Subscriptions:", response.data);
           setActiveSubscriptions(response.data);
@@ -50,7 +50,7 @@ export default function UserPage() {
 
   const handleDelete = (jobId) => {
     axios
-      .delete(`http://localhost:3000/deleteJob/${jobId}`)
+      .delete(`https://learndukeserver.vercel.app/deleteJob/${jobId}`)
       .then((response) => {
         setJobs(jobs.filter((job) => job._id !== jobId));
       })
@@ -94,7 +94,7 @@ export default function UserPage() {
     // Save the updated profile data to the server
     axios
       .post(
-        `http://localhost:3000/editUserData/${user.email}`,{
+        `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
           userData,
           imageChange
         }
