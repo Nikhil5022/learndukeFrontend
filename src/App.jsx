@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     // Update showNav based on the current location
