@@ -96,7 +96,7 @@ export default function Subscription() {
         description: `${plan.name} Plan Purchase`,
         image: image,
         order_id: data.order.id,
-        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}`,
+        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
         redirect: true,
         prefill: {
           name: user.name || "Sample User",
@@ -109,33 +109,6 @@ export default function Subscription() {
         theme: {
           color: "#121212",
         },
-        handler: function (response) {
-          const paymentDate = new Date();
-          const expirationDate = new Date(paymentDate);
-          expirationDate.setDate(expirationDate.getDate() + plan.days);
-
-          const paymentDetails = {
-            paymentDate: paymentDate.toLocaleString(),
-            plan: plan.name,
-            amount: plan.price,
-            status: "Completed",
-            user: user.email,
-            expirationDate: expirationDate.toLocaleString(),
-            transactionId: response.razorpay_payment_id, // Ensure transaction ID is unique
-            ...response,
-          };
-          console.log("Payment Successful", paymentDetails);
-          // Send payment details to server or handle UI update
-           axios.post("https://learndukeserver.vercel.app/addPayment", paymentDetails).then((response) => {
-            console.log("Payment details saved:", response.data);
-          });
-          
-        },
-        modal: {
-          ondismiss: function () {
-            console.log("Payment form closed");
-          },
-        },
       };
 
       const razor = new window.Razorpay(options);
@@ -146,7 +119,7 @@ export default function Subscription() {
   };
 
   return user ? (
-    <div className="flex justify-center py-10 bg-white text-black">
+    <div className="flex justify-center py-10 bg-white text-black ">
       <div className="w-full md:w-11/12 lg:w-9/12 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {plans.map((plan, index) => (

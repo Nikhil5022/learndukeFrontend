@@ -55,7 +55,7 @@ function Userdata() {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    window.location.href = 'http://localhost:5173/';
+    window.location.href = 'https://learnduke-frontend.vercel.app/';
   };
 
   return (
