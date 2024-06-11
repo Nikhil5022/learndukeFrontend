@@ -64,7 +64,6 @@ export default function UserPage() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log(response.data);
           setUserData(response.data);
           setJobAlerts(response.data.jobAllerts);
           setIsPremium(response.data.isPremium);
@@ -72,7 +71,6 @@ export default function UserPage() {
           axios
             .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
             .then((jobsResponse) => {
-              console.log(jobsResponse.data);
               setJobs(jobsResponse.data);
             });
           setLoading(false);
@@ -88,7 +86,6 @@ export default function UserPage() {
           `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
         )
         .then((response) => {
-          console.log("Active Subscriptions:", response.data);
           setActiveSubscriptions(response.data);
         });
     } else {
@@ -125,10 +122,8 @@ export default function UserPage() {
       jobAllerts: uniqueJobAlerts,
     });
 
-    console.log(selectedDomains)
-    axios.post(`http://localhost:3000/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
+    axios.post(`https://learndukeserver.vercel.app/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
       .then((response) => {
-        console.log("Job alerts updated successfully:", response.data);
         alert("Job alerts updated successfully");
       })
       .catch((error) => {
@@ -170,7 +165,6 @@ export default function UserPage() {
   };
 
   const handleSaveProfile = () => {
-    console.log("User Data:", userData);
 
     const linkedinRegex = new RegExp(
       "^(https?://)?(www.)?linkedin.com/in/([a-zA-Z0-9-.]+)$"
@@ -196,7 +190,6 @@ export default function UserPage() {
         }
       )
       .then((response) => {
-        console.log("Profile data updated successfully:", response.data);
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
         setImageChange(false);
@@ -209,9 +202,6 @@ export default function UserPage() {
     const diffTime = Math.abs(expiration - today);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    console.log(expiration, expirationDate)
-    console.log(diffTime)
-    console.log("Days left:", diffDays)
     return diffDays;
   };
 
@@ -221,8 +211,7 @@ export default function UserPage() {
     return expiration >= today;
   };
   const renewSubscription = (plan) => {
-    console.log("Renew subscription for plan:", plan);
-    // Add logic for renewing subscription
+    navigator("/subscription");
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
