@@ -22,6 +22,9 @@ export default function UserPage() {
   const [isPremium, setIsPremium] = useState(false);
   const [openDomainModal, setOpenDomainModal] = useState(false);
   const [selectedDomains, setSelectedDomains] = useState([]);
+  const [imageChange, setImageChange] = useState(false);
+  const [isLinkedinValid, setIsLinkedinValid] = useState(false);
+  const [isGithubValid, setIsGithubValid] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -168,7 +171,23 @@ export default function UserPage() {
 
   const handleSaveProfile = () => {
     console.log("User Data:", userData);
-    // Save the updated profile data to the server
+
+    const linkedinRegex = new RegExp(
+      "^(https?://)?(www.)?linkedin.com/in/([a-zA-Z0-9-.]+)$"
+    );
+    const githubRegex = new RegExp(
+      "^(https?://)?(www.)?github.com/([a-zA-Z0-9-.]+)$"
+    );
+
+    if (userData.linkedin && !linkedinRegex.test(userData.linkedin)) {
+      setIsLinkedinValid(true)
+      return;
+    }
+
+    if (userData.github && !githubRegex.test(userData.github)) {
+      setIsGithubValid(true)
+      return;
+    }
     axios
       .post(
         `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
@@ -308,6 +327,9 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isLinkedinValid && (
+                    <div className="text-red-500">Enter a valid LinkedIn URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">GitHub</label>
@@ -319,6 +341,9 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isGithubValid && (
+                    <div className="text-red-500">Enter a valid GitHub URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">Phone Number</label>
