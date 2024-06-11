@@ -112,6 +112,10 @@ export default function UserPage() {
     const expiration = new Date(expirationDate);
     const diffTime = Math.abs(expiration - today);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    console.log(expiration, expirationDate)
+    console.log(diffTime)
+    console.log("Days left:", diffDays)
     return diffDays;
   };
 
@@ -246,7 +250,7 @@ export default function UserPage() {
                 <div>
                   <label className="block font-semibold">Phone Number</label>
                   <input
-                    type="text"
+                    type="number"
                     value={userData.phoneNumber}
                     onChange={(e) =>
                       setUserData({ ...userData, phoneNumber: e.target.value })
@@ -257,7 +261,7 @@ export default function UserPage() {
                 <div>
                   <label className="block font-semibold">WhatsApp Number</label>
                   <input
-                    type="text"
+                    type="number"
                     value={userData.whatsappNumber}
                     onChange={(e) =>
                       setUserData({
