@@ -25,6 +25,8 @@ import Detailedjob from "./teachingjobs/Detailedjob";
 import PaymentFailure from "./teachingjobs/PaymentFailure";
 import { FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import Subscription from "./teachingjobs/Subscription";
+import Explorementors from "./mentorship/Explorementors";
+import Detailedmentors from "./mentorship/Detailedmentors";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -74,6 +76,8 @@ function App() {
         <Route path="/detailedjob/:jobId" element={<Detailedjob />} />
         <Route path="/paymentfailed" element={<PaymentFailure />} />
         <Route path="/subscription" element={<Subscription />} />
+        <Route path="/explorementors" element={<Explorementors />} />
+        <Route path="/detailedmentor/:mentorId" element={<Detailedmentors />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && <Footer />}

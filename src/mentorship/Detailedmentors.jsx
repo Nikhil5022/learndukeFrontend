@@ -1,0 +1,385 @@
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import {
+  FaMapMarkerAlt,
+  FaGlobe,
+  FaUser,
+  FaClock,
+  FaMoneyBillAlt,
+  FaComments,
+  FaLanguage,
+  FaStar,
+  FaTools,
+  FaChalkboardTeacher,
+  FaWhatsapp
+} from "react-icons/fa";
+import "./explorementors.css";
+import { MdDomain } from "react-icons/md";
+import { MdAddCall } from "react-icons/md";
+
+
+function Detailedmentors() {
+  const { mentorId } = useParams();
+  const [mentor, setMentor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [noData, setNoData] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const reviewsSectionRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchMentorData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/getMentor/${mentorId}`
+        );
+        if (isMounted) {
+          console.log(response.data);
+          setMentor(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching mentor data:", error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchMentorData();
+
+    const timeout = setTimeout(() => {
+      if (!mentor && isMounted) {
+        setNoData(true);
+      }
+    }, 5000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
+  }, [mentorId]);
+
+  const handleReviewClick = (review) => {
+    setSelectedReview(review);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedReview(null);
+  };
+
+  const handleScrollToReviews = () => {
+    reviewsSectionRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const calculateAverageRating = () => {
+    if (!mentor || !mentor.reviews.length) return 0;
+    const totalRating = mentor.reviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    return (totalRating / mentor.reviews.length).toFixed(1);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen montserrat ">
+      {loading && (
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-900"></div>
+        </div>
+      )}
+      {!loading && noData && !mentor && (
+        <p className="text-red-500 text-xl">
+          No data available for this mentor.
+        </p>
+      )}
+      {!loading && mentor && (
+        <div className="w-full lg:w-10/12 mx-auto flex flex-col-reverse md:flex-row mt-10 bg-white rounded-lg">
+          <div className="md:w-2/3 p-4">
+            <div className="text-2xl md:text-4xl font-bold tracking-wide mb-6 leading-snug">
+              {mentor.aboutMentorship}
+            </div>
+            <div className="mt-10 text-2xl font-bold">
+              <div className="flex items-center space-x-2">
+                <FaChalkboardTeacher />
+                <span>Class Location</span>
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                {mentor.locationType.map((location, index) => (
+                  <div
+                    key={index}
+                    className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2 flex items-center"
+                  >
+                    {location === "online" && <FaGlobe className="mr-2" />}
+                    {location === "offline" && (
+                      <FaMapMarkerAlt className="mr-2" />
+                    )}
+                    {location === "in-person" && <FaUser className="mr-2" />}
+                    {location}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-16">
+              <div className="text-2xl font-semibold mb-4">
+                About {mentor.name}
+              </div>
+              <div className="text-lg tracking-wide">{mentor.aboutUs}</div>
+            </div>
+            <div className="mt-16">
+              <div className="text-2xl font-semibold mb-4">About the class</div>
+              <div className="text-lg font-semibold flex items-center">
+                <FaLanguage className="mr-2" /> Languages
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                {mentor.languages.map((language, index) => (
+                  <div
+                    key={index}
+                    className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
+                  >
+                    {language}
+                  </div>
+                ))}
+              </div>
+              <div className="text-lg font-semibold flex items-center mt-5">
+                <FaTools className="mr-2" /> Skills
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                {mentor.skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
+                  >
+                    {skill}
+                  </div>
+                ))}
+              </div>
+              <div className="text-lg font-semibold flex items-center mt-5">
+                <FaClock className="mr-2" /> Class Timings
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                <div className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2">
+                  {mentor.availableStartTime} - {mentor.availableEndTime}
+                </div>
+              </div>
+              <div className="text-lg font-semibold flex items-center mt-5">
+                <MdDomain className="mr-2"/>
+                Domains
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                {mentor.domains.map((domain, index) => (
+                  <div
+                    key={index}
+                    className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
+                  >
+                    {domain}
+                  </div>
+                ))}
+              </div>
+              <div className="text-lg font-semibold flex items-center mt-5" >
+                <FaLanguage className="mr-2" /> Sub Domains
+              </div>
+              <div className="flex flex-wrap space-x-3 mt-5">
+                {mentor.subdomains.map((subDomain, index) => (
+                  <div
+                    key={index}
+                    className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
+                  >
+                    {subDomain}
+                  </div>
+                ))}
+              </div>
+              <div className="text-lg tracking-wide mt-8" ref={reviewsSectionRef}>
+                {mentor.aboutMentorship}
+              </div>
+            </div>
+            <div  className="mt-16">
+              <div className="flex justify-between mb-4">
+                <div className="flex items-center text-xl font-semibold">
+                  <FaComments className="mr-2" /> Reviews
+                </div>
+                <div className="border border-gray-300 px-2 py-1 rounded-2xl">
+                  {mentor.reviews.length} Reviews
+                </div>
+              </div>
+              <div className="flex flex-col overflow-x-auto hide-scrollbar">
+                {mentor.reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="w-full mb-4"
+                    onClick={() => handleReviewClick(review)}
+                  >
+                    <div className="border border-gray-300 rounded-2xl p-4">
+                      <div className="flex justify-between items-center ">
+                        <div className="flex items-center">
+                          <img
+                            src={mentor.profilephoto.url}
+                            className="w-10 h-10 rounded-full mr-3"
+                            alt="User"
+                          />
+                          <div className="font-semibold">{review.user}</div>
+                        </div>
+                        <div className="font-bold flex items-center space-x-1">
+                          {" "}
+                          <span>
+                            <FaStar className="text-orange-500" />
+                          </span>{" "}
+                          <span>{review.rating}</span>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        {isMobile ? (
+                          <div>
+                            {review.review.split(".").slice(0, 5).join(".")}.
+                          </div>
+                        ) : (
+                          <div>{review.review}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-end items-center">
+                      {review.reply && (
+                        <div
+                          className={`mt-4 w-2/3 hidden md:flex flex-col ${
+                            review.reply ? " pt-4" : ""
+                          }`}
+                        >
+                          <span className="font-semibold flex items-center space-x-3">
+                            <img
+                              src={mentor.profilephoto.url}
+                              className="w-10 rounded-full"
+                              alt=""
+                            />
+                            <span>{mentor.name}'s response:</span>
+                          </span>{" "}
+                          <span className="mt-3">{review.reply}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {selectedReview && isMobile && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white rounded-lg p-4 m-5 overflow-x-auto">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-bold">Review</h3>
+                      <button
+                        className="text-gray-500 hover:text-gray-700"
+                        onClick={handleCloseModal}
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <div className="mb-4">
+                      <p>{selectedReview.review}</p>
+                    </div>
+                    {selectedReview.reply && (
+                      <div>
+                        <h4 className="font-bold">
+                          Response from {mentor.name}:
+                        </h4>
+                        <p>{selectedReview.reply}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-16">
+              <div className="flex items-center text-xl font-semibold mb-4">
+                <FaMoneyBillAlt className="mr-2" /> Fees
+              </div>
+              <div className="flex flex-col md:flex-row border border-gray-300 p-5 rounded-lg md:space-x-5 bg-blue-50">
+                <div className="flex flex-col">
+                  <div className="font-semibold">Hourly fee</div>
+                  <div className="text-sm">₹{mentor.hourlyRate}</div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold">Free classes</div>
+                  <div className="text-sm">30mins</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full md:w-1/3 p-4 md:p-8 rounded-lg shadow-md md:sticky md:top-20 self-start bg-gray-50 mb-5 ">
+            <div className="flex justify-center">
+              <img
+                src={mentor.profilephoto.url}
+                alt="Profile"
+                className="w-1/3 h-auto rounded-3xl mb-4 shadow-lg"
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+              {mentor.name}
+            </h2>
+            <div className="text-center mb-6">
+              <div className="flex justify-center items-center space-x-1">
+                <FaStar className="text-orange-500" />
+                <span className="text-lg font-bold">
+                  {calculateAverageRating()}
+                </span>
+                <span className="text-sm">
+                  ({mentor.reviews.length} reviews)
+                </span>
+              </div>
+            </div>
+            <div className="flex md:flex-col space-y-1 md:space-y-4 overflow-x-auto hide-scrollbar">
+              <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
+                <span className="font-semibold flex items-center whitespace-nowrap">
+                  <FaMoneyBillAlt className="mr-2" /> Hourly fees
+                </span>
+                <span className="font-bold">₹{mentor.hourlyRate}</span>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
+                <span className="font-semibold flex items-center whitespace-nowrap">
+                  <FaClock className="mr-2" /> Start time
+                </span>
+                <span className="font-bold">{mentor.availableStartTime}</span>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
+                <span className="font-semibold flex items-center whitespace-nowrap">
+                  <FaClock className="mr-2" /> End time
+                </span>
+                <span className="font-bold">{mentor.availableEndTime}</span>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
+                <span className="font-semibold flex items-center whitespace-nowrap">
+                  <FaUser className="mr-2" /> Number of Students
+                </span>
+                <span className="font-bold">{mentor.numberOfStudents}</span>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-col space-y-3 justify-evenly">
+              <button className="bg-orange-400  px-3 py-2 rounded-lg font-semibold text-white flex justify-center space-x-3 items-center">
+                < MdAddCall/> <span>Call</span>
+              </button>
+              <button className="bg-green-400  px-3 py-2 rounded-lg font-semibold text-white  justify-center space-x-3 flex items-center">
+                <FaWhatsapp/> <span>WhatsApp</span>
+              </button>
+            </div>
+            <div className="text-center font-semibold mt-4">1 class free</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Detailedmentors;
