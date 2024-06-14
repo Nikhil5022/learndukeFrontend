@@ -25,10 +25,13 @@ import Detailedjob from "./teachingjobs/Detailedjob";
 import PaymentFailure from "./teachingjobs/PaymentFailure";
 import { FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import Subscription from "./teachingjobs/Subscription";
+import LandingPage from "./mentorship/LandingPage";
+import BecomeMentor from "./mentorship/Mentor/BecomeMentor";
 
 function App() {
   const [user, setUser] = useState(null);
   const [showNav, setShowNav] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,6 +41,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if(location.pathname === "/become-a-mentor") {
+      setShowFooter(false);
+    }else{
+      setShowFooter(true);
+    }
     // Update showNav based on the current location
     if (location.pathname === "/createjob") {
       setShowNav(false);
@@ -60,6 +68,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Teachingjobs />} />
         <Route path="/teachingJobs" element={<Body />} />
+        <Route path="/mentorship" element={<LandingPage />} />
         <Route path="/cyberschool" element={<Cyberschool />} />
         <Route path="/findteachingjobs" element={<Findteachingjobs />} />
         <Route path="/contactus" element={<Contactus />} />
@@ -74,9 +83,10 @@ function App() {
         <Route path="/detailedjob/:jobId" element={<Detailedjob />} />
         <Route path="/paymentfailed" element={<PaymentFailure />} />
         <Route path="/subscription" element={<Subscription />} />
+        <Route path="/become-a-mentor" element={<BecomeMentor />} />
         {/* Add additional routes here */}
       </Routes>
-      {showNav && <Footer />}
+      {showNav && showFooter && <Footer />}
       {user && showNav && (
         <>
           <div
