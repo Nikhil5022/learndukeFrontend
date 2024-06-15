@@ -82,10 +82,10 @@ function Languages({ handleLanguageChange, next, back }) {
   };
 
   return (
-    <div>
-      <div className="flex  flex-col items-center flex-1">
+    <div className="w-full flex flex-col items-center justify-center">
+      <div className="flex w-11/12 flex-col items-center flex-1">
         <h3 className="text-2xl m-4">Selected Languages</h3>
-        <ul className=" max-h-40 overflow-y-scroll t justify-center flex-col w-11/12 lg:w-6/12">
+        <ul className=" max-h-32 overflow-y-scroll section justify-center flex-col w-11/12 lg:w-6/12">
           {selectedLanguages.map((lang) => (
             <div
               key={lang}
@@ -98,9 +98,9 @@ function Languages({ handleLanguageChange, next, back }) {
           ))}
         </ul>
       </div>
-      <div className="flex flex-1 flex-col items-center">
+      <div className="flex w-11/12 flex-1 flex-col items-center">
         <h3 className="text-2xl m-4">All Languages</h3>
-        <ul className=" max-h-40 overflow-y-scroll t flex-1 justify-center flex-col">
+        <ul className=" max-h-40 w-11/12 mb-5 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
           {allLanguages.map((lang) => (
             <div 
             key={lang}

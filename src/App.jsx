@@ -27,6 +27,7 @@ import { FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import Subscription from "./teachingjobs/Subscription";
 import LandingPage from "./mentorship/LandingPage";
 import BecomeMentor from "./mentorship/Mentor/BecomeMentor";
+import MentorPayment from "./mentorship/Mentor/payment/MentorPayment";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -84,6 +85,7 @@ function App() {
         <Route path="/paymentfailed" element={<PaymentFailure />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/become-a-mentor" element={<BecomeMentor />} />
+        <Route path="/mentor/payment" element={<MentorPayment />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}

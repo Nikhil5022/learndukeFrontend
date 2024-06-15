@@ -85,9 +85,9 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
       onSubmit={checks ? next : handleNotChecked}
     >
       <h1 className="text-2xl">Choose Your Sub Domain</h1>
-      <div className="max-h-60 overflow-scroll w-11/12">
+      <div className="max-h-60 overflow-scroll section mt-4 w-11/12">
         { subDomains.length > 0 ? subDomains.map((singleSubDomain,i) => (
-          <div key={i} className="flex t items-center"
+          <div key={i} className="flex p-2 text-lg items-center"
           >
             <input
               type="checkbox"

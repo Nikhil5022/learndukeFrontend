@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Location({next, back, handleLocationChange}) {
-  const allLocations = ["Online","At Home"];
+  const allLocations = ["Online","At Home", "In Person"];
   const [selectedLocations, setSelectedLocations] = React.useState([]);
 
   const handleChecked = (e) => {
@@ -25,16 +25,16 @@ function Location({next, back, handleLocationChange}) {
         {
           allLocations.map((loc) => {
             return (
-              <div key={loc} className="flex ">
+              <div key={loc} className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   id={loc}
                   name={loc}
                   value={loc}
                   onChange={handleChecked}
-                  className="mx-3"
+                  className="mx-3 cursor-pointer"
                 />
-                <label className="cursor-pointer" htmlFor={loc}>{loc}</label>
+                <label className="text-lg p-2 cursor-pointer" htmlFor={loc}>{loc}</label>
               </div>
             );
           })

@@ -14,17 +14,18 @@ function About({ next, handleAboutChange, back }) {
 
 
   return (
-    <div className="t w-full items-center justify-center flex flex-col">
+    <div className=" w-full items-center justify-center flex flex-col">
       <form className="flex flex-col items-center" onSubmit={about.split(" ").length > 12 ? next : handleNotChange}>
         <label htmlFor="about" className="text-2xl ">
           About You
         </label>
         <textarea
           id="about"
-          className="text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
+          className="section text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
           rows={10}
           cols={50}
           onChange={handleChange}
+          
           required
         ></textarea>
         <div className="flex">

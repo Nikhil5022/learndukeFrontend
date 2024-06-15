@@ -229,29 +229,31 @@ function Skills({ next, back, handleSkillsChange, domain }) {
     <div className="w-11/12 flex sm:flex-col flex-col">
       <div className="flex  flex-col items-center flex-1">
         <h3 className="text-2xl m-4">Selected Skills</h3>
-        <ul className=" max-h-40 overflow-y-scroll t justify-center flex-col w-11/12 lg:w-6/12">
+        <ul className=" max-h-40 section overflow-y-scroll justify-center flex-col w-11/12 lg:w-6/12">
           {selectedSkills.map((skill) => (
             <div
               key={skill}
               className="flex flex-1 item-center  text-center cursor-pointer relative"
               onClick={() => handleSkillRemove(skill)}
             >
-              <li className="m-1 p-1"> {skill} </li>
+              <li className="m-1 text-lg p-1"> {skill} </li>
               <TfiClose className="text-lg absolute right-2 top-3" />
             </div>
           ))}
         </ul>
       </div>
-      {/* <p className="border-2 w-full border-orange-300"> </p> <div className="relative"> <h2>Search Skills</h2> <input className="border-2" type="text" value={searchTerm} onChange={handleSearchChange} placeholder="Search skills" /> {searchResults.length > 0 && ( <ul className="z-10 absolute border-2 h-32 w-full border-orange-500 backdrop-blur-xl"> {searchResults.map((skill) => ( <li key={skill} onClick={() => { handleSkillSelect(skill); setShowPopup(false); }} > {skill} </li> ))} </ul> )} </div> <p className="border-2 w-full border-orange-300"> </p> */}
+      <p className="border-2 w-full border-orange-300"> </p>
+      {/* 
+       <div className="relative"> <h2>Search Skills</h2> <input className="border-2" type="text" value={searchTerm} onChange={handleSearchChange} placeholder="Search skills" /> {searchResults.length > 0 && ( <ul className="z-10 absolute border-2 h-32 w-full border-orange-500 backdrop-blur-xl"> {searchResults.map((skill) => ( <li key={skill} onClick={() => { handleSkillSelect(skill); setShowPopup(false); }} > {skill} </li> ))} </ul> )} </div> <p className="border-2 w-full border-orange-300"> </p> */}
       <div className="flex flex-1 flex-col items-center">
-        <h3 className="text-2xl m-4">All Skills</h3>
-        <ul className=" max-h-40 overflow-y-scroll t flex-1 justify-center flex-col">
+        <h3 className="text-2xl m-4 ">All Skills</h3>
+        <ul className=" max-h-40 w-11/12 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
           {mainSkills.map((skill) => (
             <div 
             key={skill}
             className="flex flex-1 item-center  text-center cursor-pointer relative"
             onClick={() => handleSkillSelect(skill)}>
-            <li className="m-1 p-1">
+            <li className="m-1 text-lg p-1">
               {skill}
             </li>
             <IoIosAdd className="text-2xl absolute right-2 top-2" />

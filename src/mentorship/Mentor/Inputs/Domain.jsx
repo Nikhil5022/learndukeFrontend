@@ -34,7 +34,7 @@ function Domain({ handleDomainChange, next}){
         {
           inputDomains.map((domain) => {
             return (
-              <div key={domain} className="flex ">
+              <div key={domain} className="flex p-2 text-lg">
                 <input
                   type="checkbox"
                   id={domain}

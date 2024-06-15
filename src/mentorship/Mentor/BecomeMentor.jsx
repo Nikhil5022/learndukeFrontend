@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Domain from "./Inputs/Domain";
 import "./BecomeMentor.css"
 import SubDomain from "./Inputs/SubDomain";
 import Skills from "./Inputs/Skills";
 import About from "./Inputs/About";
-// import Description from "./Inputs/Description";
 import Languages from "./Inputs/Languages";
 import HourlyFees from "./Inputs/HourlyFees";
 import Experience from "./Inputs/Experience";
@@ -15,6 +14,7 @@ import Availability from "./Inputs/Availability";
 import Address from "./Inputs/Address";
 import ProfilePhoto from "./Inputs/ProfilePhoto";
 import Description from "./Inputs/Description";
+import { useNavigate } from "react-router-dom";
 
 function BecomeMentor() {
   const [mentorData, setMentorData] = useState({
@@ -37,6 +37,7 @@ function BecomeMentor() {
   });
 
   const [currentStep, setCurrentStep] = useState(1);
+  const navigate = useNavigate()
 
   function next(e) {
     e.preventDefault();
@@ -113,14 +114,15 @@ function BecomeMentor() {
       whatsAppNumber: obj[1],
     }));
   }
-  function handleProfilePhotoChange(e) {
-    console.log(e);
-    setMentorData((prevState) => ({
+     async function handleProfilePhotoChange(e) {
+     console.log(e)
+     setMentorData((prevState) =>  ({
       ...prevState,
       profilePhoto: e,
-    }));
-    handleSubmit();
-  }
+      }))
+     }
+     
+
   function handleEducationChange(e) {
     setMentorData((prevState) => ({
       ...prevState,
@@ -141,13 +143,9 @@ function BecomeMentor() {
     }));
   }
 
-  function handleSubmit() {
-    console.log(mentorData);
-  }
-
   function Suggestion({ obj }) {
     return (
-      <div className="flex items-center justify-center p-2 suggestion t">
+      <div className="flex items-center justify-center p-2 suggestion">
         <div className="border-2 bg-orange-500 border-slate-900 text-white rounded-lg p-3 flex items-center justify-center flex-col min-w-96 suggestion_container">
           <h1 className="text-2xl p-2 font-semibold">
             😊{obj.name}
@@ -270,6 +268,11 @@ function BecomeMentor() {
       children: <ProfilePhoto key={13} back={back}  handleProfilePhotoChange={handleProfilePhotoChange}/>,
     },
   ];
+  useEffect(() => {
+    if (Object.keys(mentorData.profilePhoto).length > 0) {
+      navigate("/mentor/payment", { state: { mentorData } });
+    }
+  }, [mentorData.profilePhoto]);
 
   return (
     <div>
@@ -283,7 +286,7 @@ function BecomeMentor() {
             obj.id === currentStep && <Suggestion key={obj.id} obj={obj} />
         )}
       </div>
-      <div className="flex-1 t mentorInputs flex items-center justify-center flex-col">
+      <div className="flex-1 mentorInputs flex items-center justify-center flex-col">
         {formSuggestions.map((obj) => obj.id === currentStep && obj.children)}
       </div>
     </div>

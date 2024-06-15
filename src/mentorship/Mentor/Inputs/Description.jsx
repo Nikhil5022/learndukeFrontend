@@ -13,14 +13,14 @@ function Description({ next, back, handleDescriptionChange }) {
 
 
   return (
-    <div className="t w-full items-center justify-center flex flex-col">
+    <div className=" w-full items-center justify-center flex flex-col">
       <form className="flex flex-col items-center" onSubmit={desc.split(" ").length > 12 ? next : handleNotChange}>
         <label htmlFor="desc" className="text-2xl ">
           Description
         </label>
         <textarea
           id="desc"
-          className="text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
+          className="section text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
           rows={10}
           cols={50}
           onChange={handleChange}

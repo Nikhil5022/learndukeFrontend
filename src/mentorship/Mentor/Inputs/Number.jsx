@@ -34,7 +34,7 @@ function Number({next, back, handleNumberChange}) {
         <div className='flex text-center items-center justify-center'> 
 
         <input value={wNum} id="same" className='mx-2' name="same" type='checkbox' onClick={()=>{setSame(!same)}} />
-        <label htmlFor='same' className='text-sm'>Is this your Whatsapp number</label>
+        <label htmlFor='same' className='text-md mt-1'>Is this your Whatsapp number</label>
         </div>
         <br/>
         {!same && <>
