@@ -22,6 +22,9 @@ export default function UserPage() {
   const [isPremium, setIsPremium] = useState(false);
   const [openDomainModal, setOpenDomainModal] = useState(false);
   const [selectedDomains, setSelectedDomains] = useState([]);
+  const [imageChange, setImageChange] = useState(false);
+  const [isLinkedinValid, setIsLinkedinValid] = useState(false);
+  const [isGithubValid, setIsGithubValid] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -61,7 +64,6 @@ export default function UserPage() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log(response.data);
           setUserData(response.data);
           setJobAlerts(response.data.jobAllerts);
           setIsPremium(response.data.isPremium);
@@ -69,7 +71,6 @@ export default function UserPage() {
           axios
             .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
             .then((jobsResponse) => {
-              console.log(jobsResponse.data);
               setJobs(jobsResponse.data);
             });
           setLoading(false);
@@ -85,7 +86,6 @@ export default function UserPage() {
           `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
         )
         .then((response) => {
-          console.log("Active Subscriptions:", response.data);
           setActiveSubscriptions(response.data);
         });
     } else {
@@ -122,10 +122,8 @@ export default function UserPage() {
       jobAllerts: uniqueJobAlerts,
     });
 
-    console.log(selectedDomains)
-    axios.post(`http://localhost:3000/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
+    axios.post(`https://learndukeserver.vercel.app/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
       .then((response) => {
-        console.log("Job alerts updated successfully:", response.data);
         alert("Job alerts updated successfully");
       })
       .catch((error) => {
@@ -167,8 +165,23 @@ export default function UserPage() {
   };
 
   const handleSaveProfile = () => {
-    console.log("User Data:", userData);
-    // Save the updated profile data to the server
+
+    const linkedinRegex = new RegExp(
+      "^(https?://)?(www.)?linkedin.com/in/([a-zA-Z0-9-.]+)$"
+    );
+    const githubRegex = new RegExp(
+      "^(https?://)?(www.)?github.com/([a-zA-Z0-9-.]+)$"
+    );
+
+    if (userData.linkedin && !linkedinRegex.test(userData.linkedin)) {
+      setIsLinkedinValid(true)
+      return;
+    }
+
+    if (userData.github && !githubRegex.test(userData.github)) {
+      setIsGithubValid(true)
+      return;
+    }
     axios
       .post(
         `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
@@ -177,7 +190,6 @@ export default function UserPage() {
         }
       )
       .then((response) => {
-        console.log("Profile data updated successfully:", response.data);
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
         setImageChange(false);
@@ -189,6 +201,7 @@ export default function UserPage() {
     const expiration = new Date(expirationDate);
     const diffTime = Math.abs(expiration - today);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
     return diffDays;
   };
 
@@ -198,8 +211,7 @@ export default function UserPage() {
     return expiration >= today;
   };
   const renewSubscription = (plan) => {
-    console.log("Renew subscription for plan:", plan);
-    // Add logic for renewing subscription
+    navigator("/subscription");
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -308,6 +320,9 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isLinkedinValid && (
+                    <div className="text-red-500">Enter a valid LinkedIn URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">GitHub</label>
@@ -319,11 +334,14 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isGithubValid && (
+                    <div className="text-red-500">Enter a valid GitHub URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">Phone Number</label>
                   <input
-                    type="text"
+                    type="number"
                     value={userData.phoneNumber}
                     onChange={(e) =>
                       setUserData({ ...userData, phoneNumber: e.target.value })
@@ -334,7 +352,7 @@ export default function UserPage() {
                 <div>
                   <label className="block font-semibold">WhatsApp Number</label>
                   <input
-                    type="text"
+                    type="number"
                     value={userData.whatsappNumber}
                     onChange={(e) =>
                       setUserData({
