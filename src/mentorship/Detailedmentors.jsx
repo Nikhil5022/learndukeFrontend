@@ -368,10 +368,10 @@ function Detailedmentors() {
             </div>
             <div className="mt-4 flex flex-col space-y-3 justify-evenly">
               <button className="bg-orange-400  px-3 py-2 rounded-lg font-semibold text-white flex justify-center space-x-3 items-center">
-                < MdAddCall/> <span>Call</span>
+                < MdAddCall/> <span>Call Mentor</span>
               </button>
               <button className="bg-green-400  px-3 py-2 rounded-lg font-semibold text-white  justify-center space-x-3 flex items-center">
-                <FaWhatsapp/> <span>WhatsApp</span>
+                <FaWhatsapp/> <span>WhatsApp Mentor</span>
               </button>
             </div>
             <div className="text-center font-semibold mt-4">1 class free</div>

@@ -18,16 +18,16 @@ import "./explorementors.css";
 import { useNavigate } from "react-router-dom";
 
 const domainOptions = [
-  { name: "All Domains", icon: <FaGlobe /> },
-  { name: "Engineering", icon: <FaLaptopCode /> },
-  { name: "Data Science", icon: <FaDatabase /> },
-  { name: "Business", icon: <FaChartLine /> },
-  { name: "School", icon: <FaSchool /> },
-  { name: "College", icon: <FaGraduationCap /> },
-  { name: "Govt Exams", icon: <FaUniversity /> },
-  { name: "Jee/neet", icon: <FaBook /> },
-  { name: "Extra class", icon: <FaChalkboardTeacher /> },
-  { name: "Interview prep", icon: <FaChalkboardTeacher /> },
+  { name: "All Domains", icon: <FaGlobe />,number:0 },
+  { name: "Engineering", icon: <FaLaptopCode />, number:1 },
+  { name: "Data Science", icon: <FaDatabase />, number:2},
+  { name: "Business", icon: <FaChartLine /> , number:3},
+  { name: "School", icon: <FaSchool />, number:4},
+  { name: "College", icon: <FaGraduationCap />, number:5},
+  { name: "Govt Exams", icon: <FaUniversity />, number:6},
+  { name: "Jee/neet", icon: <FaBook />, number:7},
+  { name: "Extra class", icon: <FaChalkboardTeacher />, number:8},
+  { name: "Interview prep", icon: <FaChalkboardTeacher />, number:9},
 ];
 
 const subDomainOptions = [
@@ -119,7 +119,7 @@ const subDomainOptions = [
 ];
 
 function Explorementors() {
-    const navigation = useNavigate();
+  const navigation = useNavigate();
   const [mentors, setMentors] = useState([]);
   const [originalMentors, setOriginalMentors] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("All Domains");
@@ -129,6 +129,7 @@ function Explorementors() {
   const subDomainDropdownRef = useRef(null);
   const [displayedNames, setDisplayedNames] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [left, setLeft] = useState(0);
 
   useEffect(() => {
     axios.get("http://localhost:3000/getMentors").then((response) => {
@@ -202,7 +203,12 @@ function Explorementors() {
     return domainOption ? domainOption.icon : null;
   };
 
-  const handleDomainClick = (domain) => {
+  const handleDomainClick = (domain, e) => {
+    // Calculate the left position of the dropdown
+    const left = e.target.getBoundingClientRect().left;
+    console.log(left);
+    setLeft(left);
+
     setSelectedDomain(domain);
     setShowSubDomains(showSubDomains === domain ? null : domain);
     if (domain === "All Domains") {
@@ -256,7 +262,7 @@ function Explorementors() {
         skill.toLowerCase().includes(searchValue)
       );
 
-      return domainMatch || subdomainMatch || skillsMatch || nameMatch ;
+      return domainMatch || subdomainMatch || skillsMatch || nameMatch;
     });
 
     setMentors(filteredMentors);
@@ -287,7 +293,7 @@ function Explorementors() {
                   ? "bg-black text-white"
                   : "text-black"
               }`}
-              onClick={() => handleDomainClick(option.name)}
+              onClick={(e) => handleDomainClick(option.name, e)}
             >
               <span>{option.icon}</span>
 
@@ -343,12 +349,12 @@ function Explorementors() {
         )}
       </div>
 
-      <div className="hidden md:flex">
+      <div className="hidden relative md:flex">
         {showSubDomains && selectedDomain !== "All Domains" && (
           <div
             ref={subDomainDropdownRef}
-            className="absolute top-50 left-0 right-0 bg-white p-4 rounded-lg z-50 w-fit mx-auto"
-            style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}
+            className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto`}
+            style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)", left: left-180}}
           >
             <div className="whitespace-nowrap text-2xl font-bold m-2">
               {selectedDomain + " "} Domains
@@ -390,7 +396,7 @@ function Explorementors() {
             ref={(el) => (cardRefs.current[index] = el)}
             onClick={() => {
               console.log(mentor._id);
-                navigation(`/detailedmentor/${mentor._id}`);
+              navigation(`/detailedmentor/${mentor._id}`);
             }}
           >
             <div className="relative md:pt-3 md:pl-3 md:pr-3 w-full">
