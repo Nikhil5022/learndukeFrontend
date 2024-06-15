@@ -15,10 +15,11 @@ import {
   FaTimes,
   FaPhoneAlt,
 } from "react-icons/fa";
-import "./Explorementors.css";
+import "./mentors.css";
 import { useNavigate } from "react-router-dom";
 import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
+
 
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />,number:0 },

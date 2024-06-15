@@ -14,7 +14,7 @@ import {
   FaChalkboardTeacher,
   FaWhatsapp
 } from "react-icons/fa";
-import "./Explorementors.css";
+import "./mentors.css";
 import { MdDomain } from "react-icons/md";
 import { MdAddCall } from "react-icons/md";
 
