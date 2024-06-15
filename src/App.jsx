@@ -25,11 +25,11 @@ import Detailedjob from "./teachingjobs/Detailedjob";
 import PaymentFailure from "./teachingjobs/PaymentFailure";
 import { FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import Subscription from "./teachingjobs/Subscription";
-import Explorementors from "./mentorship/Explorementors";
 import Detailedmentors from "./mentorship/Detailedmentors";
 import LandingPage from "./mentorship/LandingPage";
 import BecomeMentor from "./mentorship/Mentor/BecomeMentor";
 import MentorPayment from "./mentorship/Mentor/payment/MentorPayment";
+import Explorementors from './mentorship/Explorementors';
 
 function App() {
   const [user, setUser] = useState(null);

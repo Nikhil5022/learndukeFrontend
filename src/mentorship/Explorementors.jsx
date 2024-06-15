@@ -14,7 +14,7 @@ import {
   FaGlobe,
   FaTimes,
 } from "react-icons/fa";
-import "./explorementors.css";
+import "./Explorementors.css";
 import { useNavigate } from "react-router-dom";
 
 const domainOptions = [
