@@ -22,8 +22,12 @@ export default function Footer() {
         <div className="w-full flex flex-col md:flex-row text-center md:text-left ">
           <div className="w-full md:w-1/2 flex flex-col">
             <div className="text-xl font-semibold my-5">Resources</div>
-            <div className="font-normal hover:underline my-3">
-              Find Your online and offline Job
+            <div className="font-normal hover:underline my-3"
+              onClick={() => {
+                navigator("/teachingjobs");
+              }}
+            >
+              Find Your Remote and offline Job
             </div>
             <div
               className="font-normal hover:underline my-3"

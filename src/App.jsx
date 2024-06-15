@@ -4,7 +4,7 @@ import {
   Route,
   Routes,
   useLocation,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 import Navbar from "./Navbar";
 import Body from "./Body";
@@ -25,12 +25,16 @@ import Detailedjob from "./teachingjobs/Detailedjob";
 import PaymentFailure from "./teachingjobs/PaymentFailure";
 import { FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import Subscription from "./teachingjobs/Subscription";
+import LandingPage from "./mentorship/LandingPage";
+import BecomeMentor from "./mentorship/Mentor/BecomeMentor";
+import MentorPayment from "./mentorship/Mentor/payment/MentorPayment";
 
 function App() {
   const [user, setUser] = useState(null);
   const [showNav, setShowNav] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -38,6 +42,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if(location.pathname === "/become-a-mentor") {
+      setShowFooter(false);
+    }else{
+      setShowFooter(true);
+    }
     // Update showNav based on the current location
     if (location.pathname === "/createjob") {
       setShowNav(false);
@@ -60,6 +69,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Teachingjobs />} />
         <Route path="/teachingJobs" element={<Body />} />
+        <Route path="/mentorship" element={<LandingPage />} />
         <Route path="/cyberschool" element={<Cyberschool />} />
         <Route path="/findteachingjobs" element={<Findteachingjobs />} />
         <Route path="/contactus" element={<Contactus />} />
@@ -74,9 +84,11 @@ function App() {
         <Route path="/detailedjob/:jobId" element={<Detailedjob />} />
         <Route path="/paymentfailed" element={<PaymentFailure />} />
         <Route path="/subscription" element={<Subscription />} />
+        <Route path="/become-a-mentor" element={<BecomeMentor />} />
+        <Route path="/mentor/payment" element={<MentorPayment />} />
         {/* Add additional routes here */}
       </Routes>
-      {showNav && <Footer />}
+      {showNav && showFooter && <Footer />}
       {user && showNav && (
         <>
           <div
@@ -91,12 +103,14 @@ function App() {
           >
             <FaWhatsapp className="text-2xl text-green-400" />
           </div>
-          <div
-            className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
-            onClick={() => navigate("/createjob")}
-          >
-            <FaPlus className="text-xl" />
-          </div>
+          {user && (
+            <div
+              className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
+              onClick={() => navigate("/createjob")}
+            >
+              <FaPlus className="text-xl" />
+            </div>
+          )}
         </>
       )}
     </>

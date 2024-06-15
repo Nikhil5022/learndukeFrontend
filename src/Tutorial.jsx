@@ -35,7 +35,8 @@ export default function Tutorial({
       ? setIsLogin(true)
       : setIsLogin(false);
       const userData=JSON.parse(localStorage.getItem("user"))
-    axios
+    if(userData){
+      axios
       .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
       .then((userResponse) => {
         setUser(userResponse.data);
@@ -44,6 +45,7 @@ export default function Tutorial({
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
+    }
   }, [email, isLogin]);
 
   const handleCallNow = () => {

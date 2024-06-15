@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigator = useNavigate();
+  
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
@@ -14,19 +18,59 @@ export default function UserPage() {
   const [error, setError] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
+  const [jobAlerts, setJobAlerts] = useState([]);
+  const [isPremium, setIsPremium] = useState(false);
+  const [openDomainModal, setOpenDomainModal] = useState(false);
+  const [selectedDomains, setSelectedDomains] = useState([]);
   const [imageChange, setImageChange] = useState(false);
+  const [isLinkedinValid, setIsLinkedinValid] = useState(false);
+  const [isGithubValid, setIsGithubValid] = useState(false);
+
+  const domainOptions = [
+    "Information Technology (IT)",
+    "Finance",
+    "Healthcare",
+    "Education",
+    "Manufacturing",
+    "Retail",
+    "Telecommunications",
+    "Construction",
+    "Hospitality",
+    "Transportation and Logistics",
+    "Real Estate",
+    "Media and Entertainment",
+    "Marketing and Advertising",
+    "Energy and Utilities",
+    "Government",
+    "Non-Profit",
+    "Consulting",
+    "Legal",
+    "Automotive",
+    "Pharmaceuticals",
+    "Consumer Goods",
+    "Agriculture",
+    "Aerospace and Defense",
+    "Insurance",
+    "Human Resources",
+    "Research and Development (R&D)",
+    "Biotechnology",
+    "Food and Beverage",
+    "Environmental Services",
+    "Sports and Recreation",
+  ];
 
   useEffect(() => {
     if (user && user.email) {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log(response.data);
           setUserData(response.data);
+          setJobAlerts(response.data.jobAllerts);
+          setIsPremium(response.data.isPremium);
+          setSelectedDomains(response.data.jobAllerts);
           axios
             .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
             .then((jobsResponse) => {
-              console.log(jobsResponse.data);
               setJobs(jobsResponse.data);
             });
           setLoading(false);
@@ -38,9 +82,10 @@ export default function UserPage() {
         });
 
       axios
-        .get(`https://learndukeserver.vercel.app/getSubscriptions/${user.email}`)
+        .get(
+          `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
+        )
         .then((response) => {
-          console.log("Active Subscriptions:", response.data);
           setActiveSubscriptions(response.data);
         });
     } else {
@@ -58,6 +103,36 @@ export default function UserPage() {
         console.error("There was an error deleting the job:", error);
       });
   };
+
+  const handleDomainChange = (domain) => {
+    if (selectedDomains.includes(domain)) {
+      setSelectedDomains(selectedDomains.filter((d) => d !== domain));
+    } else {
+      setSelectedDomains([...selectedDomains, domain]);
+    }
+  };
+
+  const handleSaveDomains = () => {
+    const updatedJobAlerts =selectedDomains
+    // remove duplicates
+    const uniqueJobAlerts = [...new Set(updatedJobAlerts)];
+    setJobAlerts(updatedJobAlerts);
+    setUserData({
+      ...userData,
+      jobAllerts: uniqueJobAlerts,
+    });
+
+    axios.post(`https://learndukeserver.vercel.app/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
+      .then((response) => {
+        alert("Job alerts updated successfully");
+      })
+      .catch((error) => {
+        console.error("Error updating job alerts:", error);
+        alert("Error updating job alerts");
+      });
+    setOpenDomainModal(false);
+  };
+  
 
   const filteredJobs = jobs.filter((job) => {
     const titleMatch =
@@ -90,8 +165,23 @@ export default function UserPage() {
   };
 
   const handleSaveProfile = () => {
-    console.log("User Data:", userData);
-    // Save the updated profile data to the server
+
+    const linkedinRegex = new RegExp(
+      "^(https?://)?(www.)?linkedin.com/in/([a-zA-Z0-9-.]+)$"
+    );
+    const githubRegex = new RegExp(
+      "^(https?://)?(www.)?github.com/([a-zA-Z0-9-.]+)$"
+    );
+
+    if (userData.linkedin && !linkedinRegex.test(userData.linkedin)) {
+      setIsLinkedinValid(true)
+      return;
+    }
+
+    if (userData.github && !githubRegex.test(userData.github)) {
+      setIsGithubValid(true)
+      return;
+    }
     axios
       .post(
         `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
@@ -100,7 +190,6 @@ export default function UserPage() {
         }
       )
       .then((response) => {
-        console.log("Profile data updated successfully:", response.data);
         alert("Profile data updated successfully");
         setIsEditEnabled(false);
         setImageChange(false);
@@ -113,9 +202,6 @@ export default function UserPage() {
     const diffTime = Math.abs(expiration - today);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    console.log(expiration, expirationDate)
-    console.log(diffTime)
-    console.log("Days left:", diffDays)
     return diffDays;
   };
 
@@ -125,13 +211,12 @@ export default function UserPage() {
     return expiration >= today;
   };
   const renewSubscription = (plan) => {
-    console.log("Renew subscription for plan:", plan);
-    // Add logic for renewing subscription
+    navigator("/subscription");
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
   };
 
   if (loading) {
@@ -235,6 +320,9 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isLinkedinValid && (
+                    <div className="text-red-500">Enter a valid LinkedIn URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">GitHub</label>
@@ -246,6 +334,9 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isGithubValid && (
+                    <div className="text-red-500">Enter a valid GitHub URL</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">Phone Number</label>
@@ -375,7 +466,101 @@ export default function UserPage() {
             </div>
           )}
         </div>
+        {/* job allerts */}
+
+        {isPremium && (
+          <div className="mt-5">
+            <h1 className="text-2xl font-bold mb-4">Job Alerts</h1>
+            {jobAlerts.length > 0 && (
+              <div className=" p-4 bg-white shadow-md rounded-lg">
+                <div className="flex flex-wrap gap-4">
+                  {jobAlerts.map((jobAlert, index) => (
+                    <div
+                      key={index}
+                      className=" p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm flex justify-center items-center"
+                    >
+                      <span className="mr-4">{jobAlert}</span>
+                      
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {jobAlerts.length !== domainOptions.length ? (
+              <button
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors duration-300"
+                onClick={() => setOpenDomainModal(true)}
+              >
+                Add More Domains
+              </button>
+            ) : (
+              <button
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors duration-300"
+                onClick={() => setOpenDomainModal(true)}
+              >
+                No More Domains to Add
+              </button>
+            )}
+          </div>
+        )}
+        {openDomainModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div className="bg-white p-6 rounded-lg shadow-lg z-10 w-96">
+              <h3 className="text-xl font-bold mb-4">Select Domains</h3>
+              <div className="mb-4 max-h-60 overflow-y-auto">
+                {domainOptions.map((domain, index) => (
+                  <div key={index} className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id={`domain-${index}`}
+                      checked={selectedDomains.includes(domain)}
+                      onChange={() => handleDomainChange(domain)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`domain-${index}`}>{domain}</label>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => {setOpenDomainModal(false);
+                  setSelectedDomains(jobAlerts);
+                  }}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveDomains}
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isPremium && (
+          <div className="mt-10 p-4 bg-white shadow-md rounded-lg">
+            <h1 className="text-2xl font-bold mb-4">Upgrade to Premium</h1>
+            <p className="text-lg">
+              Get access to premium features like job alerts, priority job
+              applications, and more by upgrading to a premium account.
+            </p>
+            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors duration-300"
+              onClick={() => {
+                navigator("/subscription");
+              }}
+            >
+              Upgrade to Premium
+            </button>
+          </div>
+        )}
+
         {/* Active subscriptions */}
+
         <div>
           {activeSubscriptions.length > 0 && (
             <div className="mt-10">
@@ -405,7 +590,7 @@ export default function UserPage() {
                         </div>
                         <div className="mt-3 text-gray-700">
                           <span className="font-semibold">Start Date</span>:{" "}
-                        {formatDate(subscription.paymentDate)}
+                          {formatDate(subscription.paymentDate)}
                         </div>
                         <div className="mt-3 text-gray-700">
                           <span className="font-semibold">End Date</span>:{" "}
