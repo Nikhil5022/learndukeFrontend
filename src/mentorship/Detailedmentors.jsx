@@ -47,7 +47,7 @@ function Detailedmentors() {
     const fetchMentorData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/getMentor/${mentorId}`
+          `https://learndukeserver.vercel.app/getMentor/${mentorId}`
         );
         if (isMounted) {
           console.log(response.data);

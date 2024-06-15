@@ -13,9 +13,12 @@ import {
   FaChalkboardTeacher,
   FaGlobe,
   FaTimes,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import "./Explorementors.css";
 import { useNavigate } from "react-router-dom";
+import user2 from "../assets/user.png";
+import crying from "../assets/crying.gif";
 
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />,number:0 },
@@ -132,7 +135,7 @@ function Explorementors() {
   const [left, setLeft] = useState(0);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/getMentors").then((response) => {
+    axios.get("https://learndukeserver.vercel.app/getMentors").then((response) => {
       console.log(response.data);
       setMentors(response.data);
       setOriginalMentors(response.data);
@@ -210,7 +213,11 @@ function Explorementors() {
     setLeft(left);
 
     setSelectedDomain(domain);
-    setShowSubDomains(showSubDomains === domain ? null : domain);
+    if(filteredMentors.length !== 0){
+      setShowSubDomains(domain);
+    }
+
+    
     if (domain === "All Domains") {
       setSelectedSubDomains([]);
       setMentors(originalMentors); // Reset mentors to all mentors if "All Domains" is selected
@@ -302,7 +309,7 @@ function Explorementors() {
           </div>
         ))}
       </div>
-      <div className="md:hidden overflow-x-auto hidden-scrollbar mt-3 mb-3">
+      <div className="lg:hidden overflow-x-auto hidden-scrollbar mt-3 mb-3">
         {showSubDomains && selectedDomain !== "All Domains" && (
           <div
             className="flex w-fit space-x-1"
@@ -333,28 +340,19 @@ function Explorementors() {
                       onClick={() => handleSubDomainChange(subDomain)}
                     />
                   )}
-                  {!selectedSubDomains.includes(subDomain) && (
-                    <input
-                      type="checkbox"
-                      id={subDomain}
-                      name={subDomain}
-                      className="hidden"
-                      checked={selectedSubDomains.includes(subDomain)}
-                      onChange={() => handleSubDomainChange(subDomain)}
-                    />
-                  )}
+               
                 </div>
               ))}
           </div>
         )}
       </div>
 
-      <div className="hidden relative md:flex">
+      <div className="hidden relative lg:flex">
         {showSubDomains && selectedDomain !== "All Domains" && (
           <div
             ref={subDomainDropdownRef}
             className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto`}
-            style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)", left: left-180}}
+            style={{ boxShadow: "0 0 10px 10px rgba(0,0,0,0.1)", left: left-180}}
           >
             <div className="whitespace-nowrap text-2xl font-bold m-2">
               {selectedDomain + " "} Domains
@@ -378,7 +376,7 @@ function Explorementors() {
                     onChange={() => handleSubDomainChange(subDomain)}
                   />
                   <label
-                    className="whitespace-nowrap text-sm"
+                    className="whitespace-nowrap text-md"
                     htmlFor={subDomain}
                   >
                     {subDomain}
@@ -388,10 +386,10 @@ function Explorementors() {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 md:gap-3 lg:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-1 md:gap-3 lg:gap-6">
         {filteredMentors.map((mentor, index) => (
           <div
-            key={mentor.profilephoto.public_id}
+            key={index}
             className="border rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer"
             ref={(el) => (cardRefs.current[index] = el)}
             onClick={() => {
@@ -401,9 +399,9 @@ function Explorementors() {
           >
             <div className="relative md:pt-3 md:pl-3 md:pr-3 w-full">
               <img
-                src={mentor.profilephoto.url}
+                src={user2}
                 alt="profile photo"
-                className="object-cover rounded-lg w-full h-full"
+                className="object-cover rounded-lg w-full h-full t"
               />
               <div className="absolute inset-0 "></div>
             </div>
@@ -447,7 +445,7 @@ function Explorementors() {
                   href={`tel:${mentor.phoneNumber}`}
                   className="text-green-600 text-xl hover:text-green-800 transition-colors duration-300 ease-in-out"
                 >
-                  <FaPhone />
+                  <FaPhoneAlt />
                 </a>
                 <a
                   href={`https://wa.me/${mentor.whatsappNumber}`}
@@ -459,6 +457,15 @@ function Explorementors() {
             </div>
           </div>
         ))}
+        {filteredMentors.length === 0 && (
+          <div className="text-center w-full col-span-full">
+            <div className="flex justify-center p-3">
+            <img src={crying} alt="No mentors found" className="w-40" />
+            </div>
+            <div className="text-2xl font-bold -translate-x-4">No mentors found</div>
+          </div>
+        
+        )}
       </div>
     </div>
   );
