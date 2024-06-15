@@ -88,6 +88,7 @@ export default function Navbar() {
         <div className="hidden md:flex space-x-4 items-center">
         {/* <FaSearch className="text-xl cursor-pointer" onClick={() => navigate("/teachingjobs")} /> */}
         <div className="cursor-pointer hover:underline" onClick={()=>{navigate('/teachingjobs')}}>Explore Jobs</div>
+        <div className="cursor-pointer hover:underline" onClick={()=>{navigate('/mentorship')}}>Mentorship</div>
       </div>
       </div>
      
@@ -111,13 +112,22 @@ export default function Navbar() {
                   <div className="font-semibold">{user.name}</div>
                 </div>
                 <div
-                  className="text-base font-semibold mb-4 cursor-pointer"
+                  className="text-base font-semibold mb-4 cursor-pointer "
                   onClick={() => {
                     navigate("/teachingjobs");
                     setShowMenu(false);
                   }}
                 >
                   Explore Jobs
+                </div>
+                <div
+                  className="text-base font-semibold  mb-4 cursor-pointer"
+                  onClick={() => {
+                    navigate("/mentorship");
+                    setShowMenu(false);
+                  }}
+                >
+                  Mentorship
                 </div>
                 <button
                   className="px-4 py-2 rounded-lg font-semibold bg-orange-500 text-white"
@@ -136,9 +146,9 @@ export default function Navbar() {
                 </div>
                 <div
                   className="text-base font-semibold mb-4 cursor-pointer"
-                  onClick={() => navigate("/teachingjobs")}
+                  onClick={() => navigate("/mentorship")}
                 >
-                  Become a Mentor
+                  Mentorship
                 </div>
                 
                 <button
