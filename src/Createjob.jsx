@@ -787,12 +787,13 @@ export default function CreateJob() {
                   Postgraduate Diploma
                 </option>
                 <option value="Chartered Accountancy">
-                  Chartered Accountancy
+                  Charted Accountancy
                 </option>
                 <option value="Company Secretary">Company Secretary</option>
                 <option value="Military Training">Military Training</option>
                 <option value="Aviation Training">Aviation Training</option>
                 <option value="Online Courses">Online Courses</option>
+                <option value="Other">Other</option>
               </select>
 
               {formErrors.education && submitted && (

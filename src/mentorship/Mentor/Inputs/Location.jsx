@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Location({next, back, handleLocationChange}) {
+function Location({next, back, handleLocationChange, mentorData}) {
   const allLocations = ["Online","At Home", "In Person"];
-  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocations, setSelectedLocations] = React.useState(mentorData.locationType);
 
   const handleChecked = (e) => {
     if (e.target.checked) {
@@ -31,6 +31,7 @@ function Location({next, back, handleLocationChange}) {
                   id={loc}
                   name={loc}
                   value={loc}
+                  checked={selectedLocations.includes(loc)}
                   onChange={handleChecked}
                   className="mx-3 cursor-pointer"
                 />

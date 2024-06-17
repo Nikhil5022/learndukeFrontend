@@ -149,3 +149,24 @@
     }
   }
 }
+.together{
+  backdrop-filter: blur(50px);
+  color: #000;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
+}
+.together_container{
+  width: 50%;
+}
+@media screen and (max-width: 900px) {
+  .together_container{
+    width: 80%;
+  }
+}
+.together_obj{
+  width: 15rem;
+}
+@media screen and (max-width: 700px) {
+  .together_obj{
+    width: 8rem;
+  }
+}

@@ -1,7 +1,7 @@
 import { dom } from "@fortawesome/fontawesome-svg-core";
 import { useEffect, useState } from "react";
 
-function SubDomain({ next, handleSubDomainChange, domain, back }) {
+function SubDomain({ next, handleSubDomainChange, back, mentorData}) {
   const allSubDomains = [
     {
       Engineering: [
@@ -46,9 +46,8 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
     },
   ];
 
-  const [checks, setChecks] = useState(false);
   const [subDomains, setSubDomains] = useState([]);
-  const [selectedSubDomain, setSelectedSubDomain] = useState([]);
+  const [selectedSubDomain, setSelectedSubDomain] = useState(mentorData.subDomain);
 
   const handleChecked = (e) => {
     let updatedSd;
@@ -58,7 +57,6 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
       updatedSd = selectedSubDomain.filter((value) => value !== e.target.value);
     }
     setSelectedSubDomain(updatedSd);
-    setChecks(updatedSd.length > 0);
   };
 
   const handleNotChecked = (e) => {
@@ -67,6 +65,7 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
   };
 
   useEffect(() => {
+    const domain = mentorData.domain;
     if(domain.includes("Engineering")){
       allSubDomains[0]["Engineering"].map((singleSubDomain) => {setSubDomains((prev) => [...prev, singleSubDomain]);});
     }
@@ -82,7 +81,7 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
   return (
     <form
       className="w-full flex flex-col items-center"
-      onSubmit={checks ? next : handleNotChecked}
+      onSubmit={selectedSubDomain.length>0 ? next : handleNotChecked}
     >
       <h1 className="text-2xl">Choose Your Sub Domain</h1>
       <div className="max-h-60 overflow-scroll section mt-4 w-11/12">
@@ -94,6 +93,7 @@ function SubDomain({ next, handleSubDomainChange, domain, back }) {
               id={singleSubDomain}
               name={singleSubDomain}
               value={singleSubDomain}
+              checked={selectedSubDomain.includes(singleSubDomain)}
               onChange={handleChecked}
               className="mx-3 cursor-pointer"
             />

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-function Availability({ next, back, handleAvailabilityChange }) {
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+function Availability({ next, back, handleAvailabilityChange, mentorData }) {
+  const [start, setStart] = useState(mentorData.availabilityStartTime);
+  const [end, setEnd] = useState(mentorData.availabilityEndTime);
 
   const handleStartChange = (e) => {
     setStart(e.target.value);
@@ -24,11 +24,11 @@ function Availability({ next, back, handleAvailabilityChange }) {
         <div className="flex items-center justify-center"> 
 
           <label htmlFor="start" className=" text-xl ">Start Time</label>
-          <input type="time" id="start" name="start" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 m-4" onChange={handleStartChange} required placeholder="Start Time" />
+          <input type="time" id="start" name="start" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 m-4" value={start} onChange={handleStartChange} required placeholder="Start Time" />
         </div>
         <div className="flex items-center justify-center"> 
           <label className="text-xl" htmlFor="start">End Time</label><br />
-          <input type="time" id="start" name="start" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 m-4" onChange={handleEndChange} required placeholder="Start Time" />
+          <input value={end} type="time" id="start" name="start" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 m-4" onChange={handleEndChange} required placeholder="Start Time" />
         </div>
           <div className="flex">
           <button
