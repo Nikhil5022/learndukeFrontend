@@ -19,6 +19,8 @@ import Lines from "./TsParticles/Lines";
 import together from "../assets/together.jpg";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import {connectingLines} from "./TsParticles/options.js"
+
 function LandingPage() {
   const qualities = [
     {
@@ -50,7 +52,15 @@ function LandingPage() {
       alert("Login to become a mentor");
     }
   };
-  useEffect(() => window.scrollTo(0, 0), []);
+  const togetherText = [
+    "Help others to achieve their dreams",
+    "Reach, influence & inspire masses",
+    "Earn a second income",
+    "Grow your network",
+    "Enhance your skills",
+    "Be known & respected",
+  ]
+  useEffect(() =>  window.scrollTo(0, 0), [])
 
   return (
     <div className="flex items-center justify-center flex-col my-2 py-2">
@@ -58,9 +68,8 @@ function LandingPage() {
         style={{ height: "81vh" }}
         className=" flex flex-col w-full items-center justify-center"
       >
-        <p className="mb-10 text-black lg:text-6xl text-5xl  text-center">
-          Can you bring people's
-          <br />
+        <p className="mb-10 text-black lg:text-6xl text-4xl mx-3 text-center">
+          Can you bring people's<br />
           career dreams to reality?
         </p>
         <h1 className="pb-2 m-2 text-black text-3xl text-center">
@@ -81,7 +90,7 @@ function LandingPage() {
             Find a Mentor
           </button>
           <button
-            className="cursor-pointer p-2 text-center rounded-xl mx-4 px-4 text-white bg-orange-400 
+            className="cursor-pointer p-2 text-center rounded-xl mx-4 px-4 text-white bg-orange-400
           hover:bg-white hover:text-black border-2
           border-orange-400"
             onClick={handleClick}
@@ -90,7 +99,7 @@ function LandingPage() {
           </button>
         </div>
         <div className="-z-10 absolute" style={{ height: "81vh" }}>
-          <Lines />
+          <Lines particle={connectingLines} />
         </div>
       </div>
       <p className="w-11/12 border-orange-300 border-y-2 mt-10 "></p>
@@ -156,45 +165,15 @@ function LandingPage() {
         </div>
       </div>
       <p className="w-11/12 border-orange-300 border-y-2 mt-10 "></p>
-      <div className="flex relative m-6 flex-col justify-center items-center w-full">
-        <h1 className="lg:text-3xl mb-20 text-2xl font-semibold text-center">
-          Mentorship on LearnDuke is rewarding in more ways than one.
-        </h1>
-        <div
-          className="absolute w-8/12 lg:10/12  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ filter: "blur(1px)" }}
-        >
-          <img src={together} />
-        </div>
-        <div
-          className="text-center flex items-center justify-center lg:flex-col flex-row mt-20 w-full "
-          style={{ height: "80vh" }}
-        >
-          <div className="lg:mt-80 px-5">
-            <div className="cursor-pointer  backdrop-blur-3xl flex p-4 items-center justify-center border-2 rounded-lg font-bold border-slate-500 h-32 -mb-1 text-xl lg:text-2xl w-64 md:-translate-x-40 ">
-              Help others to achieve their dreams
-            </div>
-            <div
-              className="cursor-pointer  font-bold backdrop-blur-3xl
-          flex p-4 items-center justify-center md:translate-x-40 md:-translate-y-20  border-2 rounded-lg border-slate-500 h-32 text-xl lg:text-2xl w-64 my-4"
-            >
-              Reach ,influence & inspire masses
-            </div>
-            <div className="cursor-pointer  font-bold backdrop-blur-3xl  flex p-4 items-center justify-centermd:translate-x-40 md:-translate-y-14  border-2 rounded-lg border-slate-500 h-32 text-xl lg:text-2xl w-64 -my-5">
-              Earn a second income
-            </div>
-            <div className="cursor-pointer  font-bold backdrop-blur-3xl  flex p-4 items-center justify-center md:-translate-x-40 md:-translate-y-56 border-2 rounded-lg border-slate-500 h-32 text-xl lg:text-2xl w-64">
-              Grow your network
-            </div>
-            <div className="cursor-pointer  font-bold backdrop-blur-3xl flex p-4 items-center justify-centermd:translate-x-40 md:-translate-y-40 border-2 rounded-lg border-slate-500 h-32 text-xl lg:text-2xl w-64 my-6">
-              Enhance your skills
-            </div>
-            <div className="cursor-pointer  font-bold backdrop-blur-3xl flex p-4 items-center justify-center border-2 rounded-lg border-slate-500 md:-translate-x-40 md:-translate-y-96 h-32 text-xl lg:text-2xl w-64 my-2">
-              Be known & respected
-            </div>
-          </div>
-        </div>
-      </div>
+  <div className=" flex mt-4 min-h-96 relative item-center flex-col">
+  <h1 className="text-2xl backdrop-blur-3xl w-full mb-4 font-semibold text-center mx-auto py-2">Mentorship on LearnDuke is rewarding in more ways than one.</h1>
+  <img src={together} className="absolute top-1/2 -z-10 max-h-96 left-1/2 -translate-x-1/2 -translate-y-1/2"/>
+  <div className=" together_container flex items-center flex-wrap justify-center mx-auto">
+    {togetherText.map((item, index) => (
+      <div key={index} className="border-2 together border-slate-500 flex items-center justify-center m-3 p-2 text-center rounded-2xl together_obj h-36 text-xl">{item}</div>
+    ))}
+    </div>
+</div>
 
       <p className="w-11/12 border-orange-300 border-y-2 mt-10 "></p>
       <div className="w-full mt-5 flex flex-col items-center justify-center">
@@ -250,6 +229,8 @@ function LandingPage() {
       </div>
     </div>
   );
+ 
+  
 }
 
 export default LandingPage;

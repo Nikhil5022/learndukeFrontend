@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-function Description({ next, back, handleDescriptionChange }) {
-  const [desc, setDesc] = useState("")
+function Description({ next, back, handleDescriptionChange, mentorData }) {
+  const [desc, setDesc] = useState(mentorData.description)
 
   const handleChange = (e) => {
     setDesc(e.target.value);
@@ -10,7 +10,6 @@ function Description({ next, back, handleDescriptionChange }) {
     e.preventDefault();
     alert("Please enter at least 12 words.")
   }
-
 
   return (
     <div className=" w-full items-center justify-center flex flex-col">
@@ -23,6 +22,7 @@ function Description({ next, back, handleDescriptionChange }) {
           className="section text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
           rows={10}
           cols={50}
+          value={desc}
           onChange={handleChange}
           required
         ></textarea>

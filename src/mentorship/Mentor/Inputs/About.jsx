@@ -1,8 +1,8 @@
 import {useState} from "react";
 
-function About({ next, handleAboutChange, back }) {
+function About({ next, handleAboutChange, back, mentorData }) {
 
-  const [about, setAbout] = useState("")
+  const [about, setAbout] = useState(mentorData.about)
 
   const handleChange = (e) => {
     setAbout(e.target.value);
@@ -21,11 +21,11 @@ function About({ next, handleAboutChange, back }) {
         </label>
         <textarea
           id="about"
-          className="section text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
+          className="text-lg border-2 border-slate-900 rounded-lg p-2 w-3/4 my-4 "
           rows={10}
           cols={50}
+          value={about}
           onChange={handleChange}
-          
           required
         ></textarea>
         <div className="flex">

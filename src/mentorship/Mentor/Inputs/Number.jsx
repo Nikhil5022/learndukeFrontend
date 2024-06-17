@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-function Number({next, back, handleNumberChange}) {
+function Number({next, back, handleNumberChange, mentorData}) {
 
   const [same, setSame] = useState(false);
-  const [number, setNumber] = useState('')
-  const [wNum, setWNum] = useState('')
+  const [number, setNumber] = useState(mentorData.phoneNumber)
+  const [wNum, setWNum] = useState(mentorData.whatsAppNumber)
 
   const handleChange = (e) => {
     setNumber(e.target.value)
@@ -24,6 +24,9 @@ function Number({next, back, handleNumberChange}) {
     }
   }, [same])
 
+  useEffect(() =>{
+    number===wNum && setSame(true)
+  },[])
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -33,13 +36,13 @@ function Number({next, back, handleNumberChange}) {
         <br />
         <div className='flex text-center items-center justify-center'> 
 
-        <input value={wNum} id="same" className='mx-2' name="same" type='checkbox' onClick={()=>{setSame(!same)}} />
+        <input checked={same} id="same" className='mx-2' name="same" type='checkbox' onChange={()=>{setSame(!same)}} />
         <label htmlFor='same' className='text-md mt-1'>Is this your Whatsapp number</label>
         </div>
         <br/>
         {!same && <>
         <label htmlFor='wa' className='text-2xl'>Whatsapp Number</label>
-        <input id="wa" type="tel" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 my-4" onChange={handleWhatsappChange} required placeholder='Enter your whatsapp no.'/>
+        <input id="wa" value={wNum} type="tel" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 my-4" onChange={handleWhatsappChange} required placeholder='Enter your whatsapp no.'/>
         </>
         }
       <div className="flex">

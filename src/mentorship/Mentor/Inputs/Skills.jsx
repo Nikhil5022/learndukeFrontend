@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
 
-function Skills({ next, back, handleSkillsChange, domain }) {
-  const [selectedSkills, setSelectedSkills] = useState([]);
+function Skills({ next, back, handleSkillsChange, mentorData}) {
+  const [selectedSkills, setSelectedSkills] = useState(mentorData.skills);
   const [mainSkills, setMainSkills] = useState([]);
   //   const [searchTerm, setSearchTerm] = useState("");
   //   const [searchResults, setSearchResults] = useState([]);
@@ -187,6 +187,7 @@ function Skills({ next, back, handleSkillsChange, domain }) {
   ];
 
   useEffect(() => {
+    const domain = mentorData.domain;
     if (domain.includes("Engineering")) {
         skillsList[0]["Engineering"].map((skill) => {setMainSkills((prev) => [...prev, skill]);});
     } 

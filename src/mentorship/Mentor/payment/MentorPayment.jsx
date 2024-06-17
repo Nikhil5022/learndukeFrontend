@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import sampleUser from "../../../assets/user.png";
 import Modal from "../../../Modal.jsx";
 import image from "../../../assets/learnDuke.png";
@@ -10,41 +10,56 @@ function MentorPayment() {
   const [mentorData, setMentorData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [user, setUser] = useState({});
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() =>{
+    const userPresent = JSON.parse(localStorage.getItem("user"));
+    if(!userPresent){
+      navigate("/mentorship");
+    }
+    setUser(userPresent);
+  },[])
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setMentorData(location.state?.mentorData);
-    // setMentorData();
-  }, []);
+    let data = location.state ? location.state.mentorData : null;
+    if (!data) {
+      navigate("/mentorship");
+    }
+    setMentorData(data);
+    console.log(mentorData)
+
+    sendData();
+  }, [mentorData]);
+
+  async function sendData() {
+    if(Object.keys(mentorData).length > 0){
+      await axios.post(`http://127.0.0.1:3000/addMentor/${user.email}`, mentorData);
+    }
+  }
 
   const plans = [
     {
       name: "Basic",
       price: 99, // in INR
-      benefits: ["Sample Content", "30 Days Validity"],
+      benefits: ["30 Days Validity","Student can connect directly", "Minimum earning 10k/month", "24/7 Support", ],
       days: 30,
     },
     {
       name: "Advance",
       price: 199, // in INR
-      benefits: ["Sample Content", "90 Days Validity"],
-      days: 90,
+      benefits: ["100 Days Validity","Student can connect directly","Minimum earning 15k/month","5 Personalized Ads", "24/7 Support"],
+      days: 100,
     },
     {
       name: "Premium",
-      price: 299, // in INR
-      benefits: ["Sample Content", "180 Days Validity"],
-      days: 180,
-    },
-    {
-      name: "Teacher Pro",
-      price: 999,
-      benefits: ["Sample Content", "365 Days Validity"],
+      price: 699,
+      benefits: ["365 Days Validity","Student can connect directly","Minimum earning 30k/month","Unlimited Personalized Ads","Personal Training Sessions" , "24/7 Support"],
       days: 365,
     },
   ];
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const checkoutHandler = async (plan) => {
     if (!user) {
@@ -96,9 +111,11 @@ function MentorPayment() {
   };
 
   return user ? (
-    <div className=" flex item-center justify-center flex-col lg:flex-row">
-      <div className="flex-col flex items-center justify-center w-full lg:w-1/3">
-        <div className="flex w-64 h-64 rounded-xl mt-10 p-1 shodow-lg flex-col items-center justify-end">
+    <div className=" flex item-center justify-center flex-col">
+      <div className="flex flex-col lg:flex-row">
+
+      <div className="flex-col flex-1 flex items-center w-full">
+        <div className="flex w-9/12 h-72 items-center justify-center  rounded-xl mt-10 p-1 shodow-lg flex-col">
           <img
             src={
               mentorData?.profilePhoto ? mentorData.profilePhoto : sampleUser
@@ -108,13 +125,28 @@ function MentorPayment() {
           />
           <div className="mt-4 text-2xl font-serif">{user?.name}</div>
         </div>
-        <h1 className="text-lg sm:10/12 lg:w-10/12 md:11/12 font-semibold text-center mx-4 mb-5 p-3">
+        
+        <h1 className="text-lg sm:10/12 lg:w-10/12 md:w-11/12 font-semibold text-center mx-4 -mt-5 p-3">
           Your mentor profile has been created.
           <br /> Make a purchase in order to make it visible to the users.
         </h1>
       </div>
       <p className="w-11/12 border-orange-300 border-y-2 mx-auto lg:hidden"></p>
-      <div className="w-full lg:w-2/3 p-4 flex items-center flex-col justify-center">
+      <div className="flex-1 m-5 flex-col flex items-center mt-9">
+        <div className=" border-2 bg-orange-500 text-white flex flex-col items-center rounded-lg border-slate-500 w-10/12">
+        <h1 className="text-3xl mx-auto my-3 px-3 text-center font-semibold">Benefits of Teacher Pass</h1>
+          <ul className="list-disc list-inside font-normal">
+            <li className="ml-2 p-2 text-lg">Better Profile Visibility. 
+              You can get Home Tututions, Online Tututions and even Job opportunity from Education Section.</li>
+            <li className="m-2 p-2 text-lg">Networking Opportunity. Connect with large number of users.</li>
+            <li className="m-2 p-2 text-lg">Earn a side income of 10 to 30k per month.</li>
+            <li className="m-2 p-2 text-lg">Help millions of students grow by mentoring them.</li>
+            </ul>
+        </div>
+      </div>
+      </div>
+      <p className="w-11/12 border-orange-300 border-y-2 mx-auto "></p>
+      <div className="w-full p-4 flex items-center flex-col justify-center">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">
           Mentor Plans
         </h1>
@@ -122,8 +154,8 @@ function MentorPayment() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className="border-2 relative w-80 p-4 bg-white rounded-lg m-4 flex flex-col"
-              style={{ boxShadow: "0 0 10px 2px #444" }}
+              className="border-2 relative w-80 p-4 bg-white rounded-lg m-4 flex flex-col min-h-64 max-h-64"
+              style={{ boxShadow: "0 0 10px 0 rgba(249, 115, 22, 0.5)" }}
             >
               <div className="flex justify-between items-center mb-4">
                 <div className="text-xl font-semibold">{plan.name}</div>
@@ -140,7 +172,7 @@ function MentorPayment() {
                 </div>
                 <div>
                   <button
-                    className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-900 border-2  transition duration-200 absolute bottom-3 right-3"
+                    className="px-4 py-2 border-orange-500 font-semibold rounded-lg hover:bg-orange-500 hover:text-white border-2  transition duration-200 absolute bottom-3 right-3"
                     onClick={() => openModal(plan)}
                   >
                     Pay
@@ -165,8 +197,8 @@ function MentorPayment() {
                 <button
                   className="px-4 py-2 absolute bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200 bottom-0 right-1"
                   onClick={() => {
-                    checkoutHandler(selectedPlan);
                     setShowModal(false);
+                    checkoutHandler(selectedPlan);
                   }}
                 >
                   Pay

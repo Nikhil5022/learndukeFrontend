@@ -32,7 +32,7 @@ function ProfilePhoto({back, handleProfilePhotoChange}) {
           <button className="border-2 border-orange-500 mx-4 p-3 rounded-md px-7 bg-orange-500 text-white" type="submit" 
           onClick={(e) =>{
             e.preventDefault()
-            avatar && handleProfilePhotoChange(avatar)
+            avatar ?  handleProfilePhotoChange(avatar) : alert("Please choose a photo")
           } }
           >
             Submit
