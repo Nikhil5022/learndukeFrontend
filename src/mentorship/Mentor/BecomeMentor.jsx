@@ -165,21 +165,21 @@ function BecomeMentor() {
       suggestion:
         "LearnDuke offers you the opportunity to teach and share your knowledge in over 100 Domains. Use the search engine to select your main Domain and let the adventure begin :)",
       children: <Domain key={1} next={next} 
-       handleDomainChange={handleDomainChange}/>,
+       handleDomainChange={handleDomainChange} mentorData={mentorData}/>,
     },
     {
       id: 2,
       name: "Sub Domain",
       suggestion:
         "Add sub domains to your Domain. It has many benefits and helps is better visibility of your profile to the users.",
-      children: <SubDomain key={2} next={next} back={back} domain={mentorData.domain} handleSubDomainChange={handleSubDomainChange} />,
+      children: <SubDomain key={2} next={next} back={back} handleSubDomainChange={handleSubDomainChange} mentorData={mentorData} />,
     },
     {
       id: 3,
       name: "Skills",
       suggestion:
         "Add Skills that your are pretty proud of. They'll help in drawing attention to your profile",
-      children: <Skills key={3} next={next} back={back} domain={mentorData.domain} handleSkillsChange={handleSkillsChange}/>,
+      children: <Skills key={3} next={next} back={back} handleSkillsChange={handleSkillsChange} mentorData={mentorData}/>,
     },
     {
       id: 4,
@@ -191,7 +191,7 @@ function BecomeMentor() {
         - Diploma, method, etc.
         - Your distinguishing features and everything
         that makes you stand out.`,
-      children: <About key={4} handleAboutChange={handleAboutChange} next={next} back={back}/>,
+      children: <About key={4} handleAboutChange={handleAboutChange} next={next} back={back} mentorData={mentorData}/>,
     },
     {
       id: 5,
@@ -201,7 +201,7 @@ function BecomeMentor() {
     - Your teaching techniques and methods
     - The usual structure of a class
     - Your special features as a teacher`,
-      children: <Description key={5} handleDescriptionChange={handleDescriptionChange} next={next} back={back}/>,
+      children: <Description key={5} handleDescriptionChange={handleDescriptionChange} next={next} back={back} mentorData={mentorData}/>,
     },
     {
       id: 6,
@@ -209,7 +209,7 @@ function BecomeMentor() {
       suggestion: `
         Add the languages you speak and teach in. This will help you to reach a wider audience.
         `,
-      children: <Languages key={6} handleLanguageChange={handleLanguageChange} next={next} back={back}/>,
+      children: <Languages key={6} handleLanguageChange={handleLanguageChange} next={next} back={back} mentorData={mentorData}/>,
     },
     {
       id: 7,
@@ -217,14 +217,14 @@ function BecomeMentor() {
       suggestion: `
         You are free to choose your hourly fee and to change it at any time.
         If you are just starting out, you may not want to choose a fee that is too high. Wait for users' reviews and adjust the fee.`,
-      children: <HourlyFees key={7} next={next} back={back} handleHourlyFeesChange={handleHourlyFeesChange}/>,
+      children: <HourlyFees key={7} next={next} back={back} handleHourlyFeesChange={handleHourlyFeesChange} mentorData={mentorData}/>,
     },
     {
       id: 8,
       name: "Experience",
       suggestion:
         "Enter the year of Experience you have in the selected domain. This will useful in achieving trust from the users.",
-      children: <Experience key={8} next={next} back={back} handleExperienceChange={handleExperienceChange}/>,
+      children: <Experience key={8} next={next} back={back} handleExperienceChange={handleExperienceChange} mentorData={mentorData}/>,
     },
     {
       id: 9,
@@ -232,34 +232,34 @@ function BecomeMentor() {
       suggestion: `
         Your address will never appear on the site. It will only be given to students you agree to teach.
         You can offer your classes at home at the address indicated. If you prefer to teach online, you can also indicate it.`,
-      children: <Location key={9} next={next} back={back} handleLocationChange={handleLocationChange}/>,
+      children: <Location key={9} next={next} back={back} handleLocationChange={handleLocationChange} mentorData={mentorData}/>,
     },
     {
       id: 10,
       name: "Education",
       suggestion: "Enter any other emails you have.",
-      children: <Education key={12} next={next} back={back} handleEducationChange={handleEducationChange}/>,
+      children: <Education key={12} next={next} back={back} handleEducationChange={handleEducationChange} mentorData={mentorData}/>,
     },
     {
       id: 11,
       name: "Number",
       suggestion:
         "Please choose your mobile number so that user can contact you directly without any third party interference.",
-      children: <Number key={11} handleNumberChange={handleNumberChange} next={next} back={back} />,
+      children: <Number key={11} handleNumberChange={handleNumberChange} next={next} back={back} mentorData={mentorData}/>,
     },
     {
       id: 12,
       name: "Availability",
       suggestion:
         "Mention the timings when you'll be freely available to teach.",
-      children: <Availability key={10} next={next} back={back} handleAvailabilityChange={handleAvailabilityChange}/>,
+      children: <Availability key={10} next={next} back={back} handleAvailabilityChange={handleAvailabilityChange} mentorData={mentorData}/>,
     },
     {
       id: 13,
       name: "Address",
       suggestion:
         "Mention the timings when you'll be freely available to teach.",
-      children: <Address key={10} next={next} back={back} handleAddressChange={handleAddressChange}/>,
+      children: <Address key={10} next={next} back={back} handleAddressChange={handleAddressChange} mentorData={mentorData}/>,
     },
     {
       id: 14,

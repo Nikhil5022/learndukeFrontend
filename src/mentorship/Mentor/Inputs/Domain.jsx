@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Domain({ handleDomainChange, next}){
+function Domain({ handleDomainChange, next, mentorData}){
 
   const navigate = useNavigate()
-  let [selectedDomain, setSelectedDomain] = useState([])
-  let [checks, setChecks] = useState(false)
+  let [selectedDomain, setSelectedDomain] = useState(mentorData.domain)
 
   const inputDomains = ["Engineering", "Schooling", "Govt. Exams"]
   
@@ -17,7 +16,6 @@ function Domain({ handleDomainChange, next}){
       updatedDomain = selectedDomain.filter((value) => value !== e.target.value);
     }
     setSelectedDomain(updatedDomain);
-    setChecks(updatedDomain.length > 0);
   };
 
   const handleNotChecked = (e) => {
@@ -26,24 +24,25 @@ function Domain({ handleDomainChange, next}){
   }
 
   return (
-    <form onSubmit={checks ? next : handleNotChecked} className="flex flex-col justify-center">
+    <form onSubmit={selectedDomain.length>0  ? next : handleNotChecked} className="flex flex-col justify-center">
       <label className="text-2xl">
         Choose Your Domains
         </label>
         <br />
         {
-          inputDomains.map((domain) => {
+          inputDomains.map((dom) => {
             return (
-              <div key={domain} className="flex p-2 text-lg">
+              <div key={dom} className="flex p-2 text-lg">
                 <input
                   type="checkbox"
-                  id={domain}
-                  name={domain}
-                  value={domain}
+                  id={dom}
+                  name={dom}
+                  value={dom}
                   onChange={handleChecked}
-                  className="mx-3"
+                  className="mx-3 cursor-pointer"
+                  checked={selectedDomain.includes(dom)}
                 />
-                <label className="cursor-pointer" htmlFor={domain}>{domain}</label>
+                <label className="cursor-pointer" htmlFor={dom}>{dom}</label>
               </div>
             );
           })

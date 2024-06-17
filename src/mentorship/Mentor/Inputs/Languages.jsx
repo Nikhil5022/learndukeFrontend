@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
 
-function Languages({ handleLanguageChange, next, back }) {
+function Languages({ handleLanguageChange, next, back, mentorData }) {
   //indian languages
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState(mentorData.languages);
   const allLanguages = [
     "English",
     "Hindi",
@@ -47,17 +47,17 @@ function Languages({ handleLanguageChange, next, back }) {
     "Zeliang",
   ];
 
-  const handleChecked = (e) => {
-    let updatedLanguages;
-    if (e.target.checked) {
-      updatedLanguages = [...allLanguages, e.target.value];
-    } else {
-      updatedLanguages = allLanguages.filter(
-        (value) => value !== e.target.value
-      );
-    }
-    setSelectedLanguages(updatedLanguages);
-  };
+  // const handleChecked = (e) => {
+  //   let updatedLanguages;
+  //   if (e.target.checked) {
+  //     updatedLanguages = [...allLanguages, e.target.value];
+  //   } else {
+  //     updatedLanguages = allLanguages.filter(
+  //       (value) => value !== e.target.value
+  //     );
+  //   }
+  //   setSelectedLanguages(updatedLanguages);
+  // };
 
   const handleNotChecked = (e) => {
     e.preventDefault();

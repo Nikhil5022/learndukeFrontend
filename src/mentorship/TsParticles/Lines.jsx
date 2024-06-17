@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
-import {lines} from "./options.js"
 
-function Lines() {
+
+function Lines({particle}) {
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadFull(engine);
@@ -11,8 +11,8 @@ function Lines() {
   }, []);
 
   return (
-    <div>
-      <Particles id="Lines" options={useMemo(() => lines)} />
+    <div className="absolute">
+      <Particles id="Lines" options={useMemo(() => particle)} />
     </div>
   );
 }
