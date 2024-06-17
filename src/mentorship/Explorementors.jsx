@@ -19,6 +19,8 @@ import "./mentors.css";
 import { useNavigate } from "react-router-dom";
 import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
+import { MdSchool } from "react-icons/md";
+
 
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />, number: 0 },
@@ -149,9 +151,10 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     try {
-      const response = await axios.get("https://learndukeserver.vercel.app/getMentors");
+      const response = await axios.get("http://localhost:3000/getMentors");
       setMentors(response.data);
       setOriginalMentors(response.data);
+      console.log(response.data);
       setOnLoad(true);
       handleResize(); // Calculate displayed names right after setting mentors data
     } catch (error) {
@@ -402,9 +405,9 @@ function Explorementors() {
               >
                 <div className="relative md:pt-3 md:pl-3 md:pr-3 w-full">
                   <img
-                    src={user2}
+                    src={mentor.profilePhoto.url || user2}
                     alt="profile photo"
-                    className="object-cover rounded-lg w-full h-full t"
+                    className="object-cover rounded-lg w-full h-60"
                   />
                   <div className="absolute inset-0 "></div>
                 </div>
@@ -418,31 +421,19 @@ function Explorementors() {
                     </div>
                   </div>
                   <div className="text-gray-500 text-sm mb-4 whitespace-nowrap">
-                    Hourly Fees : ₹{mentor.hourlyRate}
+                    Hourly Fees : ₹{mentor.hourlyFees}
                   </div>
-                  <div className="flex overflow-hidden mb-4">
-                    <div className="flex flex-nowrap space-x-2">
-                      {mentor.skills
-                        .slice(
-                          0,
-                          calculateSkillsToShow(
-                            cardRefs.current[index]?.offsetWidth || 0,
-                            mentor.skills
-                          )
-                        )
-                        .map((skill, skillIndex) => (
-                          <div key={skillIndex} className="text-xs flex">
-                            {skill}
-                          </div>
-                        ))}
-                      {mentor.skills.length >
-                        calculateSkillsToShow(
-                          cardRefs.current[index]?.offsetWidth || 0,
-                          mentor.skills
-                        ) && (
-                        <div className="text-xs flex items-center">...</div>
-                      )}
-                    </div>
+                  <div className="flex overflow-hidden w-full  mb-4">
+                  <MdSchool className="mt-0.5"/>
+
+                    {mentor.skills.sort().slice(0,3).map((skill, index) => (
+                      <div
+                        key={index}
+                        className=" h-8  mx-1 rounded-md whitespace-nowrap text-sm"
+                      >
+                        {skill},
+                      </div>
+                    ))}
                   </div>
                   <div className="flex justify-between items-center">
                     {getDomainIcon(mentor.domain)}

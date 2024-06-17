@@ -19,7 +19,9 @@ import Lines from "./TsParticles/Lines";
 import together from "../assets/together.jpg";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import {connectingLines} from "./TsParticles/options.js"
+import { connectingLines } from "./TsParticles/options.js";
+import axios from "axios";
+import { useState } from "react";
 
 function LandingPage() {
   const qualities = [
@@ -43,13 +45,18 @@ function LandingPage() {
   const imagesUpper = [mentor10, mentor1, mentor2, mentor3, mentor4, mentor5];
   const imagesLower = [mentor6, mentor7, mentor8, mentor9, mentor10, mentor11];
   const navigate = useNavigate();
+  const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
 
   const handleClick = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      navigate("/become-a-mentor");
+    if (isAlreadyMentor) {
+      alert("You are already a mentor");
     } else {
-      alert("Login to become a mentor");
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        navigate("/become-a-mentor");
+      } else {
+        alert("Login to become a mentor");
+      }
     }
   };
   const togetherText = [
@@ -59,17 +66,32 @@ function LandingPage() {
     "Grow your network",
     "Enhance your skills",
     "Be known & respected",
-  ]
-  useEffect(() =>  window.scrollTo(0, 0), [])
+  ];
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    axios
+      .get("http://localhost:3000/isAlreadyMentor/" + user.email)
+      .then((res) => {
+        if (res.data === true) {
+          setIsAlreadyMentor(true);
+        }
+      });
+  }, []);
 
   return (
-    <div className="flex items-center justify-center flex-col my-2 py-2">
+    <div className="relative flex items-center justify-center flex-col  py-2">
+    <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
+      <p className="whitespace-nowrap">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
+    </div>
       <div
         style={{ height: "81vh" }}
         className=" flex flex-col w-full items-center justify-center"
       >
         <p className="mb-10 text-black lg:text-6xl text-4xl mx-3 text-center">
-          Can you bring people's<br />
+          Can you bring people's
+          <br />
           career dreams to reality?
         </p>
         <h1 className="pb-2 m-2 text-black text-3xl text-center">
@@ -90,10 +112,11 @@ function LandingPage() {
             Find a Mentor
           </button>
           <button
-            className="cursor-pointer p-2 text-center rounded-xl mx-4 px-4 text-white bg-orange-400
-          hover:bg-white hover:text-black border-2
-          border-orange-400"
+            className={`cursor-pointer p-2 text-center rounded-xl mx-4 px-4 text-white bg-orange-400
+  hover:bg-white hover:text-black border-2 border-orange-400 
+  ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
+            disabled={isAlreadyMentor} // Optionally disable the button if the user is already a mentor
           >
             Become a Mentor
           </button>
@@ -165,15 +188,25 @@ function LandingPage() {
         </div>
       </div>
       <p className="w-11/12 border-orange-300 border-y-2 mt-10 "></p>
-  <div className=" flex mt-4 min-h-96 relative item-center flex-col">
-  <h1 className="text-2xl backdrop-blur-3xl w-full mb-4 font-semibold text-center mx-auto py-2">Mentorship on LearnDuke is rewarding in more ways than one.</h1>
-  <img src={together} className="absolute top-1/2 -z-10 max-h-96 left-1/2 -translate-x-1/2 -translate-y-1/2"/>
-  <div className=" together_container flex items-center flex-wrap justify-center mx-auto">
-    {togetherText.map((item, index) => (
-      <div key={index} className="border-2 together border-slate-500 flex items-center justify-center m-3 p-2 text-center rounded-2xl together_obj h-36 text-xl">{item}</div>
-    ))}
-    </div>
-</div>
+      <div className=" flex mt-4 min-h-96 relative item-center flex-col">
+        <h1 className="text-2xl backdrop-blur-3xl w-full mb-4 font-semibold text-center mx-auto py-2">
+          Mentorship on LearnDuke is rewarding in more ways than one.
+        </h1>
+        <img
+          src={together}
+          className="absolute top-1/2 -z-10 max-h-96 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        />
+        <div className=" together_container flex items-center flex-wrap justify-center mx-auto">
+          {togetherText.map((item, index) => (
+            <div
+              key={index}
+              className="border-2 together border-slate-500 flex items-center justify-center m-3 p-2 text-center rounded-2xl together_obj h-36 text-xl"
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
 
       <p className="w-11/12 border-orange-300 border-y-2 mt-10 "></p>
       <div className="w-full mt-5 flex flex-col items-center justify-center">
@@ -229,8 +262,6 @@ function LandingPage() {
       </div>
     </div>
   );
- 
-  
 }
 
 export default LandingPage;

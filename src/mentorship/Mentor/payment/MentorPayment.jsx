@@ -55,10 +55,10 @@ function MentorPayment() {
     },
     {
       name: "Premium",
-      price: 699,
-      benefits: ["365 Days Validity","Student can connect directly","Minimum earning 30k/month","Unlimited Personalized Ads","Personal Training Sessions" , "24/7 Support"],
+      price: 499,
+      benefits: ["Lifetime membership for first 3000 members","365 Days Validity","Student can connect directly","Minimum earning 30k/month","Unlimited Personalized Ads","Personal Training Sessions" , "24/7 Support"],
       days: 365,
-    },
+    }
   ];
 
   const checkoutHandler = async (plan) => {
@@ -83,7 +83,7 @@ function MentorPayment() {
         description: `${plan.name} Plan Purchase`,
         image: image,
         order_id: data.order.id,
-        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
+        callback_url: `http://localhost:3000/verify/payment/mentor/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
         redirect: true,
         prefill: {
           name: user?.name || "Sample User",
@@ -154,7 +154,7 @@ function MentorPayment() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className="border-2 relative w-80 p-4 bg-white rounded-lg m-4 flex flex-col min-h-64 max-h-64"
+              className="border-2 relative w-80 p-4 bg-white rounded-lg m-4 flex flex-col min-h-80"
               style={{ boxShadow: "0 0 10px 0 rgba(249, 115, 22, 0.5)" }}
             >
               <div className="flex justify-between items-center mb-4">
@@ -164,8 +164,8 @@ function MentorPayment() {
               <div className="flex justify-between items-end">
                 <div>
                   {plan.benefits.map((benefit, i) => (
-                    <div key={i} className="mb-2 flex items-center">
-                      <FaCheck className="text-green-500 mr-2" />
+                    <div key={i} className="mb-2 flex ">
+                      <FaCheck className="text-green-500 mr-2 mt-1.5" />
                       <span>{benefit}</span>
                     </div>
                   ))}
