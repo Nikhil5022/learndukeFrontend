@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Domain from "./Inputs/Domain";
-import "./BecomeMentor.css"
+import "./BecomeMentor.css";
 import SubDomain from "./Inputs/SubDomain";
 import Skills from "./Inputs/Skills";
 import About from "./Inputs/About";
@@ -37,33 +37,33 @@ function BecomeMentor() {
   });
 
   const [currentStep, setCurrentStep] = useState(1);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function next(e) {
     e.preventDefault();
-    setCurrentStep(i => {
-       return i<14 ? (i+1) : i;
-    })    
+    setCurrentStep((i) => {
+      return i < 14 ? i + 1 : i;
+    });
   }
 
   function back() {
-    setCurrentStep(i => {
-        return i<1 ? i : (i-1);
-    })
+    setCurrentStep((i) => {
+      return i < 1 ? i : i - 1;
+    });
   }
 
-  function handleDomainChange(e){
+  function handleDomainChange(e) {
     setMentorData((prevState) => ({
       ...prevState,
       domain: e,
     }));
-  };
-  function handleSubDomainChange(e){
+  }
+  function handleSubDomainChange(e) {
     setMentorData((prevState) => ({
       ...prevState,
       subDomain: e,
     }));
-  };
+  }
 
   function handleSkillsChange(e) {
     setMentorData((prevState) => ({
@@ -114,14 +114,13 @@ function BecomeMentor() {
       whatsAppNumber: obj[1],
     }));
   }
-     async function handleProfilePhotoChange(e) {
-     console.log(e)
-     setMentorData((prevState) =>  ({
+  async function handleProfilePhotoChange(e) {
+    console.log(e);
+    setMentorData((prevState) => ({
       ...prevState,
       profilePhoto: e,
-      }))
-     }
-     
+    }));
+  }
 
   function handleEducationChange(e) {
     setMentorData((prevState) => ({
@@ -146,13 +145,9 @@ function BecomeMentor() {
   function Suggestion({ obj }) {
     return (
       <div className="flex items-center justify-center p-2 suggestion">
-        <div className="border-2 bg-orange-500 border-slate-900 text-white rounded-lg p-3 flex items-center justify-center flex-col min-w-96 suggestion_container">
-          <h1 className="text-2xl p-2 font-semibold">
-            😊{obj.name}
-          </h1>
-          <p className="my-4 lg:px-10 text-lg text-justify">
-            {obj.suggestion}
-          </p>
+        <div className="border-2 bg-orange-500 border-slate-900 text-white rounded-lg p-3 flex items-center justify-center flex-col w-10/12 md:min-w-96 suggestion_container">
+          <h1 className="text-2xl p-2 font-semibold">😊{obj.name}</h1>
+          <p className="my-4 lg:px-10 text-lg text-justify">{obj.suggestion}</p>
         </div>
       </div>
     );
@@ -265,7 +260,13 @@ function BecomeMentor() {
       id: 14,
       name: "Profile Photo",
       suggestion: `Your photo will be common on all your post. A professional and high definition image will help maximize the chances of receiving class requests. Upload your individual picture with a smiling face! `,
-      children: <ProfilePhoto key={13} back={back}  handleProfilePhotoChange={handleProfilePhotoChange}/>,
+      children: (
+        <ProfilePhoto
+          key={13}
+          back={back}
+          handleProfilePhotoChange={handleProfilePhotoChange}
+        />
+      ),
     },
   ];
   useEffect(() => {
@@ -277,20 +278,19 @@ function BecomeMentor() {
   return (
     <div>
       <div className="m-4">
-       <progress value={currentStep} max={14} className="w-full h-2" />
-     </div>
-        <div className="w-full flex items-center justify-center">
-       <div className="flex-1 flex items-center justify-center">
-        {formSuggestions.map(
-          (obj) =>
-            obj.id === currentStep && <Suggestion key={obj.id} obj={obj} />
-        )}
+        <progress value={currentStep} max={14} className="w-full h-2" />
       </div>
-      <div className="flex-1 mentorInputs flex items-center justify-center flex-col">
-        {formSuggestions.map((obj) => obj.id === currentStep && obj.children)}
+      <div className="w-full flex flex-col md:flex-row items-center justify-center t overflow-hidden">
+        <div className="flex-1 flex h-10/12">
+          {formSuggestions.map(
+            (obj) =>
+              obj.id === currentStep && <Suggestion key={obj.id} obj={obj} />
+          )}
+        </div>
+        <div className="flex-1 mentorInputs flex  flex-col">
+          {formSuggestions.map((obj) => obj.id === currentStep && obj.children)}
+        </div>
       </div>
-    </div>
-
     </div>
   );
 }

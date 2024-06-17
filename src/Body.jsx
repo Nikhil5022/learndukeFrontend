@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Tutorial from "./Tutorial";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt,FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
@@ -65,11 +65,26 @@ const domainOptions = [
 ];
 
 const educationOptions = [
-  "High School",
-  "Diploma",
-  "Bachelor's Degree",
-  "Master's Degree",
-  "Doctorate",
+  "10 pass",
+  "12 pass",
+  "Graduate",
+  "Deploma",
+  "ITI",
+  "BTech",
+  "MTech",
+  "Phd",
+  "Paramedical",
+  "Nursing",
+  "vocational training",
+  "Certification Programs",
+  "Associate Degree",
+  "Postgraduate Diploma",
+  "Charted Accountancy",
+  "Company Secretary",
+  "Military Training",
+  "Aviation Training",
+  "Online Courses",
+  "Others",
 ];
 
 export default function Body() {
@@ -351,7 +366,7 @@ function FilterOptions({
             className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
             onClick={() => setOpenModal(true)}
           >
-            Select Domain
+            <FaFilter className="inline-block text-lg" />
             <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
           </button>
         </div>
@@ -376,8 +391,8 @@ function FilterOptions({
           className="px-4 py-1 bg-gray-200 rounded-lg font-semibold whitespace-nowrap text-sm"
           onClick={() => setOpenModal(true)}
         >
-          Select Domain
-          <MdOutlineKeyboardArrowDown className="inline-block text-lg ml-2" />
+          Filter
+          <FaFilter className="inline-block text-md ml-2 mb-0.5" />
         </button>
       </div>
       {openModal && (

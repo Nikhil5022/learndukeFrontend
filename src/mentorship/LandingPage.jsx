@@ -81,7 +81,12 @@ function LandingPage() {
           do every bit to help you realise and exercise this power.
         </p>
         <div className="mt-4 flex items-center justify-center">
-          <button className="cursor-pointer p-2 text-center border-2 mx-4 px-4 border-orange-400 rounded-xl hover:bg-orange-400 hover:text-white">
+          <button
+            className="cursor-pointer p-2 text-center border-2 mx-4 px-4 border-orange-400 rounded-xl hover:bg-orange-400 hover:text-white"
+            onClick={() => {
+              navigate("/explorementors");
+            }}
+          >
             Find a Mentor
           </button>
           <button
