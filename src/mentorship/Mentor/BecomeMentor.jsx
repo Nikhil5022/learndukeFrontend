@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 function BecomeMentor() {
   const [mentorData, setMentorData] = useState({
-    profilePhoto: {},
+    profilePhoto: "",
     whatsAppNumber: "",
     phoneNumber: "",
     domain: [],
@@ -38,6 +38,7 @@ function BecomeMentor() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
+  const [user, setUser] = useState({})
 
   function next(e) {
     e.preventDefault();
@@ -115,7 +116,6 @@ function BecomeMentor() {
     }));
   }
   async function handleProfilePhotoChange(e) {
-    console.log(e);
     setMentorData((prevState) => ({
       ...prevState,
       profilePhoto: e,
@@ -269,6 +269,13 @@ function BecomeMentor() {
       ),
     },
   ];
+  useEffect(() =>{
+    const userPresent = JSON.parse(localStorage.getItem("user"));
+    if(!userPresent){
+      navigate("/mentorship");
+    }
+    setUser(userPresent);
+  },[])
   useEffect(() => {
     if (Object.keys(mentorData.profilePhoto).length > 0) {
       navigate("/mentor/payment", { state: { mentorData } });
