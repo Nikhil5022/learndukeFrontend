@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import sampleUser from "../../../assets/user.png";
 import Modal from "../../../Modal.jsx";
 import image from "../../../assets/learnDuke.png";
@@ -10,13 +10,35 @@ function MentorPayment() {
   const [mentorData, setMentorData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [user, setUser] = useState({});
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() =>{
+    const userPresent = JSON.parse(localStorage.getItem("user"));
+    if(!userPresent){
+      navigate("/mentorship");
+    }
+    setUser(userPresent);
+  },[])
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setMentorData(location.state?.mentorData);
-    // setMentorData();
-  }, []);
+    let data = location.state ? location.state.mentorData : null;
+    if (!data) {
+      navigate("/mentorship");
+    }
+    setMentorData(data);
+    console.log(mentorData)
+
+    sendData();
+  }, [mentorData]);
+
+  async function sendData() {
+    if(Object.keys(mentorData).length > 0){
+      await axios.post(`http://127.0.0.1:3000/addMentor/${user.email}`, mentorData);
+    }
+  }
 
   const plans = [
     {
@@ -38,7 +60,6 @@ function MentorPayment() {
       days: 365,
     },
   ];
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const checkoutHandler = async (plan) => {
     if (!user) {
