@@ -45,11 +45,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if(location.pathname === "/become-a-mentor" ){
-      setShowFooter(false);
-      setShowCreateJob(false)
-    }
-    if(location.pathname ==="/mentorship"|| location.pathname ==="/explorementors" || location.pathname.includes("/detailedmentor") || location.pathname === "/mentor/payment") {
+    if(location.pathname ==="/mentorship"|| location.pathname ==="/explorementors" || location.pathname.includes("/detailedmentor") || location.pathname === "/mentor/payment" || location.pathname === "/become-a-mentor") {
       setShowCreateJob(false)
     }else{
       setShowCreateJob(true)
