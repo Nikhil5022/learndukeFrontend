@@ -5,9 +5,14 @@ function Education({next, back, handleEducationChange, mentorData}) {
   const educationOptions = [
     'High School',
     'Diploma',
+    "Associate Degree",
+    "Post Graduate",
+    "Graduate",
     'Bachelor\'s Degree',
     'Master\'s Degree',
-    'Doctorate'
+    'Doctorate',
+    'Professional Certification',
+    'Vocational Training',
   ]
 
   return (

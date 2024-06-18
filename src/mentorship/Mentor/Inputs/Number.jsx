@@ -26,10 +26,6 @@ function Number({next, back, handleNumberChange, mentorData}) {
     }
   }, [same])
 
-  useEffect(() =>{
-    number===wNum && setSame(true)
-  },[])
-
   return (
     <div className='flex flex-col items-center justify-center'>
       <form onSubmit={(number.length!==10 && wNum.length!==10 ) ? handleNotChange : next} className="flex flex-col items-center justify-center">
