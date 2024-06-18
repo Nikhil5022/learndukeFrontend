@@ -41,6 +41,9 @@ export default function Footer() {
             <div className="font-normal hover:underline my-3">
               <a href="https://learnduke.com/live">Learnduke upskill program</a>
             </div>
+            <div className="font-normal hover:underline my-3">
+              <a href="">Mentorship</a>
+            </div>
           </div>
           <div className="w-full md:w-1/2">
             <div className="text-xl font-semibold my-5">Contact Us</div>

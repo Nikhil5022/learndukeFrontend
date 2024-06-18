@@ -287,7 +287,7 @@ function BecomeMentor() {
       <div className="m-4">
         <progress value={currentStep} max={14} className="w-full h-2" />
       </div>
-      <div className="w-full flex flex-col md:flex-row items-center justify-center overflow-hidden">
+      <div className="w-full flex flex-col md:flex-row items-center justify-center  overflow-hidden">
         <div className="flex-1 flex h-10/12">
           {formSuggestions.map(
             (obj) =>
