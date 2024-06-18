@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
+import Modal from "../../../Modal";
 
 function Skills({ next, back, handleSkillsChange, mentorData }) {
   const [selectedSkills, setSelectedSkills] = useState(mentorData.skills);
   const [mainSkills, setMainSkills] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   //   const [searchTerm, setSearchTerm] = useState("");
   //   const [searchResults, setSearchResults] = useState([]);
   const inputDomains = [
@@ -62,16 +64,26 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
         "Optical Communication",
         "Wireless Communication",
       ],
-    },{
-      "Data Science" : [
+    },
+    {
+      "Data Science": [
         "PowerBI",
         "Excel",
         "Tableau",
+        'Python',
+        "R",
+        "Hadoop",
         "SQL",
         "MySql",
         "Data Cleaning",
         "Data Filtering",
-      ]
+        "AWS",
+        "Google Cloud",
+        "Matplotlib",
+        "Machine Learning",
+        "Data processing",
+        "Matlab",
+      ],
     },
     {
       Schooling: [
@@ -143,15 +155,36 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
       ],
     },
     {
-      "College" : [
+      College: [
+        "Clinical Diagnosis",
+        "Patient Education",
+        "Medical Coding",
+        "Surgical Techniques",
         "Mechanical",
+        "Pharmaceutical Compounding",
+        "Pharmacokinetics",
         "Metallurgy",
         "Fashion Design",
         "Accounting",
-      ]
+        "Financial Analysis",
+        "Market Research",
+        "Analytical Skills",
+        "Inventory Management",
+        "Drug Formulation",
+        "Fashion Illustration",
+        "Textile Knowledge",
+        "Pattern Making",
+        "UX Design",
+        "3d Modeling",
+        "Typography",
+        "Brand Identity Development",
+        "Environmental Design",
+        "CRM",
+        "Database Management",
+      ],
     },
     {
-      "Extra Class":[
+      "Extra Class": [
         "Kathak",
         "Classical",
         "Hip Hop",
@@ -165,17 +198,34 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
         "Guitarist",
         "Tabla/Dholak",
         "Harmonium",
-        "Casio"
-      ]
+        "Casio",
+      ],
     },
     {
-      "JEE / NEET" : [
+      Product: [
+        "Problem solving",
+        "Analytics",
+        "Research Skills",
+        "Microsoft Office",
+        "Strategic Thinking",
+        "Design",
+        "Wireframing",
+        "Leadership",
+        "Sales",
+        "Scrum",
+        "Jira",
+        "Figma",
+      ],
+    },
+    {
+      "JEE / NEET": [
         "Algebra",
         "Trignometry",
         "Statistics",
         "Probability",
         "Geometry",
         "Calculus",
+        "3d Geometry",
         "Differential Equations",
         "Linear Algebra",
         "Mechanics",
@@ -183,15 +233,17 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
         "Quantum Mechanics",
         "Optics",
         "Thermodynamics",
+        "Kinematics",
         "Organic Chemistry",
         "Inorganic Chemistry",
         "Physical Chemistry",
         "Biochemistry",
         "Biotechnology",
         "Microbiology",
-      ]
-    },{
-      "Interview Prep":[
+      ],
+    },
+    {
+      "Interview Prep": [
         "Case Study",
         "Presentation Skills",
         "Body Language",
@@ -212,19 +264,37 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
         "Conflict Management",
         "Emotional Intelligence",
         "Motivation",
-      ]
-    }
+      ],
+    },
+    {
+      Business: [
+        "Entrepreneur",
+        "Risk Management",
+        "Finance Management",
+        "Market analysis",
+        "Negotiation",
+        "Marketing",
+        "Networking",
+        "Sales",
+        "Time management",
+        "Customer Service",
+        "Communication",
+        "Digital Marketing",
+        "Team building",
+      ],
+    },
   ];
 
   useEffect(() => {
     const domain = mentorData.domain;
-
     inputDomains.map((dom) => {
       if (domain.includes(dom)) {
         skillsList.map((skills) => {
           if (skills[dom]) {
             skills[dom].map((singleSkill) => {
-              setMainSkills((prev) => [...prev, singleSkill]);
+              if (!selectedSkills.includes(singleSkill)) {
+                setMainSkills((prev) => [...prev, singleSkill]);
+              }
             });
           }
         });
@@ -236,6 +306,7 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
   const handleSkillSelect = (skill) => {
     if (!selectedSkills.includes(skill)) {
       setSelectedSkills([...selectedSkills, skill]);
+      setMainSkills(mainSkills.filter((item) => item !== skill));
     }
   };
 
@@ -244,6 +315,9 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
     setSelectedSkills(
       selectedSkills.filter((selectedSkill) => selectedSkill !== skill)
     );
+    if (!mainSkills.includes(skill)) {
+      setMainSkills([skill, ...mainSkills]);
+    }
   };
 
   // Function to handle search input change
@@ -258,6 +332,11 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
   //     setSearchResults(filteredSkills.slice(0, 5));
   //   }
   //   };
+
+  const handleNotChecked = (e) => {
+    e.preventDefault();
+    setShowModal(true);
+  };
 
   return (
     <div className="w-11/12 flex sm:flex-col flex-col">
@@ -305,12 +384,19 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
           className="bg-orange-500 text-white py-3 px-5 rounded-lg m-4"
           onClick={(e) => {
             handleSkillsChange(selectedSkills);
-            next(e);
+            selectedSkills.length > 0 ? next(e) : handleNotChecked(e);
           }}
         >
           Next
         </button>
       </div>
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="text-xl flex items-center justify-center">
+            Please select atleast one skill.
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

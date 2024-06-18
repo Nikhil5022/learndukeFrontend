@@ -246,14 +246,14 @@ function BecomeMentor() {
       id: 12,
       name: "Availability",
       suggestion:
-        "Mention the timings when you'll be freely available to teach.",
+        "Choose the exact timings you will be available.Mention the timings when you'll be freely available to teach.",
       children: <Availability key={10} next={next} back={back} handleAvailabilityChange={handleAvailabilityChange} mentorData={mentorData}/>,
     },
     {
       id: 13,
       name: "Address",
       suggestion:
-        "Mention the timings when you'll be freely available to teach.",
+        "Tell us your complete address. The class can also be at your home. Student can find your location using this.",
       children: <Address key={10} next={next} back={back} handleAddressChange={handleAddressChange} mentorData={mentorData}/>,
     },
     {
@@ -281,7 +281,6 @@ function BecomeMentor() {
       navigate("/mentor/payment", { state: { mentorData } });
     }
   }, [mentorData.profilePhoto]);
-  console.log(mentorData)
 
   return (
     <div>
