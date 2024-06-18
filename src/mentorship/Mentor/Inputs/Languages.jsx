@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
 import Modal from "../../../Modal";
 
 function Languages({ handleLanguageChange, next, back, mentorData }) {
   //indian languages
-  const [selectedLanguages, setSelectedLanguages] = useState(mentorData.languages);
-  const [showModal, setShowModal] = useState(false);
   const allLanguages = [
     "English",
     "Hindi",
@@ -48,6 +46,9 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
     "Yimchunger",
     "Zeliang",
   ];
+  const [selectedLanguages, setSelectedLanguages] = useState(mentorData.languages);
+  const [mainLanguages, setMainLanguages] = useState(allLanguages)
+  const [showModal, setShowModal] = useState(false);
 
   // const handleChecked = (e) => {
   //   let updatedLanguages;
@@ -60,6 +61,11 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
   //   }
   //   setSelectedLanguages(updatedLanguages);
   // };
+  useEffect(() => {
+    setMainLanguages(
+      mainLanguages.filter((i) => !(selectedLanguages.includes(i)))
+    )
+  }, [])
 
   const handleNotChecked = (e) => {
     e.preventDefault();
@@ -70,12 +76,18 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
     if (!selectedLanguages.includes(lang)) {
       setSelectedLanguages([...selectedLanguages, lang]);
     }
+    setMainLanguages(
+      mainLanguages.filter((i) => i !== lang)
+    );
   };
 
   const handleLanguageRemove = (lang) => {
     setSelectedLanguages(
       selectedLanguages.filter((i) => i !== lang)
     );
+    if (!mainLanguages.includes(lang)) {
+      setMainLanguages([lang, ...mainLanguages]);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -103,7 +115,7 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
       <div className="flex w-11/12 flex-1 flex-col items-center">
         <h3 className="text-2xl m-4">All Languages</h3>
         <ul className=" max-h-40 w-full mb-5 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
-          {allLanguages.map((lang) => (
+          {mainLanguages.length>0 &&mainLanguages.map((lang) => (
             <div 
             key={lang}
             className="flex flex-1 item-center  text-center cursor-pointer relative"

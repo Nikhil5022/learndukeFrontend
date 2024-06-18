@@ -36,13 +36,22 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
       ],
     },{
       "Data Science" : [
-        "Data Engineer / BigData",
-        "Data Scientist / AIML",
+        "Data Engineer",
+        "Data Scientist",
         "Data Analyst",
+        "Machine learning engineer",
+        "Business intelligence analyst",
+        "Big data engineer",
       ]
     },
+    {"Product" : [
+      "Product Manager",
+      "Program Manager",
+      "Project Manager",
+      "UI / UX Designer",
+    ]},
     {
-      Schooling: [
+      "Schooling": [
         "Class 1",
         "Class 2",
         "Class 3",
@@ -127,6 +136,15 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
         "HR Interview",
         "Salary Negotiation"
       ]
+    },{
+      "Business":[
+        "Business analyst",
+        "Product manager",
+        "Project manager",
+        "Digital marketing manager",
+        "Sales manager",
+        "HR manager",
+      ]
     }
   ];
 
@@ -171,10 +189,10 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
       onSubmit={selectedSubDomain.length > 0 ? next : handleNotChecked}
     >
       <h1 className="text-2xl flex text-center">Choose Your Sub Domain</h1>
-      <div className="h-64 overflow-y-scroll flex mt-3 text-center flex-col lg:w-11/12 section w-full">
+      <div className="h-64 overflow-y-scroll flex mt-3  flex-col lg:w-11/12 section w-full">
         {subDomains.length > 0 ? (
           subDomains.map((singleSubDomain, i) => (
-            <div key={i} className="flex my-2 text-lg items-center ">
+            <div key={i} className="flex my-2 text-lg  ">
               <input
                 type="checkbox"
                 id={singleSubDomain}
