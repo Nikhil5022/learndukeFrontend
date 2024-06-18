@@ -13,6 +13,7 @@ function Education({next, back, handleEducationChange, mentorData}) {
     'Doctorate',
     'Professional Certification',
     'Vocational Training',
+    "Postdoctoral Research"
   ]
 
   return (

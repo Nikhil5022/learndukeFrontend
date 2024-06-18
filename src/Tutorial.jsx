@@ -108,13 +108,13 @@ export default function Tutorial({
         </div>
         <div className="text-3xl font-semibold">{title}</div>
         <div style={{ color: borderColor }} className="mt-3">
-          {description.slice(0, 200) + "...."}
+          {description.slice(0, 150) + "...."}
         </div>
-        <div className="flex flex-wrap mt-4 space-x-3 md:space-x-8">
+        <div className="flex flex-wrap mt-4 space-x-1 sm:space-x-3">
           <div
             className={`border-2 border-${borderColor}  rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
           >
-            <FaWallet className="w-6 h-6 mr-2 text-gray-400" />
+            <FaWallet className="w-4 h-4 mr-1 text-gray-400" />
             <span>
               &#8377;{minAmountPerHour}-&#8377;{maxAmountPerHour}/Month
             </span>
