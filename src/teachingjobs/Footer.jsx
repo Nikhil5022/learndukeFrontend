@@ -6,7 +6,7 @@ import { RiPaypalFill } from "react-icons/ri";
 import { SiAmericanexpress } from "react-icons/si";
 import { FaCcDiscover } from "react-icons/fa";
 import { FaApplePay } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 export default function Footer() {
@@ -39,10 +39,10 @@ export default function Footer() {
             </div>
             <div className="font-normal hover:underline my-3">Our Story</div>
             <div className="font-normal hover:underline my-3">
-              <a href="https://learnduke.com/live">Learnduke upskill program</a>
+              <Link to="https://learnduke.com/live">Learnduke upskill program</Link>
             </div>
             <div className="font-normal hover:underline my-3">
-              <a href="">Mentorship</a>
+              <Link to="/mentorship">Mentorship</Link>
             </div>
           </div>
           <div className="w-full md:w-1/2">

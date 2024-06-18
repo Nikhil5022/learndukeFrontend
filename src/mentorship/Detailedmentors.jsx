@@ -32,13 +32,18 @@ function Detailedmentors() {
   const reviewsSectionRef = useRef(null);
 
   useEffect(() => {
+
+   
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
     return () => {
       window.removeEventListener("resize", handleResize);
     };
