@@ -16,8 +16,8 @@ const PaymentSuccess = () => {
     >
       <Lines particle={confetti} />
       <h1 className="text-3xl m-4 font-semibold"> Order Successful!</h1>
-      <p className="text-xl">The payment was successfully completed.</p>
-      <p className="text-xl p-1">You now have access to selected plan.</p>
+      <p className="text-xl text-center">The payment was successfully completed.</p>
+      <p className="text-xl p-1 text-center">You now have access to selected plan.</p>
       <div className="flex m-5">
 
       <Link to={"/teachingjobs"}>
