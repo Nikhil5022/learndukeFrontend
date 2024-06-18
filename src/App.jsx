@@ -62,6 +62,7 @@ function App() {
 
   const handleCallNow = () => {
     (window.location.href = `tel:6371313613`), "_blank";
+    (window.location.href = "tel:6371313613"),"_blank"
   };
 
   const handleWhatsApp = () => {
