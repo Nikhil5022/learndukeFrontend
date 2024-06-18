@@ -33,6 +33,9 @@ export default function Teachingjobs() {
       axios.get("https://learndukeserver.vercel.app/getUser/"+user.email).then((res) => {
       console.log(res.data);
       setUserData(res.data);
+      if(res.data.isPremium){
+       navigate('/teachingJobs')
+      }
     });
     }
   }, []);
