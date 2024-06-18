@@ -12,12 +12,13 @@ import {
   FaStar,
   FaTools,
   FaChalkboardTeacher,
-  FaWhatsapp
+  FaWhatsapp,
 } from "react-icons/fa";
 import "./mentors.css";
 import { MdDomain } from "react-icons/md";
 import { MdAddCall } from "react-icons/md";
-
+import { IoLocation } from "react-icons/io5";
+import { PiBuildingsLight } from "react-icons/pi";
 
 function Detailedmentors() {
   const { mentorId } = useParams();
@@ -113,12 +114,12 @@ function Detailedmentors() {
         <div className="w-full lg:w-10/12 mx-auto flex flex-col-reverse md:flex-row mt-10 bg-white rounded-lg">
           <div className="md:w-2/3 p-4">
             <div className="text-2xl md:text-4xl font-bold tracking-wide mb-6 leading-snug">
-              {mentor.aboutMentorship}
+              {mentor.description}
             </div>
             <div className="mt-10 text-2xl font-bold">
               <div className="flex items-center space-x-2">
                 <FaChalkboardTeacher />
-                <span>Class Location</span>
+                <span>Class Location Type</span>
               </div>
               <div className="flex flex-wrap space-x-3 mt-5">
                 {mentor.locationType.map((location, index) => (
@@ -126,21 +127,30 @@ function Detailedmentors() {
                     key={index}
                     className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2 flex items-center"
                   >
-                    {location === "online" && <FaGlobe className="mr-2" />}
-                    {location === "offline" && (
+                    {location === "Online" && <FaGlobe className="mr-2" />}
+                    {location === "At Home" && (
                       <FaMapMarkerAlt className="mr-2" />
                     )}
-                    {location === "in-person" && <FaUser className="mr-2" />}
+                    {location === "In Person" && <FaUser className="mr-2" />}
                     {location}
                   </div>
                 ))}
+              </div>
+              {/* location */}
+              <div className="flex items-center space-x-2 mt-3">
+                {" "}
+                <IoLocation />
+                <span className="">Location</span>
+              </div>
+              <div className="w-fit mt-5 border border-gray-300 px-3 py-1 rounded-3xl">
+                {mentor.location}
               </div>
             </div>
             <div className="mt-16">
               <div className="text-2xl font-semibold mb-4">
                 About {mentor.name}
               </div>
-              <div className="text-lg tracking-wide">{mentor.aboutUs}</div>
+              <div className="text-lg tracking-wide">{mentor.about}</div>
             </div>
             <div className="mt-16">
               <div className="text-2xl font-semibold mb-4">About the class</div>
@@ -175,15 +185,15 @@ function Detailedmentors() {
               </div>
               <div className="flex flex-wrap space-x-3 mt-5">
                 <div className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2">
-                  {mentor.availableStartTime} - {mentor.availableEndTime}
+                  {mentor.availabilityStartTime} - {mentor.availabilityEndTime}
                 </div>
               </div>
               <div className="text-lg font-semibold flex items-center mt-5">
-                <MdDomain className="mr-2"/>
+                <MdDomain className="mr-2" />
                 Domains
               </div>
               <div className="flex flex-wrap space-x-3 mt-5">
-                {mentor.domains.map((domain, index) => (
+                {mentor.domain.map((domain, index) => (
                   <div
                     key={index}
                     className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
@@ -192,11 +202,11 @@ function Detailedmentors() {
                   </div>
                 ))}
               </div>
-              <div className="text-lg font-semibold flex items-center mt-5" >
-                <FaLanguage className="mr-2" /> Sub Domains
+              <div className="text-lg font-semibold flex items-center mt-5">
+              <PiBuildingsLight className="mr-2" />Sub Domains
               </div>
               <div className="flex flex-wrap space-x-3 mt-5">
-                {mentor.subdomains.map((subDomain, index) => (
+                {mentor.subDomain.map((subDomain, index) => (
                   <div
                     key={index}
                     className="text-lg font-semibold border border-gray-300 px-3 py-1 rounded-3xl mb-2"
@@ -205,11 +215,15 @@ function Detailedmentors() {
                   </div>
                 ))}
               </div>
-              <div className="text-lg tracking-wide mt-8" ref={reviewsSectionRef}>
-                {mentor.aboutMentorship}
+              <div
+                className="text-lg tracking-wide mt-8"
+                ref={reviewsSectionRef}
+              >
+                {mentor.description}
               </div>
             </div>
-            <div  className="mt-16">
+            {mentor.reviews.length > 0 && (
+              <div className="mt-16">
               <div className="flex justify-between mb-4">
                 <div className="flex items-center text-xl font-semibold">
                   <FaComments className="mr-2" /> Reviews
@@ -229,9 +243,9 @@ function Detailedmentors() {
                       <div className="flex justify-between items-center ">
                         <div className="flex items-center">
                           <img
-                            src={mentor.profilephoto.url}
+                            src={mentor.profilePhoto.url}
                             className="w-10 h-10 rounded-full mr-3"
-                            alt="User"
+                            alt="Mentor"
                           />
                           <div className="font-semibold">{review.user}</div>
                         </div>
@@ -262,7 +276,7 @@ function Detailedmentors() {
                         >
                           <span className="font-semibold flex items-center space-x-3">
                             <img
-                              src={mentor.profilephoto.url}
+                              src={mentor.profilePhoto.url}
                               className="w-10 rounded-full"
                               alt=""
                             />
@@ -302,6 +316,12 @@ function Detailedmentors() {
                 </div>
               )}
             </div>
+            )}
+            {/* {mentor.reviews.length <= 0 && (
+                <div className="text-center text-3xl font-semibold">
+                  No Reviews
+                </div>
+            )} */}
             <div className="mt-16">
               <div className="flex items-center text-xl font-semibold mb-4">
                 <FaMoneyBillAlt className="mr-2" /> Fees
@@ -309,7 +329,7 @@ function Detailedmentors() {
               <div className="flex flex-col md:flex-row border border-gray-300 p-5 rounded-lg md:space-x-5 bg-blue-50">
                 <div className="flex flex-col">
                   <div className="font-semibold">Hourly fee</div>
-                  <div className="text-sm">₹{mentor.hourlyRate}</div>
+                  <div className="text-sm">₹{mentor.hourlyFees}</div>
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold">Free classes</div>
@@ -321,7 +341,7 @@ function Detailedmentors() {
           <div className="w-full md:w-1/3 p-4 md:p-8 rounded-lg shadow-md md:sticky md:top-20 self-start bg-gray-50 mb-5 ">
             <div className="flex justify-center">
               <img
-                src={mentor.profilephoto.url}
+                src={mentor.profilePhoto.url}
                 alt="Profile"
                 className="w-1/3 h-auto rounded-3xl mb-4 shadow-lg"
               />
@@ -329,7 +349,8 @@ function Detailedmentors() {
             <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
               {mentor.name}
             </h2>
-            <div className="text-center mb-6">
+            {mentor.reviews.length > 0 && (
+              <div className="text-center mb-6">
               <div className="flex justify-center items-center space-x-1">
                 <FaStar className="text-orange-500" />
                 <span className="text-lg font-bold">
@@ -340,24 +361,27 @@ function Detailedmentors() {
                 </span>
               </div>
             </div>
+            )}
             <div className="flex md:flex-col space-y-1 md:space-y-4 overflow-x-auto hide-scrollbar">
               <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
                 <span className="font-semibold flex items-center whitespace-nowrap">
                   <FaMoneyBillAlt className="mr-2" /> Hourly fees
                 </span>
-                <span className="font-bold">₹{mentor.hourlyRate}</span>
+                <span className="font-bold">₹{mentor.hourlyFees}</span>
               </div>
               <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
                 <span className="font-semibold flex items-center whitespace-nowrap">
                   <FaClock className="mr-2" /> Start time
                 </span>
-                <span className="font-bold">{mentor.availableStartTime}</span>
+                <span className="font-bold">
+                  {mentor.availabilityStartTime}
+                </span>
               </div>
               <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
                 <span className="font-semibold flex items-center whitespace-nowrap">
                   <FaClock className="mr-2" /> End time
                 </span>
-                <span className="font-bold">{mentor.availableEndTime}</span>
+                <span className="font-bold">{mentor.availabilityEndTime}</span>
               </div>
               <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 p-1.5 w-full">
                 <span className="font-semibold flex items-center whitespace-nowrap">
@@ -368,10 +392,10 @@ function Detailedmentors() {
             </div>
             <div className="mt-4 flex flex-col space-y-3 justify-evenly">
               <button className="bg-orange-400  px-3 py-2 rounded-lg font-semibold text-white flex justify-center space-x-3 items-center">
-                < MdAddCall/> <span>Call Mentor</span>
+                <MdAddCall /> <span>Call Mentor</span>
               </button>
               <button className="bg-green-400  px-3 py-2 rounded-lg font-semibold text-white  justify-center space-x-3 flex items-center">
-                <FaWhatsapp/> <span>WhatsApp Mentor</span>
+                <FaWhatsapp /> <span>WhatsApp Mentor</span>
               </button>
             </div>
             <div className="text-center font-semibold mt-4">1 class free</div>

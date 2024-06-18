@@ -1,15 +1,17 @@
 import {useState} from "react";
+import Modal from "../../../Modal";
 
 function About({ next, handleAboutChange, back, mentorData }) {
 
   const [about, setAbout] = useState(mentorData.about)
+  const [showModal, setShowModal] = useState(false)
 
   const handleChange = (e) => {
     setAbout(e.target.value);
   }
   const handleNotChange = (e) => {
     e.preventDefault();
-    alert("Please enter at least 12 words.")
+    setShowModal(true)
   }
 
 
@@ -37,6 +39,15 @@ function About({ next, handleAboutChange, back, mentorData }) {
             Next
           </button>
         </div>
+        {
+        showModal && (
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}> 
+          <div className="text-xl flex items-center justify-center">
+            Please enter atleast 12 words.
+          </div>
+          </Modal>
+        )
+      }
       </form>
     </div>
   );

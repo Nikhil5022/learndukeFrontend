@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import sampleUser from "../../../assets/user.png"
+import Modal from '../../../Modal'
 
 function ProfilePhoto({back, handleProfilePhotoChange}) {
   const [avatar, setAvatar] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const handleImageUpload = (event) => {
     event.preventDefault();
@@ -32,15 +34,23 @@ function ProfilePhoto({back, handleProfilePhotoChange}) {
           <button className="border-2 border-orange-500 mx-4 p-3 rounded-md px-7 bg-orange-500 text-white" type="submit" 
           onClick={(e) =>{
             e.preventDefault()
-            avatar ?  handleProfilePhotoChange(avatar) : alert("Please choose a photo")
+            avatar ?  handleProfilePhotoChange(avatar) : setShowModal(true)
           } }
           >
             Submit
           </button>
         </div>
+        {
+        showModal && (
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}> 
+          <div className="text-xl flex items-center justify-center">
+            Please upload a photo
+          </div>
+          </Modal>
+        )
+        }
       </form>
     </div>
   )
 }
-
-export default ProfilePhoto
+export default ProfilePhoto;

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
+import Modal from "../../../Modal";
 
 function Languages({ handleLanguageChange, next, back, mentorData }) {
   //indian languages
   const [selectedLanguages, setSelectedLanguages] = useState(mentorData.languages);
+  const [showModal, setShowModal] = useState(false);
   const allLanguages = [
     "English",
     "Hindi",
@@ -61,7 +63,7 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
 
   const handleNotChecked = (e) => {
     e.preventDefault();
-    alert("Please select at least 1 Language");
+    setShowModal(true);
   }
 
   const handleLanguageSelect = (lang) => {
@@ -84,7 +86,7 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="flex w-11/12 flex-col items-center flex-1">
-        <h3 className="text-2xl m-4">Selected Languages</h3>
+        <h3 className="text-2xl my-4 text-center">Selected Languages</h3>
         <ul className=" max-h-32 overflow-y-scroll section justify-center flex-col w-11/12 lg:w-6/12">
           {selectedLanguages.map((lang) => (
             <div
@@ -100,7 +102,7 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
       </div>
       <div className="flex w-11/12 flex-1 flex-col items-center">
         <h3 className="text-2xl m-4">All Languages</h3>
-        <ul className=" max-h-40 w-11/12 mb-5 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
+        <ul className=" max-h-40 w-full mb-5 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
           {allLanguages.map((lang) => (
             <div 
             key={lang}
@@ -133,6 +135,15 @@ function Languages({ handleLanguageChange, next, back, mentorData }) {
             Next
           </button>
         </div>
+        {
+        showModal && (
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}> 
+          <div className="text-xl flex items-center justify-center">
+            Please select atleast one language.
+          </div>
+          </Modal>
+        )
+      }
     </div>
   );
 }

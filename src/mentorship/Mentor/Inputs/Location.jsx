@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Modal from '../../../Modal';
 
 function Location({next, back, handleLocationChange, mentorData}) {
   const allLocations = ["Online","At Home", "In Person"];
   const [selectedLocations, setSelectedLocations] = React.useState(mentorData.locationType);
+  const [showModal, setShowModal] = useState(false);
 
   const handleChecked = (e) => {
     if (e.target.checked) {
@@ -13,7 +15,7 @@ function Location({next, back, handleLocationChange, mentorData}) {
   }
   const handleNotChecked = (e) => {
     e.preventDefault()
-    alert("Please select at least 1 Location")
+    setShowModal(true)
   }
 
   return (
@@ -45,6 +47,15 @@ function Location({next, back, handleLocationChange, mentorData}) {
       <button className="border-2 mx-4 p-3 rounded-md px-6 border-orange-500" type="button" onClick={back}>Back</button>
       <button className="border-2 border-orange-500 mx-4 p-3 rounded-md px-7 bg-orange-500 text-white" type="submit" onClick= {()=> handleLocationChange(selectedLocations)}>Next</button>
       </div>
+      {
+        showModal && (
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}> 
+          <div className="text-xl flex items-center justify-center">
+            Please select atleast one location
+          </div>
+          </Modal>
+        )
+      }
     </form>
   )
 }
