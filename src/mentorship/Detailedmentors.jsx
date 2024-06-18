@@ -115,7 +115,7 @@ function Detailedmentors() {
       {!loading && mentor && (
         <div className="w-full lg:w-10/12">
           {/* back option */}
-          <div className="m-3 fixed top-20 ">
+          <div className="m-3 fixed top-20 lg:-left-0">
             <button className=" bg-orange-500 p-2 rounded-lg"
             onClick={() => window.history.back()}
             >
