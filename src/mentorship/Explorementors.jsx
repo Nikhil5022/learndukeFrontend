@@ -394,7 +394,7 @@ function Explorementors() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-1 md:gap-3 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-1 md:gap-3 lg:gap-6">
             {filteredMentors.map((mentor, index) => (
               <div
                 key={index}

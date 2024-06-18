@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { connectingLines } from "./TsParticles/options.js";
 import axios from "axios";
 import { useState } from "react";
+import Modal from "../Modal.jsx";
 
 function LandingPage() {
   const qualities = [
@@ -46,6 +47,7 @@ function LandingPage() {
   const imagesLower = [mentor6, mentor7, mentor8, mentor9, mentor10, mentor11];
   const navigate = useNavigate();
   const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleClick = () => {
     if (isAlreadyMentor) {
@@ -55,7 +57,7 @@ function LandingPage() {
       if (user) {
         navigate("/become-a-mentor");
       } else {
-        alert("Login to become a mentor");
+        setShowModal(true);
       }
     }
   };
@@ -262,6 +264,22 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="text-xl flex flex-col space-y-3 items-center justify-center">
+           <div>Please login to become a mentor</div>
+           <div>
+            <button className="px-3 py-1 bg-blue-500 rounded-xl text-white"
+              onClick={() => {
+                window.location.href = "https://learndukeserver.vercel.app/auth/google";
+              }}
+            >
+              Login
+            </button>
+           </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
