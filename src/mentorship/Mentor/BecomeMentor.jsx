@@ -232,7 +232,7 @@ function BecomeMentor() {
     {
       id: 10,
       name: "Education",
-      suggestion: "Enter any other emails you have.",
+      suggestion: "Add your education details. This will help in building trust with the users.",
       children: <Education key={12} next={next} back={back} handleEducationChange={handleEducationChange} mentorData={mentorData}/>,
     },
     {
@@ -294,7 +294,7 @@ function BecomeMentor() {
               obj.id === currentStep && <Suggestion key={obj.id} obj={obj} />
           )}
         </div>
-        <div className="flex-1 mentorInputs flex items-center justify-center flex-col">
+        <div className="flex-1 justify-center items-center mentorInputs flex  flex-col">
           {formSuggestions.map((obj) => obj.id === currentStep && obj.children)}
         </div>
       </div>

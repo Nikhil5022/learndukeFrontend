@@ -1,35 +1,58 @@
-import { dom } from "@fortawesome/fontawesome-svg-core";
+import Modal from "../../../Modal";
 import { useEffect, useState } from "react";
 
-function SubDomain({ next, handleSubDomainChange, back, mentorData}) {
+function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
+  const inputDomains = [
+    "Engineering",
+    "Schooling",
+    "Govt. Exams",
+    "College",
+    "JEE / NEET",
+    "Extra Class",
+    "Interview Prep",
+    "Others",
+  ]
   const allSubDomains = [
     {
-      Engineering: [
-        "Computer Science",
-        "Civil",
-        "Mechanical",
-        "Information Technology",
-        "Electronic",
-        "Electrical",
-        "Agricultural",
-        "Biotechnology",
-        "Automobile",
-        "Robotics",
-        "Chemical",
+      "Engineering": [
+        "Frontend Developer",
+        "Backend Developer",
+        "Full Stack Developer",
+        "DevOps/SRE/Cloud Engineer",
+        "Cyber Security Engineer",
+        "QA Automation Engineer",
+        "Engineering Manager",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Chemical Engineering",
+        "Aerospace Engineering",
+        "Biomedical Engineering",
+        "Environmental Engineering",
+        "Instruments Engineering",
+        "AIML Engineer",
       ],
+    },{
+      "Data Science" : [
+        "Data Engineer / BigData",
+        "Data Scientist / AIML",
+        "Data Analyst",
+      ]
     },
     {
       Schooling: [
-        "Social Science",
-        "Physics",
-        "Chemistry",
-        "Humanities",
-        "Biology",
-        "Mathematics",
-        "Information Technology",
-        "History",
-        "Geography",
-        "Politics",
+        "Class 1",
+        "Class 2",
+        "Class 3",
+        "Class 4",
+        "Class 5",
+        "Class 6",
+        "Class 7",
+        "Class 8",
+        "Class 9",
+        "Class 10",
+        "Class 11",
+        "Class 12",
       ],
     },
     {
@@ -39,15 +62,75 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData}) {
         "NDA",
         "SSC CHSL",
         "SSC CGL",
+        "OPSC OAS",
+        "OSSSC",
         "Railway Group D ",
         "Banking",
         "Judiciary",
+        "Defence",
+        "State PSC",
+        "Police",
+        "Teaching",
       ],
     },
+    {
+      "College": [
+        "Pharmacy",
+        "Management",
+        "Commerce",
+        "Arts",
+        "Science",
+        "Law",
+        "Medical",
+        "Engineering",
+        "Fashion",
+        "Design",
+        "Mass Communication",
+        "Hotel Management",
+        "Agriculture",
+        "Computer Application",
+      ]
+    }, {
+      "Extra Class" :[
+        "Dance", 
+        "Music",
+        "Art and Craft",
+        "Yoga",
+        "Meditation",
+        "Cooking",
+        "Photography",
+        "Fitness",
+        "Personality Development",
+        "Public Speaking",
+        "Communication Skills",
+        "Debate",
+        "Instrumental Music",
+        "Painting",
+        "Sketching",
+        "Craft",
+      ]
+    },{
+      "JEE / NEET": [
+        "Physics",
+        "Chemistry",
+        "Mathematics",
+        "Biology",
+      ]
+    }, {
+      "Interview Prep": [
+        "Resume Round",
+        "GD Round",
+        "Aptitude Round",
+        "Technical Interview",
+        "HR Interview",
+        "Salary Negotiation"
+      ]
+    }
   ];
 
   const [subDomains, setSubDomains] = useState([]);
   const [selectedSubDomain, setSelectedSubDomain] = useState(mentorData.subDomain);
+  const [showModal, setShowModal] = useState(false);
 
   const handleChecked = (e) => {
     let updatedSd;
@@ -61,46 +144,52 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData}) {
 
   const handleNotChecked = (e) => {
     e.preventDefault();
-    alert("Please select at least 1 subdomain");
+    setShowModal(true);
   };
 
   useEffect(() => {
     const domain = mentorData.domain;
-    if(domain.includes("Engineering")){
-      allSubDomains[0]["Engineering"].map((singleSubDomain) => {setSubDomains((prev) => [...prev, singleSubDomain]);});
-    }
-    if(domain.includes("Govt. Exams")){
-      allSubDomains[2]["Govt. Exams"].map((singleSubDomain) => {setSubDomains((prev) => [...prev, singleSubDomain]);});
-    }
-    if(domain.includes("Schooling")){
-      allSubDomains[1]["Schooling"].map((singleSubDomain) => {setSubDomains((prev) => [...prev, singleSubDomain]);});
-    }
-  }, []);
 
+    inputDomains.map((dom) => {
+      if (domain.includes(dom)) {
+        allSubDomains.map((subDomain) => {
+          if (subDomain[dom]) {
+            subDomain[dom].map((singleSubDomain) => {
+              setSubDomains((prev) => [...prev, singleSubDomain]);
+            });
+          }
+        });
+      }
+    });
+  }, []);
 
   return (
     <form
       className="w-full flex flex-col items-center"
-      onSubmit={selectedSubDomain.length>0 ? next : handleNotChecked}
+      onSubmit={selectedSubDomain.length > 0 ? next : handleNotChecked}
     >
       <h1 className="text-2xl">Choose Your Sub Domain</h1>
       <div className="max-h-60 overflow-scroll section mt-4 w-11/12">
-        { subDomains.length > 0 ? subDomains.map((singleSubDomain,i) => (
-          <div key={i} className="flex p-2 text-lg items-center"
-          >
-            <input
-              type="checkbox"
-              id={singleSubDomain}
-              name={singleSubDomain}
-              value={singleSubDomain}
-              checked={selectedSubDomain.includes(singleSubDomain)}
-              onChange={handleChecked}
-              className="mx-3 cursor-pointer"
-            />
-            <label className=" cursor-pointer" htmlFor={singleSubDomain}>{singleSubDomain}</label>
-          </div>
-        )) : <p>loading...</p>
-        }
+        {subDomains.length > 0 ? (
+          subDomains.map((singleSubDomain, i) => (
+            <div key={i} className="flex p-2 text-lg items-center">
+              <input
+                type="checkbox"
+                id={singleSubDomain}
+                name={singleSubDomain}
+                value={singleSubDomain}
+                checked={selectedSubDomain.includes(singleSubDomain)}
+                onChange={handleChecked}
+                className="mx-3 cursor-pointer"
+              />
+              <label className=" cursor-pointer" htmlFor={singleSubDomain}>
+                {singleSubDomain}
+              </label>
+            </div>
+          ))
+        ) : (
+          <p>loading...</p>
+        )}
       </div>
       <br />
       <div className="flex ">
@@ -119,6 +208,13 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData}) {
           Next
         </button>
       </div>
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="text-xl flex items-center justify-center">
+            Please select atleast one sub domain
+          </div>
+        </Modal>
+      )}
     </form>
   );
 }
