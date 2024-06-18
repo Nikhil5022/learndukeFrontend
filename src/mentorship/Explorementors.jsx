@@ -151,7 +151,7 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/getMentors");
+      const response = await axios.get("https://learndukeserver.vercel.app/getMentors");
       setMentors(response.data);
       setOriginalMentors(response.data);
       console.log(response.data);

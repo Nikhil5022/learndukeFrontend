@@ -72,7 +72,7 @@ function LandingPage() {
 
     const user = JSON.parse(localStorage.getItem("user"));
     axios
-      .get("http://localhost:3000/isAlreadyMentor/" + user.email)
+      .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
       .then((res) => {
         if (res.data === true) {
           setIsAlreadyMentor(true);

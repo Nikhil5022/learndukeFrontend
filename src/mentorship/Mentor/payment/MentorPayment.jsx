@@ -36,7 +36,7 @@ function MentorPayment() {
 
   async function sendData() {
     if(Object.keys(mentorData).length > 0){
-      await axios.post(`http://127.0.0.1:3000/addMentor/${user.email}`, mentorData);
+      await axios.post(`https://learndukeserver.vercel.app/addMentor/${user.email}`, mentorData);
     }
   }
 
@@ -83,7 +83,7 @@ function MentorPayment() {
         description: `${plan.name} Plan Purchase`,
         image: image,
         order_id: data.order.id,
-        callback_url: `http://localhost:3000/verify/payment/mentor/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
+        callback_url: `https://learndukeserver.vercel.app/verify/payment/mentor/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
         redirect: true,
         prefill: {
           name: user?.name || "Sample User",
