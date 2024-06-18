@@ -73,25 +73,29 @@ function LandingPage() {
     window.scrollTo(0, 0);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    if(user && user.email){
+    if (user && user.email) {
       axios
-      .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
-      .then((res) => {
-        if (res.data === true) {
-          setIsAlreadyMentor(true);
-        }
-      });
+        .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
+        .then((res) => {
+          if (res.data === true) {
+            setIsAlreadyMentor(true);
+          }
+        });
     }
   }, []);
 
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
-    <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
-      <p className="whitespace-nowrap text-sm md:text-base lg:text-lg">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
-    </div>
+      <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
+        <p className="whitespace-nowrap text-sm md:text-base lg:text-base font-light">
+          Early bird offer{" "}
+          <span className="font-semibold">lifetime validity</span> for first{" "}
+          <span className="font-semibold">20,000</span> mentors!!
+        </p>
+      </div>
       <div
         style={{ height: "81vh" }}
-        className=" flex flex-col w-full items-center justify-center"
+        className=" flex flex-col w-full items-center justify-center mt-5 sm:mt-0"
       >
         <p className="mb-10 text-black lg:text-6xl text-4xl mx-3 text-center">
           Can you bring people's
@@ -117,8 +121,8 @@ function LandingPage() {
           </button>
           <button
             className={`cursor-pointer p-2 text-center rounded-xl mx-4 px-4 text-white bg-orange-400
-  hover:bg-white hover:text-black border-2 border-orange-400 
-  ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
+                 hover:bg-white hover:text-black border-2 border-orange-400 
+                   ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
             disabled={isAlreadyMentor} // Optionally disable the button if the user is already a mentor
           >
@@ -267,16 +271,18 @@ function LandingPage() {
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <div className="text-xl flex flex-col space-y-3 items-center justify-center">
-           <div>Please login to become a mentor</div>
-           <div>
-            <button className="px-3 py-1 bg-blue-500 rounded-xl text-white"
-              onClick={() => {
-                window.location.href = "https://learndukeserver.vercel.app/auth/google";
-              }}
-            >
-              Login
-            </button>
-           </div>
+            <div>Please login to become a mentor</div>
+            <div>
+              <button
+                className="px-3 py-1 bg-blue-500 rounded-xl text-white"
+                onClick={() => {
+                  window.location.href =
+                    "https://learndukeserver.vercel.app/auth/google";
+                }}
+              >
+                Login
+              </button>
+            </div>
           </div>
         </Modal>
       )}

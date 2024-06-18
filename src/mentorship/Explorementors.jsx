@@ -436,7 +436,7 @@ function Explorementors() {
                   Hourly Fees : ₹{mentor.hourlyFees}
                 </div>
                 <div className="flex overflow-hidden w-full">
-                  <MdSchool className="mr-1 hidden md:flex"/>
+                  <MdSchool className="mr-1"/>
                   {mentor.skills.sort().slice(0, 3).map((skill, index) => (
                     <div
                       key={index}
