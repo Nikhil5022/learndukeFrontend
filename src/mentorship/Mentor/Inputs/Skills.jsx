@@ -2,17 +2,27 @@ import { useEffect, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TfiClose } from "react-icons/tfi";
 
-function Skills({ next, back, handleSkillsChange, mentorData}) {
+function Skills({ next, back, handleSkillsChange, mentorData }) {
   const [selectedSkills, setSelectedSkills] = useState(mentorData.skills);
   const [mainSkills, setMainSkills] = useState([]);
   //   const [searchTerm, setSearchTerm] = useState("");
   //   const [searchResults, setSearchResults] = useState([]);
-
+  const inputDomains = [
+    "Engineering",
+    "Schooling",
+    "Govt. Exams",
+    "College",
+    "JEE / NEET",
+    "Extra Class",
+    "Interview Prep",
+    "Others",
+  ];
   const skillsList = [
     {
       Engineering: [
         "DSA",
         "HTML",
+        "CSS",
         "Web Development",
         "React",
         "Angular",
@@ -30,8 +40,6 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
         "Cyber Security",
         "Ethical Hacking",
         "Networking",
-        "Cloud Computing",
-        "DevOps",
         "Blockchain",
         "IoT",
         "Embedded Systems",
@@ -51,49 +59,24 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
         "Mobile Communication",
         "Optical Communication",
         "Wireless Communication",
-        "Telecommunication Maintenance Error Rate",
       ],
+    },{
+      "Data Science" : [
+        "PowerBI",
+        "Excel",
+        "Tableau",
+        "SQL",
+        "MySql",
+        "Data Cleaning",
+        "Data Filtering",
+      ]
     },
     {
       Schooling: [
-        "Algebra",
-        "Trignometry",
-        "Statistics",
-        "Probability",
-        "Geometry",
-        "Calculus",
-        "Differential Equations",
-        "Linear Algebra",
-        "Botany",
-        "Zoology",
-        "Geography",
-        "Sociology",
-        "Psychology",
-        "Philosophy",
-        "Literature",
-        "Grammar",
-        "Vocabulary",
-        "Reading Comprehension",
-        "Writing Skills",
-        "Public Speaking",
-        "Debating",
-        "Drama",
-        "Music",
-        "Dance",
-        "Fine Arts",
-        "Crafts",
-        "Painting",
-        "Sculpture",
-        "Photography",
-        "Videography",
-        "Mechanics",
-        "Optics",
-        "Organic Chemistry",
-        "Inorganic Chemistry",
-        "Physical Chemistry",
-        "Biochemistry",
-        "Biotechnology",
-        "Microbiology",
+        "Physics",
+        "Maths",
+        "Biology",
+        "Chemistry",
         "Genetics",
         "Ecology",
         "Environmental Science",
@@ -109,33 +92,6 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
         "History",
         "Political Science",
         "Economics",
-        "Business Studies",
-        "Accountancy",
-        "Commerce",
-        "Marketing",
-        "Management",
-        "Entrepreneurship",
-        "Finance",
-        "Investments",
-        "Banking",
-        "Insurance",
-        "Taxation",
-        "Auditing",
-        "Costing",
-        "Budgeting",
-        "Financial Planning",
-        "Financial Analysis",
-        "Financial Reporting",
-        "Financial Modelling",
-        "Financial Management",
-        "Financial Markets",
-        "Financial Services",
-        "Financial Products",
-        "Financial Instruments",
-        "Financial Institutions",
-        "Financial Regulations",
-        "Financial Compliance",
-        "Financial Technology",
       ],
     },
     {
@@ -184,19 +140,94 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
         "Supply Chain Services",
       ],
     },
+    {
+      "College" : [
+        "Mechanical",
+        "Metallurgy",
+        "Fashion Design",
+        "Accounting",
+      ]
+    },
+    {
+      "Extra Class":[
+        "Kathak",
+        "Classical",
+        "Hip Hop",
+        "Kartanak Music",
+        "Punjabi Music",
+        "Clay Work",
+        "Color Painting",
+        "South India Cooking",
+        "Gujrati Style Cooking",
+        "Western Music",
+        "Guitarist",
+        "Tabla/Dholak",
+        "Harmonium",
+        "Casio"
+      ]
+    },
+    {
+      "JEE / NEET" : [
+        "Algebra",
+        "Trignometry",
+        "Statistics",
+        "Probability",
+        "Geometry",
+        "Calculus",
+        "Differential Equations",
+        "Linear Algebra",
+        "Mechanics",
+        "Electrostatics",
+        "Quantum Mechanics",
+        "Optics",
+        "Thermodynamics",
+        "Organic Chemistry",
+        "Inorganic Chemistry",
+        "Physical Chemistry",
+        "Biochemistry",
+        "Biotechnology",
+        "Microbiology",
+      ]
+    },{
+      "Interview Prep":[
+        "Case Study",
+        "Presentation Skills",
+        "Body Language",
+        "Corporate Etiquette",
+        "Stress Management",
+        "Time Management",
+        "Confidence Building",
+        "Public Speaking",
+        "Communication Skills",
+        "Leadership Skills",
+        "Team Building",
+        "Problem Solving",
+        "Logical Reasoning",
+        "Verbal Ability",
+        "Quantitative Aptitude",
+        "Decision Making",
+        "Negotiation Skills",
+        "Conflict Management",
+        "Emotional Intelligence",
+        "Motivation",
+      ]
+    }
   ];
 
   useEffect(() => {
     const domain = mentorData.domain;
-    if (domain.includes("Engineering")) {
-        skillsList[0]["Engineering"].map((skill) => {setMainSkills((prev) => [...prev, skill]);});
-    } 
-     if (domain.includes("Schooling")) {
-        skillsList[1]["Schooling"].map((skill) => {setMainSkills((prev) => [...prev, skill]);});
-    } 
-     if (domain.includes("Govt. Exams")) {
-        skillsList[2]["Govt. Exams"].map((skill) => {setMainSkills((prev) => [...prev, skill]);});
-    }
+
+    inputDomains.map((dom) => {
+      if (domain.includes(dom)) {
+        skillsList.map((skills) => {
+          if (skills[dom]) {
+            skills[dom].map((singleSkill) => {
+              setMainSkills((prev) => [...prev, singleSkill]);
+            });
+          }
+        });
+      }
+    });
   }, []);
 
   // Function to handle skill selection
@@ -237,28 +268,27 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
               className="flex flex-1 item-center  text-center cursor-pointer relative"
               onClick={() => handleSkillRemove(skill)}
             >
-              <li className="m-1 text-lg p-1"> {skill} </li>
-              <TfiClose className="text-lg absolute right-2 top-3" />
+              <li className="m-1 text-left mr-10 text-lg p-1"> {skill} </li>
+              <TfiClose className="text-lg absolute right-0 top-4" />
             </div>
           ))}
         </ul>
       </div>
-      <p className="border-2 w-full border-orange-300"> </p>
+      <p className="border-2 my-2 w-full border-orange-300"> </p>
       {/* 
        <div className="relative"> <h2>Search Skills</h2> <input className="border-2" type="text" value={searchTerm} onChange={handleSearchChange} placeholder="Search skills" /> {searchResults.length > 0 && ( <ul className="z-10 absolute border-2 h-32 w-full border-orange-500 backdrop-blur-xl"> {searchResults.map((skill) => ( <li key={skill} onClick={() => { handleSkillSelect(skill); setShowPopup(false); }} > {skill} </li> ))} </ul> )} </div> <p className="border-2 w-full border-orange-300"> </p> */}
       <div className="flex flex-1 flex-col items-center">
         <h3 className="text-2xl m-4 ">All Skills</h3>
-        <ul className=" max-h-40 w-11/12 lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
+        <ul className=" max-h-40 w-full lg:w-6/12 overflow-y-scroll section flex-1 justify-center flex-col">
           {mainSkills.map((skill) => (
-            <div 
-            key={skill}
-            className="flex flex-1 item-center  text-center cursor-pointer relative"
-            onClick={() => handleSkillSelect(skill)}>
-            <li className="m-1 text-lg p-1">
-              {skill}
-            </li>
-            <IoIosAdd className="text-2xl absolute right-2 top-2" />
-                </div>
+            <div
+              key={skill}
+              className="flex flex-1 px-4 cursor-pointer relative"
+              onClick={() => handleSkillSelect(skill)}
+            >
+              <li className="m-1 w-full text-lg p-1">{skill}</li>
+              <IoIosAdd className="text-2xl absolute right-2 top-3" />
+            </div>
           ))}
         </ul>
       </div>
@@ -272,8 +302,8 @@ function Skills({ next, back, handleSkillsChange, mentorData}) {
         <button
           className="bg-orange-500 text-white py-3 px-5 rounded-lg m-4"
           onClick={(e) => {
-            handleSkillsChange(selectedSkills)
-            next(e)
+            handleSkillsChange(selectedSkills);
+            next(e);
           }}
         >
           Next
