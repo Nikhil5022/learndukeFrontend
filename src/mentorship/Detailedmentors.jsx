@@ -113,7 +113,7 @@ function Detailedmentors() {
         </p>
       )}
       {!loading && mentor && (
-        <div>
+        <div className="w-full lg:w-10/12">
           {/* back option */}
           <div className="m-3 fixed top-20 ">
             <button className=" bg-orange-500 p-2 rounded-lg"
@@ -122,7 +122,7 @@ function Detailedmentors() {
               <FaArrowLeft className="text-white"  />
             </button>
           </div>
-          <div className="w-full lg:w-10/12 mx-auto flex flex-col-reverse md:flex-row  bg-white rounded-lg mt-8">
+          <div className=" mx-auto flex flex-col-reverse md:flex-row  bg-white rounded-lg mt-8">
             <div className="md:w-2/3 p-4">
               <div className="text-2xl md:text-4xl font-bold tracking-wide mb-6 leading-snug">
                 {mentor.description}
