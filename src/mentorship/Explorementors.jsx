@@ -140,7 +140,7 @@ function Explorementors() {
 
   const handleResize = () => {
     const newDisplayedNames = mentors.map((mentor, index) => {
-      const cardWidth = cardRefs.current[index]?.offsetWidth || 200;
+      const cardWidth = cardRefs.current[index]?.offsetWidth || 250;
       const maxChars = Math.floor(cardWidth / 13); // Approximate number of characters per pixel width
       return mentor.name.length > maxChars
         ? `${mentor.name.substring(0, maxChars - 3)}...`
@@ -279,6 +279,13 @@ function Explorementors() {
     setFilteredMentors(filteredMentors);
   };
 
+  const calculateNameToShow = (name) => {
+
+   
+    const index = mentors.findIndex((mentor) => mentor.name === name);
+    return displayedNames[index];
+  }
+
   return (
     <div>
       {onLoad && (
@@ -394,80 +401,56 @@ function Explorementors() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-1 md:gap-3 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
             {filteredMentors.map((mentor, index) => (
               <div
-                key={index}
-                className="border rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer"
-                ref={(el) => (cardRefs.current[index] = el)}
-                onClick={() => {
-                  console.log(mentor._id);
-                  navigation(`/detailedmentor/${mentor._id}`);
-                }}
-              >
-                <div className="relative md:pt-3 md:pl-3 md:pr-3 w-full">
-                  <img
-                    src={mentor.profilePhoto.url || user2}
-                    alt="profile photo"
-                    className="object-cover rounded-lg w-full h-60"
-                  />
-                  <div className="absolute inset-0 "></div>
+              key={index}
+              className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
+              ref={(el) => (cardRefs.current[index] = el)}
+              onClick={() => {
+                console.log(mentor._id);
+                navigation(`/detailedmentor/${mentor._id}`);
+              }}
+            >
+              <div className="relative w-full" style={{ paddingTop: '100%' }}>
+                <img
+                  src={mentor.profilePhoto.url || user2}
+                  alt="profile photo"
+                  className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+                />
+                <div className="absolute inset-0"></div>
+              </div>
+              <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
+                <div className="flex justify-between items-center">
+                  <div className="text-base font-semibold whitespace-nowrap">
+                    {calculateNameToShow(mentor.name)}
+                  </div>
+                  <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
+                    {mentor.experience} YOE
+                  </div>
+                  <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+                    {mentor.experience} Y
+                  </div>
                 </div>
-                <div className="p-2 md:p-3">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="text-base font-bold whitespace-nowrap">
-                     {/* {displayedNames[index]} */}
-                     {mentor.name}
-                    </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
-                      {mentor.experience} YOE
-                    </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
-                      {mentor.experience} Y
-                    </div>
-                  </div>
-                  <div className="text-gray-500 text-sm mb-4 whitespace-nowrap">
-                    Hourly Fees : ₹{mentor.hourlyFees}
-                  </div>
-                  <div className="flex overflow-hidden w-full  mb-4">
-                  <MdSchool className="mt-0.5"/>
-
-                    {mentor.skills.sort().slice(0,3).map((skill, index) => (
-                      <div
-                        key={index}
-                        className=" h-8  mx-1 rounded-md whitespace-nowrap text-sm"
-                      >
-                        {skill},
-                      </div>
-                    ))}
-                  </div>
-                  {/* <div className="flex justify-between items-center">
-                    {getDomainIcon(mentor.domain)}
+                <div className="text-gray-500 text-sm whitespace-nowrap">
+                  Hourly Fees : ₹{mentor.hourlyFees}
+                </div>
+                <div className="flex overflow-hidden w-full">
+                  <MdSchool className="mr-1 hidden md:flex"/>
+                  {mentor.skills.sort().slice(0, 3).map((skill, index) => (
                     <div
-                      className="text-green-600 text-xl hover:text-green-800 transition-colors duration-300 ease-in-out"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // no need to go to another page
-
-                        window.location.href = `tel:${mentor.phoneNumber}`;
-                      }}
+                      key={index}
+                      className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${index!=0 && "ml-1"}`}
                     >
-                      <FaPhoneAlt />
+                      {skill}
+                      {index<2 && <span className="text-gray-400">,</span>}
+                      {index === 2 && mentor.skills.length > 3 && "..."}
                     </div>
-                    <div
-                      className="text-green-500 text-xl hover:text-green-700 transition-colors duration-300 ease-in-out"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // no need to go to another page
-
-                        window.location.href = `https://wa.me/${mentor.whatsappNumber}`;
-                      }}
-                    >
-                      <FaWhatsapp className="text-2xl" />
-                    </div>
-                  </div> */}
+                  ))}
                 </div>
               </div>
+            </div>
+            
             ))}
             {filteredMentors.length === 0 && (
               <div className="text-center w-full col-span-full">
