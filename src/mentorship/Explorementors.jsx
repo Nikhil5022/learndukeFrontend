@@ -238,13 +238,13 @@ function Explorementors() {
       if (selectedDomain === "All Domains") {
         return true;
       }
-      if (!mentor.domains.includes(selectedDomain)) {
+      if (!mentor.domain.includes(selectedDomain)) {
         return false;
       }
       if (
         selectedSubDomains.length > 0 &&
         !selectedSubDomains.some((subDomain) =>
-          mentor.subdomains.includes(subDomain)
+          mentor.subDomain.includes(subDomain)
         )
       ) {
         return false;
@@ -261,15 +261,17 @@ function Explorementors() {
     const filteredMentors = originalMentors.filter((mentor) => {
       const nameMatch = mentor.name.toLowerCase().includes(searchValue);
 
-      const domainMatch = mentor.domains.some((domain) =>
+      const domainMatch = mentor.domain.some((domain) =>
         domain.toLowerCase().includes(searchValue)
       );
-      const subdomainMatch = mentor.subdomains.some((subdomain) =>
+      const subdomainMatch = mentor.subDomain.some((subdomain) =>
         subdomain.toLowerCase().includes(searchValue)
       );
       const skillsMatch = mentor.skills.some((skill) =>
         skill.toLowerCase().includes(searchValue)
       );
+
+    
 
       return domainMatch || subdomainMatch || skillsMatch || nameMatch;
     });
@@ -282,11 +284,11 @@ function Explorementors() {
       {onLoad && (
         <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
           <div className="text-3xl font-sans text-center mb-10 mt-5">
-            Book a{" "}
+            Connect with{" "}
             <span className="bg-gradient-to-r from-orange-200 to-orange-500 text-transparent bg-clip-text">
-              Free Trial
+              Mentor
             </span>{" "}
-            with a Mentor of your Choice
+            of your choice.
           </div>
           {/* Filter options */}
           <input
@@ -392,7 +394,7 @@ function Explorementors() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-1 md:gap-3 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-1 md:gap-3 lg:gap-6">
             {filteredMentors.map((mentor, index) => (
               <div
                 key={index}
@@ -411,13 +413,17 @@ function Explorementors() {
                   />
                   <div className="absolute inset-0 "></div>
                 </div>
-                <div className="p-2 md:p-3 lg:p-6">
+                <div className="p-2 md:p-3">
                   <div className="flex justify-between items-center mb-2">
                     <div className="text-base font-bold whitespace-nowrap">
-                     {displayedNames[index]}
+                     {/* {displayedNames[index]} */}
+                     {mentor.name}
                     </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap">
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
                       {mentor.experience} YOE
+                    </div>
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+                      {mentor.experience} Y
                     </div>
                   </div>
                   <div className="text-gray-500 text-sm mb-4 whitespace-nowrap">
@@ -435,7 +441,7 @@ function Explorementors() {
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     {getDomainIcon(mentor.domain)}
                     <div
                       className="text-green-600 text-xl hover:text-green-800 transition-colors duration-300 ease-in-out"
@@ -459,7 +465,7 @@ function Explorementors() {
                     >
                       <FaWhatsapp className="text-2xl" />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

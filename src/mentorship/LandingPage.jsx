@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { connectingLines } from "./TsParticles/options.js";
 import axios from "axios";
 import { useState } from "react";
+import Modal from "../Modal.jsx";
 
 function LandingPage() {
   const qualities = [
@@ -46,6 +47,7 @@ function LandingPage() {
   const imagesLower = [mentor6, mentor7, mentor8, mentor9, mentor10, mentor11];
   const navigate = useNavigate();
   const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleClick = () => {
     if (isAlreadyMentor) {
@@ -55,7 +57,7 @@ function LandingPage() {
       if (user) {
         navigate("/become-a-mentor");
       } else {
-        alert("Login to become a mentor");
+        setShowModal(true);
       }
     }
   };
@@ -71,19 +73,21 @@ function LandingPage() {
     window.scrollTo(0, 0);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    axios
+    if(user && user.email){
+      axios
       .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
       .then((res) => {
         if (res.data === true) {
           setIsAlreadyMentor(true);
         }
       });
+    }
   }, []);
 
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
     <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
-      <p className="whitespace-nowrap">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
+      <p className="whitespace-nowrap text-sm md:text-base lg:text-lg">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
     </div>
       <div
         style={{ height: "81vh" }}
@@ -260,6 +264,22 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="text-xl flex flex-col space-y-3 items-center justify-center">
+           <div>Please login to become a mentor</div>
+           <div>
+            <button className="px-3 py-1 bg-blue-500 rounded-xl text-white"
+              onClick={() => {
+                window.location.href = "https://learndukeserver.vercel.app/auth/google";
+              }}
+            >
+              Login
+            </button>
+           </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
