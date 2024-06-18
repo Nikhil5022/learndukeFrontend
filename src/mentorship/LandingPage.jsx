@@ -71,19 +71,21 @@ function LandingPage() {
     window.scrollTo(0, 0);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    axios
+    if(user && user.email){
+      axios
       .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
       .then((res) => {
         if (res.data === true) {
           setIsAlreadyMentor(true);
         }
       });
+    }
   }, []);
 
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
     <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
-      <p className="whitespace-nowrap">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
+      <p className="whitespace-nowrap text-sm md:text-base lg:text-lg">Early bird offer <span className="font-semibold">lifetime validity</span> for first <span className="font-semibold">20,000</span> mentors!!</p>
     </div>
       <div
         style={{ height: "81vh" }}
