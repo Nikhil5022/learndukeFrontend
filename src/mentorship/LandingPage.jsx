@@ -48,10 +48,11 @@ function LandingPage() {
   const navigate = useNavigate();
   const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isAlreadyMentorModal, setIsAlreadyMentorModal] = useState(false);
 
   const handleClick = () => {
     if (isAlreadyMentor) {
-      alert("You are already a mentor");
+      setIsAlreadyMentorModal(true);
     } else {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
@@ -124,7 +125,7 @@ function LandingPage() {
                  hover:bg-white hover:text-black border-2 border-orange-400 
                    ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
-            disabled={isAlreadyMentor} // Optionally disable the button if the user is already a mentor
+           
           >
             Become a Mentor
           </button>
@@ -285,6 +286,18 @@ function LandingPage() {
             </div>
           </div>
         </Modal>
+      )}
+
+      {isAlreadyMentorModal && (
+        <Modal
+          isOpen={isAlreadyMentorModal}
+          onClose={() => setIsAlreadyMentorModal(false)}
+        >
+          <div className="text-xl flex flex-col space-y-3 items-center justify-center">
+            <div>You are already a mentor</div>
+          </div>
+        </Modal>
+      
       )}
     </div>
   );
