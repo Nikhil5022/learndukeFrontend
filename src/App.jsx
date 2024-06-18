@@ -36,6 +36,7 @@ function App() {
   const [showNav, setShowNav] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
   const location = useLocation();
+  const [showCreateJob, setShowCreateJob] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,9 +45,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if(location.pathname === "/become-a-mentor") {
-      setShowFooter(false);
+    if(location.pathname ==="/mentorship"|| location.pathname ==="/explorementors" || location.pathname.includes("/detailedmentor") || location.pathname === "/mentor/payment" || location.pathname === "/become-a-mentor") {
+      setShowCreateJob(false)
     }else{
+      setShowCreateJob(true)
       setShowFooter(true);
     }
     // Update showNav based on the current location
@@ -107,7 +109,7 @@ function App() {
           >
             <FaWhatsapp className="text-2xl text-green-400" />
           </div>
-          {user && (
+          {(user && showCreateJob) && (
             <div
               className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
               onClick={() => navigate("/createjob")}

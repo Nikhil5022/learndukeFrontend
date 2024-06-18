@@ -281,6 +281,7 @@ function BecomeMentor() {
       navigate("/mentor/payment", { state: { mentorData } });
     }
   }, [mentorData.profilePhoto]);
+  console.log(mentorData)
 
   return (
     <div>

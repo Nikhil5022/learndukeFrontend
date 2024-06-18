@@ -32,7 +32,7 @@ function Number({next, back, handleNumberChange, mentorData}) {
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <form onSubmit={(number.length!==10 || wNum.length!==10 ) ? handleNotChange : next} className="flex flex-col items-center justify-center">
+      <form onSubmit={(number.length!==10 && wNum.length!==10 ) ? handleNotChange : next} className="flex flex-col items-center justify-center">
         <label htmlFor='phone' className='text-2xl'>Phone Number</label>
         <input value={number} id="phone" type="tel" className="text-lg border-2 border-slate-900 rounded-lg p-2 w-4/4 my-4" onChange={handleChange} required placeholder='Enter your phone no.'/>
         <br />

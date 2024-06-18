@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
   const inputDomains = [
     "Engineering",
+    "Data Science",
+    "Product",
     "Schooling",
     "Govt. Exams",
     "College",
     "JEE / NEET",
     "Extra Class",
     "Interview Prep",
-    "Others",
-  ]
+    "Business",
+  ];
   const allSubDomains = [
     {
       "Engineering": [
@@ -152,10 +154,10 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
 
     inputDomains.map((dom) => {
       if (domain.includes(dom)) {
-        allSubDomains.map((subDomain) => {
-          if (subDomain[dom]) {
-            subDomain[dom].map((singleSubDomain) => {
-              setSubDomains((prev) => [...prev, singleSubDomain]);
+        allSubDomains.map((sd) => {
+          if (sd[dom]) {
+            sd[dom].map((singleSubDomain) => {
+             !subDomains.includes(singleSubDomain) && setSubDomains((prev) => [...prev, singleSubDomain]);
             });
           }
         });
@@ -165,14 +167,14 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
 
   return (
     <form
-      className="w-full flex flex-col items-center"
+      className="w-64 lg:w-11/12 flex flex-col items-center"
       onSubmit={selectedSubDomain.length > 0 ? next : handleNotChecked}
     >
-      <h1 className="text-2xl">Choose Your Sub Domain</h1>
-      <div className="max-h-60 overflow-scroll section mt-4 w-11/12">
+      <h1 className="text-2xl flex text-center">Choose Your Sub Domain</h1>
+      <div className="h-64 overflow-y-scroll flex mt-3 text-center flex-col lg:w-11/12 section w-full">
         {subDomains.length > 0 ? (
           subDomains.map((singleSubDomain, i) => (
-            <div key={i} className="flex p-2 text-lg items-center">
+            <div key={i} className="flex my-2 text-lg items-center ">
               <input
                 type="checkbox"
                 id={singleSubDomain}
