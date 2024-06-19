@@ -4,11 +4,12 @@ import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Modal from "../Modal";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigator = useNavigate();
-  
+
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
@@ -25,6 +26,8 @@ export default function UserPage() {
   const [imageChange, setImageChange] = useState(false);
   const [isLinkedinValid, setIsLinkedinValid] = useState(false);
   const [isGithubValid, setIsGithubValid] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [profileUpdate, setProfileUpdate] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -58,6 +61,10 @@ export default function UserPage() {
     "Environmental Services",
     "Sports and Recreation",
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [])
 
   useEffect(() => {
     if (user && user.email) {
@@ -113,7 +120,7 @@ export default function UserPage() {
   };
 
   const handleSaveDomains = () => {
-    const updatedJobAlerts =selectedDomains
+    const updatedJobAlerts = selectedDomains;
     // remove duplicates
     const uniqueJobAlerts = [...new Set(updatedJobAlerts)];
     setJobAlerts(updatedJobAlerts);
@@ -122,9 +129,12 @@ export default function UserPage() {
       jobAllerts: uniqueJobAlerts,
     });
 
-    axios.post(`https://learndukeserver.vercel.app/jobAlerts/${user.email}`, { jobAlerts: uniqueJobAlerts })
+    axios
+      .post(`https://learndukeserver.vercel.app/jobAlerts/${user.email}`, {
+        jobAlerts: uniqueJobAlerts,
+      })
       .then((response) => {
-        alert("Job alerts updated successfully");
+        setShowModal(true);
       })
       .catch((error) => {
         console.error("Error updating job alerts:", error);
@@ -132,7 +142,6 @@ export default function UserPage() {
       });
     setOpenDomainModal(false);
   };
-  
 
   const filteredJobs = jobs.filter((job) => {
     const titleMatch =
@@ -161,11 +170,10 @@ export default function UserPage() {
       };
       reader.readAsDataURL(file);
     }
-    setImageChange(true)
+    setImageChange(true);
   };
 
   const handleSaveProfile = () => {
-
     const linkedinRegex = new RegExp(
       "^(https?://)?(www.)?linkedin.com/in/([a-zA-Z0-9-.]+)$"
     );
@@ -174,23 +182,21 @@ export default function UserPage() {
     );
 
     if (userData.linkedin && !linkedinRegex.test(userData.linkedin)) {
-      setIsLinkedinValid(true)
+      setIsLinkedinValid(true);
       return;
     }
 
     if (userData.github && !githubRegex.test(userData.github)) {
-      setIsGithubValid(true)
+      setIsGithubValid(true);
       return;
     }
     axios
-      .post(
-        `https://learndukeserver.vercel.app/editUserData/${user.email}`,{
-          userData,
-          imageChange
-        }
-      )
+      .post(`https://learndukeserver.vercel.app/editUserData/${user.email}`, {
+        userData,
+        imageChange,
+      })
       .then((response) => {
-        alert("Profile data updated successfully");
+        setProfileUpdate(true);
         setIsEditEnabled(false);
         setImageChange(false);
       });
@@ -321,7 +327,9 @@ export default function UserPage() {
                     className="w-full p-2 border rounded"
                   />
                   {isLinkedinValid && (
-                    <div className="text-red-500">Enter a valid LinkedIn URL</div>
+                    <div className="text-red-500">
+                      Enter a valid LinkedIn URL
+                    </div>
                   )}
                 </div>
                 <div>
@@ -477,10 +485,9 @@ export default function UserPage() {
                   {jobAlerts.map((jobAlert, index) => (
                     <div
                       key={index}
-                      className=" p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm flex justify-center items-center"
+                      className=" p-2 mr-1 bg-gray-100 border border-gray-300 rounded-md shadow-sm flex justify-center items-center"
                     >
-                      <span className="mr-4">{jobAlert}</span>
-                      
+                      <span>{jobAlert}</span>
                     </div>
                   ))}
                 </div>
@@ -508,7 +515,7 @@ export default function UserPage() {
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             <div className="bg-white p-6 rounded-lg shadow-lg z-10 w-96">
               <h3 className="text-xl font-bold mb-4">Select Domains</h3>
-              <div className="mb-4 max-h-60 overflow-y-auto">
+              <div className="mb-4 max-h-60 overflow-y-auto p-2">
                 {domainOptions.map((domain, index) => (
                   <div key={index} className="flex items-center mb-2">
                     <input
@@ -524,8 +531,9 @@ export default function UserPage() {
               </div>
               <div className="flex justify-end space-x-4">
                 <button
-                  onClick={() => {setOpenDomainModal(false);
-                  setSelectedDomains(jobAlerts);
+                  onClick={() => {
+                    setOpenDomainModal(false);
+                    setSelectedDomains(jobAlerts);
                   }}
                   className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
                 >
@@ -541,6 +549,21 @@ export default function UserPage() {
             </div>
           </div>
         )}
+        {showModal && (
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+            <div className="text-xl flex items-center justify-center">
+              Job alerts updated successfully.
+            </div>
+          </Modal>
+        )}
+        {
+          profileUpdate && (
+            <Modal isOpen={profileUpdate} onClose={() => setProfileUpdate(false)}>
+            <div className="text-xl flex items-center justify-center">
+              Profile Updated successfully.
+            </div>
+          </Modal>
+        )}
 
         {!isPremium && (
           <div className="mt-10 p-4 bg-white shadow-md rounded-lg">
@@ -549,7 +572,8 @@ export default function UserPage() {
               Get access to premium features like job alerts, priority job
               applications, and more by upgrading to a premium account.
             </p>
-            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors duration-300"
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition-colors duration-300"
               onClick={() => {
                 navigator("/subscription");
               }}

@@ -137,7 +137,7 @@ export default function Detailedjob() {
         <div className="mt-5">
           {isLoading && <div className="text-lg text-gray-600">Loading...</div>}
           {similarJobs.length === 0 && !isLoading && (
-            <div className="text-lg text-gray-600">No similar jobs found</div>
+            <div className="text-lg sm:mt-14 text-center text-gray-600">No similar jobs found</div>
           )}
           {similarJobs.length > 0 && !isLoading && (
             <div className="text-lg text-gray-600 font-semibold mb-5 md:hidden">

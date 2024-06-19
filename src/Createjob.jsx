@@ -866,13 +866,7 @@ export default function CreateJob() {
               )}
             </div>
             {/* Is Different WhatsApp Number */}
-            <div className="mb-4">
-              <label
-                htmlFor="isDifferentWhatsappNumber"
-                className="block text-gray-700 font-semibold mb-2"
-              >
-                Is your WhatsApp number different from your phone number?
-              </label>
+            <div className="mb-4 flex items-center sm:items-start">
               <input
                 type="checkbox"
                 id="isDifferentWhatsappNumber"
@@ -881,7 +875,13 @@ export default function CreateJob() {
                 onChange={handleChange}
                 className="mr-2"
               />
-              <span>Yes</span>
+              <label
+                htmlFor="isDifferentWhatsappNumber"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Is your WhatsApp number different from your phone number?
+              </label>
+              
             </div>
             {/* WhatsApp Number */}
             {formData.isDifferentWhatsappNumber && (
