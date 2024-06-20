@@ -17,7 +17,7 @@ export default function Teachingjobs() {
 
   useEffect(() => { 
     vidRef.current.play();
-    // vidRef.current.muted = false;
+    vidRef.current.muted = false;
   },[]);
 
   useEffect(() => {
