@@ -9,6 +9,7 @@ function Domain({ handleDomainChange, next, mentorData }) {
   const inputDomains = [
     "Engineering",
     "Data Science",
+    "Career Counselling",
     "Product",
     "Schooling",
     "Govt. Exams",
@@ -39,7 +40,7 @@ function Domain({ handleDomainChange, next, mentorData }) {
   return (
     <form
       onSubmit={selectedDomain.length > 0 ? next : handleNotChecked}
-      className="flex flex-col items-center justify-center"
+      className="flex flex-col lg:w-5/12 items-center justify-center"
     >
       <label className="text-2xl my-3 ">Choose Your Domains</label>
       <div className="max-h-80 w-full overflow-scroll section">

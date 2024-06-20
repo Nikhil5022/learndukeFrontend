@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import teachingjobs from "../assets/teachingjobs.jpg";
 import companies from "../assets/companies.jpg";
 import DosAndDonts from "./DosAndDonts";
@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import Achievements from "../assets/Achievements.jpg";
 import numbers2 from "../assets/numbers2.jpg";
 import axios from "axios";
-import image from "../assets/learnDuke.png";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -14,6 +13,12 @@ export default function Teachingjobs() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [userData, setUserData] = useState();
+  const vidRef=useRef();
+
+  useEffect(() => { 
+    vidRef.current.play();
+    // vidRef.current.muted = false;
+  },[]);
 
   useEffect(() => {
     AOS.init({
@@ -43,12 +48,17 @@ export default function Teachingjobs() {
     <div className="mt-10">
       <div className="w-full flex justify-center">
         <div
-          className="w-full md:w-10/12 lg:w-9/12 flex flex-col md:flex-row px-4"
+          className="w-full md:w-10/12 lg:w-10/12 flex flex-col xl:flex-row px-4"
           data-aos="fade-in"
           data-aos-duration="1000"
         >
-          <img src={teachingjobs} alt="" className="w-full mb-5 md:mb-0 " />
-          <div className="flex flex-col md:p-10">
+          <div className="flex-1 flex items-center justify-center" data-aos="slide-right">
+            <video ref={vidRef} muted autoPlay loop>
+                <source src={"/LearnDuke_Intro.mp4"} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+          </div>
+          <div className="flex flex-1 flex-col md:p-10">
             <div className="text-4xl font-bold m-3 leading-relaxed tracking-wider">
               Find an authentic online and offline jobs for you
             </div>
@@ -221,27 +231,28 @@ export default function Teachingjobs() {
                 data-aos="fade-up"
               >
                 <span className="font-semibold " style={{ color: "#404040" }}>
-                  Step 1: 
-                </span>
-                 {" "}By any of our subscription plans. We offer a variety of plans to suit your needs.
+                  Step 1:
+                </span>{" "}
+                By any of our subscription plans. We offer a variety of plans to
+                suit your needs.
               </li>
               <li
                 className="m-1 leading-relaxed tracking-wide"
                 data-aos="fade-up"
               >
                 <span className="font-semibold " style={{ color: "#404040" }}>
-                  Step 2: 
-                </span>
-                {" "}Go to explore jobs and find the job that suits your skills.
+                  Step 2:
+                </span>{" "}
+                Go to explore jobs and find the job that suits your skills.
               </li>
               <li
                 className="m-1 leading-relaxed tracking-wide"
                 data-aos="fade-up"
               >
                 <span className="font-semibold " style={{ color: "#404040" }}>
-                  Step 3: 
-                </span>
-                {" "}Directly connect to the HR or Employer via call or Whatsapp.
+                  Step 3:
+                </span>{" "}
+                Directly connect to the HR or Employer via call or Whatsapp.
               </li>
             </ol>
             <div className="text-xl font-bold m-3" data-aos="fade-up">
