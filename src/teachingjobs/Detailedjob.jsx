@@ -271,7 +271,7 @@ export default function Detailedjob() {
             <hr className="border-t-2 border-gray-200" />
             <div className="w-full p-4 bg-gray-50 rounded-lg mb-4">
               {job.benifits.map((benefit, index) => (
-                <div key={index} className="flex items-center text-gray-700">
+                <div key={index} className="flex  text-gray-700">
                   <span className="text-base">&#8226;</span>
                   <span className="text-base ml-2">{benefit}</span>.
                 </div>
@@ -290,7 +290,7 @@ export default function Detailedjob() {
               Responsibilities
             </div>
             {splitTextIntoBullets(job.responsibilities).map((bullet, index) => (
-              <div key={index} className="flex items-center text-gray-700 mb-1">
+              <div key={index} className="flex  text-gray-700 mb-1">
                 <span className="text-base">&#8226;</span>
                 <span className="text-base ml-2">{bullet}</span>.
               </div>
@@ -300,7 +300,7 @@ export default function Detailedjob() {
               Requirements
             </div>
             {splitTextIntoBullets(job.requirements).map((bullet, index) => (
-              <div key={index} className="flex items-center text-gray-700 mb-1">
+              <div key={index} className="flex  text-gray-700 mb-1">
                 <span className="text-base">&#8226;</span>
                 <span className="text-base ml-2">{bullet}</span>.
               </div>

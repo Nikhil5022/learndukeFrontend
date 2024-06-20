@@ -28,6 +28,8 @@ export default function UserPage() {
   const [isGithubValid, setIsGithubValid] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [profileUpdate, setProfileUpdate] = useState(false);
+  const [IsValidPhoneNumber,setIsValidPhoneNumber] = useState(false);
+  const [isValidWhatsappNumber,setIsValidWhatsappNumber] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -188,6 +190,16 @@ export default function UserPage() {
 
     if (userData.github && !githubRegex.test(userData.github)) {
       setIsGithubValid(true);
+      return;
+    }
+
+    if(userData.phoneNumber.length !== 10){
+      setIsValidPhoneNumber(true);
+      return;
+    }
+
+    if(userData.whatsappNumber.length !== 10){
+      setIsValidWhatsappNumber(true);
       return;
     }
     axios
@@ -351,11 +363,18 @@ export default function UserPage() {
                   <input
                     type="number"
                     value={userData.phoneNumber}
-                    onChange={(e) =>
+                    onChange={(e) =>{
+                      
                       setUserData({ ...userData, phoneNumber: e.target.value })
                     }
+                    }
                     className="w-full p-2 border rounded"
+                    // number of digits 10
+                    
                   />
+                  {IsValidPhoneNumber && (
+                    <div className="text-red-500">Enter a valid Phone Number</div>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold">WhatsApp Number</label>
@@ -370,6 +389,11 @@ export default function UserPage() {
                     }
                     className="w-full p-2 border rounded"
                   />
+                  {isValidWhatsappNumber && (
+                    <div className="text-red-500">
+                      Enter a valid WhatsApp Number
+                    </div>
+                  )}
                 </div>
                 <div className="col-span-2">
                   <label className="block font-semibold">Bio</label>
