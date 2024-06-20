@@ -40,7 +40,7 @@ export default function Teachingjobs() {
   }, []);
 
   return (
-    <div className="mt-10">
+    <div className="mt-10 overflow-hidden">
       <div className="w-full flex justify-center">
         <div
           className="w-full md:w-10/12 lg:w-9/12 flex flex-col md:flex-row px-4"
