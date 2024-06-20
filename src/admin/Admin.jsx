@@ -236,15 +236,19 @@ export default function Admin() {
               className="border p-2 mb-2 md:mb-0 md:mr-2 w-full md:w-1/2 rounded-lg"
             />
             {view === "users" && (
-              <label className="text-sm md:text-base">
+              <div className="flex">
                 <input
+                name="showPremium"
+                id="showPremium"
                   type="checkbox"
                   checked={showPremium}
                   onChange={handlePremiumFilterChange}
-                  className="mr-1"
-                />
+                  className="mr-2 cursor-pointer"
+                  />
+              <label htmlFor="showPremium" className="text-sm md:text-base cursor-pointer">
                 Show Premium Users
               </label>
+                  </div>
             )}
             <button
               onClick={() => {
