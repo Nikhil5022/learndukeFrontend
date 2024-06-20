@@ -5,6 +5,7 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
   const inputDomains = [
     "Engineering",
     "Data Science",
+    "Career Counselling",
     "Product",
     "Schooling",
     "Govt. Exams",
@@ -42,6 +43,18 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
         "Machine learning engineer",
         "Business intelligence analyst",
         "Big data engineer",
+      ]
+    },{
+      "Career Counselling": [
+        "Career Path",
+        "Study Abroad ",
+        "Admission Path",
+        "Life Skill",
+        "College Path",
+        "Course Path",
+        "Job Path",
+        "Career Advisor",
+        "Career Consultant",
       ]
     },
     {"Product" : [
@@ -185,7 +198,7 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
 
   return (
     <form
-      className="w-64 lg:w-11/12 flex flex-col items-center"
+      className="w-64 lg:w-7/12 flex flex-col items-center"
       onSubmit={selectedSubDomain.length > 0 ? next : handleNotChecked}
     >
       <h1 className="text-2xl flex text-center">Choose Your Sub Domain</h1>

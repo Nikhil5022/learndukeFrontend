@@ -12,6 +12,7 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
   const inputDomains = [
     "Engineering",
     "Data Science",
+    "Career Counselling",
     "Product",
     "Schooling",
     "Govt. Exams",
@@ -83,6 +84,30 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
         "Machine Learning",
         "Data processing",
         "Matlab",
+      ],
+    },
+    {
+      "Career Counselling": [
+        "Advising",
+        "Cultural Awareness",
+        "Problem Solving",
+        "Consulting",
+        "Mentoring",
+        "Guidance",
+        "Motivation",
+        "Networking",
+        "Goal Setting",
+        "Leadership",
+        "Communication",
+        "Researching",
+      ],
+    },
+    {
+      Product: [
+        "Product Manager",
+        "Program Manager",
+        "Project Manager",
+        "UI / UX Designer",
       ],
     },
     {

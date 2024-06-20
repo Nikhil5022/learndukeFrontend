@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { RiMenuLine, RiCloseLine } from "react-icons/ri";
 import learnDuke from "./assets/learnDuke.png";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -15,6 +15,8 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [photo, setPhoto] = useState(null);
+
+  const clickoutside = useRef();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -72,6 +74,24 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (clickoutside.current && !clickoutside.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    // scroll event 
+    window.addEventListener("scroll", () => {
+      setShowMenu(false);
+    });
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
+
   return (
     <div className="p-4 flex justify-between items-center sticky top-0 bg-white h-20 border-b border-gray-200 z-50">
       <div className="flex items-center space-x-4 lg:space-x-6">
@@ -81,12 +101,8 @@ export default function Navbar() {
           className="h-16 cursor-pointer"
           onClick={() => navigate("/")}
         />
-        {/* <div className="hidden md:block h-10 md:h-16 w-1 bg-orange-500"></div>
-        <div className="text-base md:text-2xl font-normal text-left">
-          Worlds only <span className="text-orange-500 font-semibold">instant tutoring</span> platform
-        </div> */}
+        
         <div className="hidden md:flex space-x-4 items-center">
-        {/* <FaSearch className="text-xl cursor-pointer" onClick={() => navigate("/teachingjobs")} /> */}
         <div className="cursor-pointer hover:underline" onClick={()=>{navigate('/teachingjobs')}}>Explore Jobs</div>
         <div className="cursor-pointer hover:underline" onClick={()=>{navigate('/mentorship')}}>Mentorship</div>
       </div>
@@ -94,7 +110,7 @@ export default function Navbar() {
      
       <div className="flex items-center space-x-6">
         {showMenu && (
-          <div className="absolute top-16 right-0 bg-white p-4 rounded-lg shadow-md z-10 flex flex-col w-2/3 lg:hidden animate-slide-down">
+          <div className="absolute top-16 right-0 bg-white p-4 rounded-lg shadow-md z-10 flex flex-col w-2/3 lg:hidden animate-slide-down" ref={clickoutside}>
             {user ? (
               <>
                 <div

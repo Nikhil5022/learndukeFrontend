@@ -114,6 +114,7 @@ export default function Body() {
           axios
             .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
             .then((userResponse) => {
+              console.log("User data fetched:", userResponse.data);
               job.userName = userResponse.data.name;
               job.imageLink = userResponse.data.profilephoto.url;
               return job;
