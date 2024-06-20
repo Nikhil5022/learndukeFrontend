@@ -292,7 +292,7 @@ export default function Detailedjob() {
             {splitTextIntoBullets(job.responsibilities).map((bullet, index) => (
               <div key={index} className="flex  text-gray-700 mb-1">
                 <span className="text-base">&#8226;</span>
-                <span className="text-base ml-2">{bullet}</span>.
+                <span className="text-base ml-2">{bullet}</span>
               </div>
             ))}
 
@@ -302,7 +302,7 @@ export default function Detailedjob() {
             {splitTextIntoBullets(job.requirements).map((bullet, index) => (
               <div key={index} className="flex  text-gray-700 mb-1">
                 <span className="text-base">&#8226;</span>
-                <span className="text-base ml-2">{bullet}</span>.
+                <span className="text-base ml-2">{bullet}</span>
               </div>
             ))}
 
