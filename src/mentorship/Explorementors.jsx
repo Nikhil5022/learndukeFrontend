@@ -318,9 +318,9 @@ function Explorementors() {
         skill.toLowerCase().includes(searchValue)
       );
 
-    
+      const locationMatch = mentor.location.toLowerCase().includes(searchValue);
 
-      return domainMatch || subdomainMatch || skillsMatch || nameMatch;
+      return domainMatch || subdomainMatch || skillsMatch || nameMatch || locationMatch;
     });
 
     setFilteredMentors(filteredMentors);
