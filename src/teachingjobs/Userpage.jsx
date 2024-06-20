@@ -293,7 +293,7 @@ export default function UserPage() {
                   onChange={handleImageUpload}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold">Name</label>
                   <input
