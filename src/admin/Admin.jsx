@@ -717,7 +717,7 @@ export default function Admin() {
           </div>
         </div>
       ) : (
-        <div className="flex justify-center items-center h-svh bg-gray-100">
+        <div className="flex justify-center items-center h-svh bg-gray-100 w-full">
           <form
             onSubmit={handleLogin}
             className="bg-white p-6 rounded shadow-md w-full max-w-sm"
