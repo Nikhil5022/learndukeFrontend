@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../Modal";
 
 function Domain({ handleDomainChange, next, mentorData }) {
   const navigate = useNavigate();
-  const [selectedDomain, setSelectedDomain] = useState(mentorData.domain);
+  console.log("mentordata domain", mentorData);
+  const [selectedDomain, setSelectedDomain] = useState(
+    mentorData?.domain || []
+  );
+  useEffect(() => {
+    setSelectedDomain(mentorData?.domain || []);
+  }, [mentorData]);
   const [showModal, setShowModal] = useState(false);
   const inputDomains = [
     "Engineering",

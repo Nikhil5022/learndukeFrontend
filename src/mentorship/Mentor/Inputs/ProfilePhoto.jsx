@@ -1,9 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import sampleUser from "../../../assets/user.png"
 import Modal from '../../../Modal'
 
-function ProfilePhoto({back, handleProfilePhotoChange}) {
+function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
   const [avatar, setAvatar] = useState("");
+  useEffect(() => {
+    if( mentorData.profilePhoto!=="" && mentorData.profilePhoto.url  ){
+      setAvatar(mentorData.profilePhoto.url)
+    }
+    else{
+      setAvatar('')
+    
+    }
+  }
+  , [])
   const [showModal, setShowModal] = useState(false);
 
   const handleImageUpload = (event) => {

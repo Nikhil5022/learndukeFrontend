@@ -15,26 +15,44 @@ import Address from "./Inputs/Address";
 import ProfilePhoto from "./Inputs/ProfilePhoto";
 import Description from "./Inputs/Description";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 function BecomeMentor() {
-  const [mentorData, setMentorData] = useState({
-    profilePhoto: "",
-    whatsAppNumber: "",
-    phoneNumber: "",
-    domain: [],
-    subDomain: [],
-    skills: [],
-    about: "",
-    experience: "",
-    education: "",
-    locationType: [],
-    languages: [],
-    hourlyFees: "",
-    availabilityStartTime: "",
-    availabilityEndTime: "",
-    description: "",
-    location: "",
-  });
+
+  const [newData, setNewData] = useState(true);
+
+  const [mentorData, setMentorData] = useState(
+    {
+      profilePhoto: "",
+      whatsappNumber: "",
+      phoneNumber: "",
+      domain: [],
+      subDomain: [],
+      skills: [],
+      about: "",
+      experience: "",
+      education: "",
+      locationType: [],
+      languages: [],
+      hourlyFees: "",
+      availabilityStartTime: "",
+      availabilityEndTime: "",
+      description: "",
+      location: "",
+    }
+  );
+ 
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state && location.state.mentorData) {
+      console.log(location.state.mentorData);
+      setMentorData(location.state.mentorData);
+      setNewData(false);
+    }
+  }, [location.state]);
+  
 
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
@@ -112,7 +130,7 @@ function BecomeMentor() {
     setMentorData((prevState) => ({
       ...prevState,
       phoneNumber: obj[0],
-      whatsAppNumber: obj[1],
+      whatsappNumber: obj[1],
     }));
   }
   async function handleProfilePhotoChange(e) {
@@ -120,6 +138,7 @@ function BecomeMentor() {
       ...prevState,
       profilePhoto: e,
     }));
+    handleSubmit();
   }
 
   function handleEducationChange(e) {
@@ -265,10 +284,25 @@ function BecomeMentor() {
           key={13}
           back={back}
           handleProfilePhotoChange={handleProfilePhotoChange}
+          mentorData={mentorData}
         />
       ),
     },
   ];
+
+  console.log(location.state)
+
+  const handleSubmit = () => {
+    if(location.state?.mentorData==null){
+      navigate("/mentor/payment", { state: { mentorData, newData:true, modified:false } });
+    }
+    if(location.state?.mentorData === mentorData){
+      navigate("/mentor/payment", { state: { mentorData, modified:false, newData: false } });
+    } else if (location.state?.mentorData!==null && location.state?.mentorData !== mentorData) {
+      navigate("/mentor/payment", { state: { mentorData ,modified:true, newData:false} });
+    }
+    
+  }
   useEffect(() =>{
     const userPresent = JSON.parse(localStorage.getItem("user"));
     if(!userPresent){
@@ -276,12 +310,9 @@ function BecomeMentor() {
     }
     setUser(userPresent);
   },[])
-  useEffect(() => {
-    if (Object.keys(mentorData.profilePhoto).length > 0) {
-      navigate("/mentor/payment", { state: { mentorData } });
-    }
-  }, [mentorData.profilePhoto]);
 
+  console.log(mentorData);
+  
   return (
     <div>
       <div className="m-4">

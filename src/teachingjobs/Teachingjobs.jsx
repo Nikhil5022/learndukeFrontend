@@ -13,11 +13,38 @@ export default function Teachingjobs() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [userData, setUserData] = useState();
-  const vidRef=useRef();
+  const vidRef = useRef();
 
-  useEffect(() => { 
-    vidRef.current.play();
-  },[]);
+  useEffect(() => {
+    const videoElement = vidRef.current;
+
+    const playVideo = () => {
+      console.log("playing");
+      videoElement.play();
+      // Uncomment the line below if you need to ensure the video is unmuted
+      // videoElement.muted = false;
+    };
+
+    const timeoutId = setTimeout(playVideo, 1000);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          videoElement.play();
+        } else {
+          videoElement.pause();
+        }
+      },
+      { threshold: 0.9 }
+    );
+
+    observer.observe(videoElement);
+
+    return () => {
+      clearTimeout(timeoutId);
+      observer.unobserve(videoElement);
+    };
+  }, []);
 
   useEffect(() => {
     AOS.init({
@@ -51,10 +78,13 @@ export default function Teachingjobs() {
           data-aos="fade-in"
           data-aos-duration="1000"
         >
-          <div className="flex-1 flex items-center justify-center" data-aos="slide-right">
-            <video ref={vidRef} muted controls autoPlay loop>
-                <source src={"/LearnDuke_Intro.mp4"} type="video/mp4" />
-                Your browser does not support the video tag.
+          <div
+            className="flex-1 flex items-center justify-center"
+            data-aos="slide-right"
+          >
+            <video ref={vidRef} muted autoPlay loop controls>
+              <source src={"/LearnDuke_Intro.mp4"} type="video/mp4" />
+              Your browser does not support the video tag.
             </video>
           </div>
           <div className="flex flex-1 flex-col md:p-10">
