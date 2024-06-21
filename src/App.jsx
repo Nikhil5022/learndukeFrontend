@@ -61,12 +61,11 @@ function App() {
   }, [location]);
 
   const handleCallNow = () => {
-    (window.location.href = `tel:6371313613`), "_blank";
-    (window.location.href = "tel:6371313613"),"_blank"
+    window.open("tel:6371313613", "blank");
   };
 
   const handleWhatsApp = () => {
-    (window.location.href = `https://wa.me/6371313613`), "_blank";
+    window.open(`https://wa.me/6371313613?text=${"I was facing issue in"}`, 'blank');
   };
 
   return (
