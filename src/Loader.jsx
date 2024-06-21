@@ -3,11 +3,11 @@ import "./Loader.css"
 function Loader() {
   return (
     <div className="flex items-center justify-center">
-      <div class="content">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
+      <div className="content">
+        <div className="circle"></div>
+        <div className="circle"></div>
+        <div className="circle"></div>
+        <div className="circle"></div>
       </div>
     </div>
   );

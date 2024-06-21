@@ -15,6 +15,8 @@ function MentorPayment() {
   const navigate = useNavigate();
   const [photo,setPhoto] = useState(null);
 
+  console.log(location.state)
+
   useEffect(() => {
     const userPresent = JSON.parse(localStorage.getItem("user"));
     if (!userPresent) {
@@ -26,32 +28,48 @@ function MentorPayment() {
   useEffect(() => {
     window.scrollTo(0, 0);
     async function getMentorData() {
-      let data = await  location.state ? location.state.mentorData : null;
-      let newData= location.state && location.state.newData;
-      if(newData == true){
-        setPhoto(data.profilePhoto);
-        setMentorData(data);
-      }
+      let data = await location.state.mentorData;
+      console.log(data);
+      let newData = location.state.newData;
       if (!data) {
         navigate("/mentorship");
       }
-      if(Object.keys(data).length > 0 && newData == false) {
+      if(newData === true && location.state.modified === false){
+        setPhoto(data.profilePhoto);
+        setMentorData(data);
+      }
+      if(location.state.modified === false && newData == false) {
         setMentorData(data);
         setPhoto(data.profilePhoto.url);
+      }
+      if(location.state.modified === true && newData == false){
+        setPhoto(data.profilePhoto.url);
+        setMentorData(data);
       }
       console.log(mentorData);
     }
     getMentorData();
 
-    if (location.state.newData == true) {
+    if (location.state.newData === true && location.state.modified === false) {
       sendData();
+    } else if (location.state.modified === true && location.state.newData === false) {
+      updateData();
     }
   }, [mentorData]);
 
   async function sendData() {
     if (Object.keys(mentorData).length > 0) {
       await axios.post(
-        `https://learndukeserver.vercel.app/addMentor/${user.email}`,
+        `http://localhost:3000/addMentor/${user.email}`,
+        mentorData
+      );
+    }
+  }
+  async function updateData() {
+    if (Object.keys(mentorData).length > 0) {
+      const u = JSON.parse(localStorage.getItem("user"));
+      await axios.put(
+        `http://localhost:3000/updateMentor/${u.email}`,
         mentorData
       );
     }

@@ -16,6 +16,7 @@ import ProfilePhoto from "./Inputs/ProfilePhoto";
 import Description from "./Inputs/Description";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 function BecomeMentor() {
 
@@ -24,7 +25,7 @@ function BecomeMentor() {
   const [mentorData, setMentorData] = useState(
     {
       profilePhoto: "",
-      whatsAppNumber: "",
+      whatsappNumber: "",
       phoneNumber: "",
       domain: [],
       subDomain: [],
@@ -130,7 +131,7 @@ function BecomeMentor() {
     setMentorData((prevState) => ({
       ...prevState,
       phoneNumber: obj[0],
-      whatsAppNumber: obj[1],
+      whatsappNumber: obj[1],
     }));
   }
   async function handleProfilePhotoChange(e) {
@@ -138,6 +139,7 @@ function BecomeMentor() {
       ...prevState,
       profilePhoto: e,
     }));
+    handleSubmit();
   }
 
   function handleEducationChange(e) {
@@ -288,6 +290,20 @@ function BecomeMentor() {
       ),
     },
   ];
+
+  console.log(location.state)
+
+  const handleSubmit = () => {
+    if(location.state?.mentorData==null){
+      navigate("/mentor/payment", { state: { mentorData, newData:true, modified:false } });
+    }
+    if(location.state?.mentorData === mentorData){
+      navigate("/mentor/payment", { state: { mentorData, modified:false, newData: false } });
+    } else if (location.state?.mentorData!==null && location.state?.mentorData !== mentorData) {
+      navigate("/mentor/payment", { state: { mentorData ,modified:true, newData:false} });
+    }
+    
+  }
   useEffect(() =>{
     const userPresent = JSON.parse(localStorage.getItem("user"));
     if(!userPresent){
@@ -295,12 +311,9 @@ function BecomeMentor() {
     }
     setUser(userPresent);
   },[])
-  useEffect(() => {
-    if (Object.keys(mentorData.profilePhoto).length > 0 && newData) {
-      navigate("/mentor/payment", { state: { mentorData ,newData:true} });
-    }
-  }, [mentorData.profilePhoto]);
 
+  console.log(mentorData);
+  
   return (
     <div>
       <div className="m-4">
