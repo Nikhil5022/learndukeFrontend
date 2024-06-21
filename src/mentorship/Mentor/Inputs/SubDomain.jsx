@@ -34,6 +34,7 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
         "Environmental Engineering",
         "Instruments Engineering",
         "AIML Engineer",
+        "Computer Science",
       ],
     },{
       "Data Science" : [
@@ -163,6 +164,9 @@ function SubDomain({ next, handleSubDomainChange, back, mentorData }) {
 
   const [subDomains, setSubDomains] = useState([]);
   const [selectedSubDomain, setSelectedSubDomain] = useState(mentorData.subDomain);
+  useEffect(() => {
+    setSelectedSubDomain(mentorData.subDomain);
+  }, [mentorData]);
   const [showModal, setShowModal] = useState(false);
 
   const handleChecked = (e) => {

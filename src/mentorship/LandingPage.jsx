@@ -49,6 +49,7 @@ function LandingPage() {
   const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isAlreadyMentorModal, setIsAlreadyMentorModal] = useState(false);
+  const [mentorData, setMentorData] = useState([]);
 
   const handleClick = () => {
     if (isAlreadyMentor) {
@@ -74,14 +75,19 @@ function LandingPage() {
     window.scrollTo(0, 0);
 
     const user = JSON.parse(localStorage.getItem("user"));
+
     if (user && user.email) {
       axios
         .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
         .then((res) => {
-          if (res.data === true) {
+          console.log(res.data);
+          if (res.data.success === true) {
             setIsAlreadyMentor(true);
+            setMentorData(res.data.mentor);
           }
         });
+
+
     }
   }, []);
 
@@ -293,9 +299,32 @@ function LandingPage() {
           isOpen={isAlreadyMentorModal}
           onClose={() => setIsAlreadyMentorModal(false)}
         >
-          <div className="text-xl flex flex-col space-y-3 items-center justify-center">
+          <div className="text-lg flex flex-col space-y-3 items-center justify-center">
             <div>You are already a mentor</div>
+            <div className="flex flex-col md:flex-row space-x-3 items-center justify-center space-y-3 md:space-y-0">
+              {/* edit mentor */}
+              <button
+                className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
+                onClick={() => {
+                  navigate("/become-a-mentor",{state:{mentorData,newData:false }});
+                }}
+              >
+                Edit Mentor
+              </button>
+              {!mentorData.isPremium && (
+                <button
+                  className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
+                  onClick={() => {
+                    navigate("/mentor/payment",{state:{mentorData,newData:false}});
+                  }}
+                >
+                  Proceed with Payment
+                </button>
+              
+              )}
+            </div>
           </div>
+          
         </Modal>
       
       )}
