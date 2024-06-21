@@ -324,7 +324,7 @@ export default function Detailedjob() {
                 onClick={() => {
                   if (isLogin) {
                     if (isPremium) {
-                      window.location.href = `tel:${job.phoneNumber}`;
+                      window.open(`tel:${phoneNumber}`, "blank");
                     } else {
                       setIsModal(true);
                     }
@@ -341,7 +341,7 @@ export default function Detailedjob() {
                 onClick={() => {
                   if (isLogin) {
                     if (isPremium) {
-                      window.location.href = `https://wa.me/${job.whatsappNumber}`;
+                      window.open(`https://wa.me/${whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`, 'blank');
                     } else {
                       setIsModal(true);
                     }

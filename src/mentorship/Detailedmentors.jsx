@@ -416,20 +416,20 @@ function Detailedmentors() {
               <div className="mt-4 flex flex-col space-y-3 justify-evenly">
                 <button
                   className="bg-orange-400  px-3 py-2 rounded-lg font-semibold text-white flex justify-center space-x-3 items-center"
-                  onClick={() => window.open(`tel:${mentor.phoneNumber}`)}
+                  onClick={() => window.open(`tel:${mentor.phoneNumber}`, "blank")}
                 >
                   <MdAddCall /> <span>Call Mentor</span>
                 </button>
                 <button
                   className="bg-green-400  px-3 py-2 rounded-lg font-semibold text-white  justify-center space-x-3 flex items-center"
                   onClick={() =>
-                    window.open(`https://wa.me/${mentor.whatsappNumber}`)
+                    window.open(`https://wa.me/${whatsappNumber}?text=${"Hello Mentor! I saw your profile on Learnduke. Can I take a free class  for "}`, 'blank')
                   }
                 >
                   <FaWhatsapp /> <span>WhatsApp Mentor</span>
                 </button>
               </div>
-              <div className="text-center font-semibold mt-4">1 class free</div>
+              <div className="text-center font-semibold mt-4">1st class free</div>
             </div>
           </div>
         </div>
