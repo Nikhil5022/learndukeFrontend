@@ -15,11 +15,13 @@ import {
   FaTimes,
   FaPhoneAlt,
 } from "react-icons/fa";
+import { PiStudentBold } from "react-icons/pi";
 import "./mentors.css";
 import { useNavigate } from "react-router-dom";
 import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
 import { MdSchool } from "react-icons/md";
+import Loader from "../Loader";
 
 
 const domainOptions = [
@@ -33,6 +35,7 @@ const domainOptions = [
   { name: "Jee/neet", icon: <FaBook />, number: 7 },
   { name: "Extra class", icon: <FaChalkboardTeacher />, number: 8 },
   { name: "Interview prep", icon: <FaChalkboardTeacher />, number: 9 },
+  { name: "Career Counselling", icon: <PiStudentBold />, number: 10 },
 ];
 
 const subDomainOptions = [
@@ -78,6 +81,19 @@ const subDomainOptions = [
       "Sales manager",
       "HR manager",
     ],
+  },{
+    name: "Career Counselling",
+    options: [
+      "Career Path",
+        "Study Abroad ",
+        "Admission Path",
+        "Life Skill",
+        "College Path",
+        "Course Path",
+        "Job Path",
+        "Career Advisor",
+        "Career Consultant",
+    ]
   },
   {
     name: "School",
@@ -513,9 +529,7 @@ function Explorementors() {
         </div>
       )}
       {onLoad === false && (
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500"></div>
-        </div>
+        <Loader />
       )}
     </div>
   );

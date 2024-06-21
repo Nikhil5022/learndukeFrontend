@@ -7,6 +7,7 @@ import { ClipLoader } from "react-spinners";
 import crying from "./assets/crying.gif";
 import "./App.css";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import Loader from "./Loader";
 
 // Define the filter options
 const filterOptions = [
@@ -246,9 +247,7 @@ export default function Body() {
               />
             </div>
             {loading ? (
-              <div className="flex justify-center items-center mt-10">
-                <ClipLoader size={50} color={"#123abc"} loading={loading} />
-              </div>
+              <Loader />
             ) : newTutorialJobs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                 {newTutorialJobs.map((job, index) => (

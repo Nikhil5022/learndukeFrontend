@@ -51,7 +51,7 @@ export default function Tutorial({
   const handleCallNow = () => {
     if (isLogin) {
       if (isPremium) {
-        window.location.href = `tel:${phoneNumber},_blank`;
+        window.open(`tel:${phoneNumber}`, "blank");
       } else {
         setModalMessage("You need to be a premium user to call the user.");
         setIsModalOpen(true);
@@ -64,7 +64,7 @@ export default function Tutorial({
   const handleWhatsApp = () => {
     if (isLogin) {
       if (isPremium) {
-        (window.location.href = `https://wa.me/${whatsappNumber}`), "_blank";
+        window.open(`https://wa.me/${whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`, 'blank');
       } else {
         setModalMessage("You need to be a premium user to use WhatsApp.");
         setIsModalOpen(true);

@@ -17,7 +17,6 @@ export default function Teachingjobs() {
 
   useEffect(() => { 
     vidRef.current.play();
-    // vidRef.current.muted = false;
   },[]);
 
   useEffect(() => {
@@ -53,7 +52,7 @@ export default function Teachingjobs() {
           data-aos-duration="1000"
         >
           <div className="flex-1 flex items-center justify-center" data-aos="slide-right">
-            <video ref={vidRef} muted autoPlay loop>
+            <video ref={vidRef} muted controls autoPlay loop>
                 <source src={"/LearnDuke_Intro.mp4"} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
