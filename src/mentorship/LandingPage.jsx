@@ -306,7 +306,7 @@ function LandingPage() {
               <button
                 className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
                 onClick={() => {
-                  navigate("/become-a-mentor",{state:{mentorData,newData:false }});
+                  navigate("/become-a-mentor",{state:{mentorData, newData:false }});
                 }}
               >
                 Edit Mentor
@@ -315,7 +315,7 @@ function LandingPage() {
                 <button
                   className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
                   onClick={() => {
-                    navigate("/mentor/payment",{state:{mentorData,newData:false}});
+                    navigate("/mentor/payment",{state:{mentorData, newData:false, modified: false}});
                   }}
                 >
                   Proceed with Payment
