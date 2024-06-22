@@ -14,6 +14,8 @@ function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
     }
   }
   , [])
+
+  console.log(avatar)
   const [showModal, setShowModal] = useState(false);
 
   const handleImageUpload = (event) => {
@@ -22,6 +24,7 @@ function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log(e.target.result)
         setAvatar(e.target.result)
       };
       reader.readAsDataURL(file);

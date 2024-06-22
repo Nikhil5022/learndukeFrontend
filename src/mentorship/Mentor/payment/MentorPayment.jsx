@@ -14,8 +14,8 @@ function MentorPayment() {
   const location = useLocation();
   const navigate = useNavigate();
   const [photo,setPhoto] = useState(null);
+  const [updatedModal, setUpdatedModal] = useState(false);
 
-  console.log(location.state)
 
   useEffect(() => {
     const userPresent = JSON.parse(localStorage.getItem("user"));
@@ -29,7 +29,6 @@ function MentorPayment() {
     window.scrollTo(0, 0);
     async function getMentorData() {
       let data = await location.state.mentorData;
-      console.log(data);
       let newData = location.state.newData;
       if (!data) {
         navigate("/mentorship");
@@ -46,7 +45,6 @@ function MentorPayment() {
         setPhoto(data.profilePhoto.url);
         setMentorData(data);
       }
-      console.log(mentorData);
     }
     getMentorData();
 
@@ -68,10 +66,16 @@ function MentorPayment() {
   async function updateData() {
     if (Object.keys(mentorData).length > 0) {
       const u = JSON.parse(localStorage.getItem("user"));
+      console.log(mentorData,"mentorData")
       await axios.put(
         `http://localhost:3000/updateMentor/${u.email}`,
-        mentorData
-      );
+        {mentorData}
+      ).then((res) => {
+        console.log(res.data);
+        if(res.status === 200){
+          setUpdatedModal(true);
+        }
+      });
     }
   }
 
@@ -267,6 +271,11 @@ function MentorPayment() {
               Pay
             </button>
           </div>
+        </div>
+      </Modal>
+      <Modal isOpen={updatedModal} onClose={() => setUpdatedModal(false)}>
+        <div className="text-xl flex items-center justify-center">
+          Your profile has been updated successfully
         </div>
       </Modal>
     </div>

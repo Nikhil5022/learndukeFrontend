@@ -135,11 +135,18 @@ function BecomeMentor() {
     }));
   }
   async function handleProfilePhotoChange(e) {
+    console.log(e);
     setMentorData((prevState) => ({
       ...prevState,
       profilePhoto: e,
     }));
-    handleSubmit();
+    
+    setTimeout(() => {
+      console.log(mentorData, "mentorData from profile photo");
+      handleSubmit();
+    }, 5000);
+     
+    
   }
 
   function handleEducationChange(e) {
