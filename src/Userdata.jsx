@@ -17,7 +17,7 @@ function Userdata() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user);
+
     setUser(user);
   }, []);
 
@@ -44,9 +44,7 @@ function Userdata() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Form Data Submitted:', formData);
       axios.post('https://learndukeserver.vercel.app/updateUserInfo/' + User.email, formData).then((response) => {
-        console.log(response.data);
         setModalMessage('User data updated successfully');
         setIsModalOpen(true);
       });

@@ -19,7 +19,6 @@ export default function Teachingjobs() {
     const videoElement = vidRef.current;
 
     const playVideo = () => {
-      console.log("playing");
       videoElement.play();
       // Uncomment the line below if you need to ensure the video is unmuted
       // videoElement.muted = false;
@@ -61,7 +60,6 @@ export default function Teachingjobs() {
       axios
         .get("https://learndukeserver.vercel.app/getUser/" + user.email)
         .then((res) => {
-          console.log(res.data);
           setUserData(res.data);
           if (res.data.isPremium) {
             navigate("/teachingJobs");

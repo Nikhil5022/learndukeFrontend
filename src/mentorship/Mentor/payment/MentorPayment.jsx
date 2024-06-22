@@ -13,9 +13,9 @@ function MentorPayment() {
   const [user, setUser] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
-  const [photo,setPhoto] = useState(null);
+  const [photo, setPhoto] = useState(null);
   const [updatedModal, setUpdatedModal] = useState(false);
-
+  const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
     const userPresent = JSON.parse(localStorage.getItem("user"));
@@ -33,50 +33,57 @@ function MentorPayment() {
       if (!data) {
         navigate("/mentorship");
       }
-      if(newData === true && location.state.modified === false){
+      setMentorData(data);
+      if (newData === true && location.state.modified === false) {
         setPhoto(data.profilePhoto);
-        setMentorData(data);
       }
-      if(location.state.modified === false && newData == false) {
-        setMentorData(data);
-        setPhoto(data.profilePhoto.url);
-      }
-      if(location.state.modified === true && newData == false){
-        setPhoto(data.profilePhoto.url);
-        setMentorData(data);
+      if (location.state.modified === false && newData == false) {
+        setPhoto(data.profilePhoto?.url);
       }
     }
     getMentorData();
 
     if (location.state.newData === true && location.state.modified === false) {
       sendData();
-    } else if (location.state.modified === true && location.state.newData === false) {
+      window.history.replaceState(null, "");
+    } else if (
+      location.state.modified === true &&
+      location.state.newData === false
+    ) {
       updateData();
+      window.history.replaceState(null, "");
     }
   }, [mentorData]);
 
   async function sendData() {
-    if (Object.keys(mentorData).length > 0) {
-      await axios.post(
-        `http://localhost:3000/addMentor/${user.email}`,
-        mentorData
-      );
+    setLoading(true);
+    if (Object.keys(mentorData).length > 0 && !updatedModal) {
+      await axios
+        .post(`http://localhost:3000/addMentor/${user.email}`, mentorData)
+        .then((res) => {
+          setPhoto(res.data.profilePhoto.url);
+          if (res.status === 200) {
+            setUpdatedModal(true);
+          }
+        });
     }
+    setLoading(false);
   }
   async function updateData() {
-    if (Object.keys(mentorData).length > 0) {
+    setLoading(true);
+    if (Object.keys(mentorData).length > 0 && !updatedModal) {
       const u = JSON.parse(localStorage.getItem("user"));
-      console.log(mentorData,"mentorData")
-      await axios.put(
+      const res = await axios.put(
         `http://localhost:3000/updateMentor/${u.email}`,
-        {mentorData}
-      ).then((res) => {
-        console.log(res.data);
-        if(res.status === 200){
-          setUpdatedModal(true);
-        }
-      });
+        mentorData
+      );
+      setPhoto(res.data.profilePhoto.url);
+      setMentorData(res.data)
+      if (res.status === 200) {
+        setUpdatedModal(true);
+      }
     }
+    setLoading(false);
   }
 
   const plans = [
@@ -168,18 +175,29 @@ function MentorPayment() {
     setShowModal(true);
   };
 
+  const handleNavigate = () =>{
+    setUpdatedModal(false)
+    if(mentorData.isPremium == true){
+      navigate("/mentorship")
+    }
+  }
+
   return user ? (
     <div className=" flex item-center justify-center flex-col">
       <div className="flex flex-col lg:flex-row">
         <div className="flex-col flex-1 flex items-center w-full">
           <div className="flex w-9/12 h-72 items-center justify-center  rounded-xl mt-10 p-1 shodow-lg flex-col">
-            <img
-              src={
-                photo
-              }
-              alt={user?.name}
-              className="h-40 border-2 border-slate-300 rounded-2xl"
-            />
+            {photo ? (
+              <img
+                src={photo}
+                alt={user?.name}
+                className="h-40 border-2 border-slate-300 rounded-2xl"
+              />
+            ) : (
+              <div className="text-center flex items-center justify-center h-40 w-40 border-2 border-slate-300 rounded-2xl">
+                Loading
+              </div>
+            )}
             <div className="mt-4 text-2xl font-serif">{user?.name}</div>
           </div>
 
@@ -273,7 +291,7 @@ function MentorPayment() {
           </div>
         </div>
       </Modal>
-      <Modal isOpen={updatedModal} onClose={() => setUpdatedModal(false)}>
+      <Modal isOpen={updatedModal} onClose={handleNavigate}>
         <div className="text-xl flex items-center justify-center">
           Your profile has been updated successfully
         </div>

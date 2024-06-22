@@ -368,9 +368,9 @@ function Skills({ next, back, handleSkillsChange, mentorData }) {
       <div className="flex  flex-col items-center flex-1">
         <h3 className="text-2xl m-4">Selected Skills</h3>
         <ul className=" max-h-40 section overflow-y-scroll flex-col w-11/12 lg:w-6/12">
-          {selectedSkills.map((skill) => (
+          {selectedSkills.map((skill, i) => (
             <div
-              key={skill}
+              key={i}
               className="flex flex-1 item-center  text-center cursor-pointer relative"
               onClick={() => handleSkillRemove(skill)}
             >

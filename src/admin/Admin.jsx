@@ -84,7 +84,6 @@ export default function Admin() {
           isPremium: updatedIsPremium,
         })
         .then((response) => {
-          console.log(response.data);
           setUserDataUpdateModal(true);
         });
 
@@ -107,12 +106,10 @@ export default function Admin() {
   };
 
   const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log(email, password);
+    event.preventDefault()
     axios
       .post("https://learndukeserver.vercel.app/login", { email, password })
       .then((response) => {
-        console.log(response.data);
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
           setIsLogged(true);
@@ -155,7 +152,6 @@ export default function Admin() {
   });
 
   const handleReview = (job) => {
-    console.log("Reviewing job:", job);
     setSelectedJob(job);
     setModalOpen(true);
   };
@@ -167,7 +163,6 @@ export default function Admin() {
       const response = await axios.post(
         `https://learndukeserver.vercel.app/approveJob/${selectedJob._id}` // Use template literal for clarity
       );
-      console.log(response.data);
 
       emailjs
         .send(
@@ -182,7 +177,6 @@ export default function Admin() {
           "Mwms6Vebtr7VYP1Hr" // Replace with your actual user ID
         )
         .then((response) => {
-          console.log("EMAIL SENT!", response.status, response.text);
           // Optionally handle successful email sending here, e.g., display a success message
         })
         .catch((error) => {
@@ -200,7 +194,6 @@ export default function Admin() {
       console.error("Error reviewing job:", error);
     }
 
-    console.log("Job accepted:", selectedJob);
     setModalOpen(false);
   };
 
@@ -209,7 +202,6 @@ export default function Admin() {
     axios
       .post("https://learndukeserver.vercel.app/rejectJob/" + selectedJob._id)
       .then((response) => {
-        console.log(response.data);
 
         setJobs((prevJobs) =>
           prevJobs.map((j) =>
@@ -235,12 +227,11 @@ export default function Admin() {
         "Mwms6Vebtr7VYP1Hr"
       )
       .then((response) => {
-        console.log("EMAIL SENT!", response.status, response.text);
+        // Optionally handle successful email sending here, e.g., display a success message
       })
       .catch((error) => {
         console.error("ERROR SENDING EMAIL:", error);
       });
-    console.log("Job rejected:", selectedJob);
     setModalOpen(false);
   };
 
@@ -634,7 +625,7 @@ export default function Admin() {
                                     `https://learndukeserver.vercel.app/undoReview/${job._id}`
                                   )
                                   .then((response) => {
-                                    console.log(response.data);
+                                   
                                     setJobs((prevJobs) =>
                                       prevJobs.map((j) =>
                                         j._id === job._id
@@ -665,7 +656,7 @@ export default function Admin() {
                                     `https://learndukeserver.vercel.app/undoReject/${job._id}`
                                   )
                                   .then((response) => {
-                                    console.log(response.data);
+                                   
                                     setJobs((prevJobs) =>
                                       prevJobs.map((j) =>
                                         j._id === job._id
@@ -852,13 +843,11 @@ export default function Admin() {
             <h2 className="text-xl font-semibold mb-4">Are you sure?</h2>
             <button
               onClick={() => {
-                console.log("Deleting job:", selectedJob);
                 axios
                   .delete(
                     `https://learndukeserver.vercel.app/deleteJob/${selectedJob._id}`
                   )
                   .then((response) => {
-                    console.log(response.data);
                     setJobs((prevJobs) =>
                       prevJobs.filter((job) => job._id !== selectedJob._id)
                     );

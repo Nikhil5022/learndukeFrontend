@@ -58,7 +58,6 @@ function Detailedmentors() {
           `https://learndukeserver.vercel.app/getMentor/${mentorId}`
         );
         if (isMounted) {
-          console.log(response.data);
           setMentor(response.data);
         }
       } catch (error) {
