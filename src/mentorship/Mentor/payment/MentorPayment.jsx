@@ -59,7 +59,7 @@ function MentorPayment() {
     setLoading(true);
     if (Object.keys(mentorData).length > 0 && !updatedModal) {
       await axios
-        .post(`http://localhost:3000/addMentor/${user.email}`, mentorData)
+        .post(`https://learndukeserver.vercel.app/addMentor/${user.email}`, mentorData)
         .then((res) => {
           setPhoto(res.data.profilePhoto.url);
           if (res.status === 200) {
@@ -74,7 +74,7 @@ function MentorPayment() {
     if (Object.keys(mentorData).length > 0 && !updatedModal) {
       const u = JSON.parse(localStorage.getItem("user"));
       const res = await axios.put(
-        `http://localhost:3000/updateMentor/${u.email}`,
+        `https://learndukeserver.vercel.app/updateMentor/${u.email}`,
         mentorData
       );
       setPhoto(res.data.profilePhoto.url);
