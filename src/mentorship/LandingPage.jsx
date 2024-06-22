@@ -49,7 +49,9 @@ function LandingPage() {
   const [isAlreadyMentor, setIsAlreadyMentor] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isAlreadyMentorModal, setIsAlreadyMentorModal] = useState(false);
+  const [user,setUser] = useState("")
   const [mentorData, setMentorData] = useState([]);
+  const [disabled, setDisabled] = useState(true);
 
   const handleClick = () => {
     if (isAlreadyMentor) {
@@ -71,26 +73,25 @@ function LandingPage() {
     "Enhance your skills",
     "Be known & respected",
   ];
+  async function fetchData() {
+    const u = JSON.parse(localStorage.getItem("user"));
+  setUser(u)
+  if (u && u.email) {
+    await axios
+      .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + u.email)
+      .then((res) => {
+        if (res.data.success === true) {
+          setIsAlreadyMentor(true);
+          setMentorData(res.data.mentor);
+        }
+      }).then(setDisabled(false))
+  }
+}
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (user && user.email) {
-      axios
-        .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + user.email)
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.success === true) {
-            setIsAlreadyMentor(true);
-            setMentorData(res.data.mentor);
-          }
-        });
-
-
-    }
-  }, []);
-
+    
+fetchData();
+}, []);
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
       <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
@@ -131,7 +132,7 @@ function LandingPage() {
                  hover:bg-white hover:text-black border-2 border-orange-400 
                    ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
-           
+            disabled={disabled}
           >
             Become a Mentor
           </button>
@@ -300,7 +301,14 @@ function LandingPage() {
           onClose={() => setIsAlreadyMentorModal(false)}
         >
           <div className="text-lg flex flex-col space-y-3 items-center justify-center">
-            <div>You are already a mentor</div>
+            <div className="text-center">
+                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg" />
+              <h1 className="text-xl font-semibold mt-2">{user.name}</h1>
+            </div>
+            <div className="text-center">You are already a mentor and 
+              <br/>Your profile is 
+             <span>{mentorData.isPremium ? " Active" : " Inactive"}</span> 
+            </div>
             <div className="flex flex-col md:flex-row space-x-3 items-center justify-center space-y-3 md:space-y-0">
               {/* edit mentor */}
               <button
@@ -318,7 +326,7 @@ function LandingPage() {
                     navigate("/mentor/payment",{state:{mentorData, newData:false, modified: false}});
                   }}
                 >
-                  Proceed with Payment
+                  Pay to Activate
                 </button>
               
               )}

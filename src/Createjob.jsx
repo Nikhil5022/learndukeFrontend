@@ -381,14 +381,12 @@ export default function CreateJob() {
     if (validateStep()) {
       const cleanedTags = formData.tags.filter((tag) => tag.trim() !== "");
       const jobData = { ...formData, tags: cleanedTags, email: email };
-      console.log("Creating job with data:", jobData);
       await axios
         .post("https://learndukeserver.vercel.app/addJob", jobData)
         .then((res) => {
           console.log("Job created successfully:", res.data);
         });
       setShowModal(true);
-      console.log("Form submitted successfully");
     }
     setLoaderAfterSubmit(false);
   };

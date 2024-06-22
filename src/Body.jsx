@@ -108,14 +108,12 @@ export default function Body() {
     axios
       .get("https://learndukeserver.vercel.app/getReviewedJobs")
       .then((response) => {
-        console.log("Jobs fetched:", response.data);
         setTutorialJobs(response.data);
 
         const jobPromises = response.data.map((job) =>
           axios
             .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
             .then((userResponse) => {
-              console.log("User data fetched:", userResponse.data);
               job.userName = userResponse.data.name;
               job.imageLink = userResponse.data.profilephoto.url;
               return job;
@@ -141,41 +139,35 @@ export default function Body() {
 
   const handleSearch = () => {
     let filteredJobs = [...tutorialJobs];
-    console.log("Initial Jobs:", filteredJobs);
 
     if (searchTitle) {
       filteredJobs = filteredJobs.filter((job) =>
         job.title.toLowerCase().includes(searchTitle.toLowerCase())
       );
-      console.log("After title filter:", filteredJobs);
     }
 
     if (searchLocation) {
       filteredJobs = filteredJobs.filter((job) =>
         job.location.toLowerCase().includes(searchLocation.toLowerCase())
       );
-      console.log("After location filter:", filteredJobs);
     }
 
     if (selectedFilter !== "All") {
       filteredJobs = filteredJobs.filter(
         (job) => job.jobType.toLowerCase() === selectedFilter.toLowerCase()
       );
-      console.log("After job type filter:", filteredJobs);
     }
 
     if (selectedDomains.length > 0) {
       filteredJobs = filteredJobs.filter((job) =>
         selectedDomains.includes(job.domain)
       );
-      console.log("After domain filter:", filteredJobs);
     }
 
     if (selectedEducations.length > 0) {
       filteredJobs = filteredJobs.filter((job) =>
         selectedEducations.includes(job.education)
       );
-      console.log("After education filter:", filteredJobs);
     }
 
     setNewTutorialJobs(filteredJobs);

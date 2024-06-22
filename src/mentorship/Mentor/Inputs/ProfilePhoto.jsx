@@ -4,16 +4,17 @@ import Modal from '../../../Modal'
 
 function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
   const [avatar, setAvatar] = useState("");
+  const [change, setChange] = useState(false)
   useEffect(() => {
     if( mentorData.profilePhoto!=="" && mentorData.profilePhoto.url  ){
       setAvatar(mentorData.profilePhoto.url)
     }
     else{
       setAvatar('')
-    
     }
   }
   , [])
+
   const [showModal, setShowModal] = useState(false);
 
   const handleImageUpload = (event) => {
@@ -23,6 +24,7 @@ function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatar(e.target.result)
+        setChange(true)
       };
       reader.readAsDataURL(file);
     }
@@ -44,7 +46,7 @@ function ProfilePhoto({back, handleProfilePhotoChange,mentorData}) {
           <button className="border-2 border-orange-500 mx-4 p-3 rounded-md px-7 bg-orange-500 text-white" type="submit" 
           onClick={(e) =>{
             e.preventDefault()
-            avatar ?  handleProfilePhotoChange(avatar) : setShowModal(true)
+            avatar ?  handleProfilePhotoChange({avatar,change}) : setShowModal(true)
           } }
           >
             Submit

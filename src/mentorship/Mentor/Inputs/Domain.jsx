@@ -4,7 +4,6 @@ import Modal from "../../../Modal";
 
 function Domain({ handleDomainChange, next, mentorData }) {
   const navigate = useNavigate();
-  console.log("mentordata domain", mentorData);
   const [selectedDomain, setSelectedDomain] = useState(
     mentorData?.domain || []
   );

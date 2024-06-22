@@ -217,7 +217,6 @@ function Explorementors() {
       const response = await axios.get("https://learndukeserver.vercel.app/getMentors");
       setMentors(response.data);
       setOriginalMentors(response.data);
-      console.log(response.data);
       setOnLoad(true);
       handleResize(); // Calculate displayed names right after setting mentors data
     } catch (error) {
@@ -471,7 +470,6 @@ function Explorementors() {
               className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
               ref={(el) => (cardRefs.current[index] = el)}
               onClick={() => {
-                console.log(mentor._id);
                 navigation(`/detailedmentor/${mentor._id}`);
               }}
             >
