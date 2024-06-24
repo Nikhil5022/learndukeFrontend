@@ -136,6 +136,7 @@ function BecomeMentor() {
       newMentorData.profilePhoto = avatar;
       setMentorData(newMentorData)
     }
+    console.log(mentorData)
     handleSubmit();
   }
 
@@ -392,15 +393,18 @@ function BecomeMentor() {
   ];
 
   const handleSubmit = () => {
-    if (location.state?.mentorData == null) {
+    console.log(location.state);
+    if (location.state == null) {
       navigate("/mentor/payment", {
         state: { mentorData, newData: true, modified: false },
       });
+      return
     }
-    if (location.state?.mentorData === mentorData) {
+    else if (location.state?.mentorData === mentorData) {
       navigate("/mentor/payment", {
         state: { mentorData, modified: false, newData: false },
       });
+      return;
     } else if (
       location.state?.mentorData !== null &&
       location.state?.mentorData !== mentorData
@@ -408,6 +412,7 @@ function BecomeMentor() {
       navigate("/mentor/payment", {
         state: { mentorData, modified: true, newData: false },
       });
+      return;
     }
   };
   useEffect(() => {
