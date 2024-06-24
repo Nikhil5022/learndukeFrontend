@@ -239,7 +239,13 @@ export default function Body() {
               />
             </div>
             {loading ? (
-              <Loader />
+              <div  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                <Loader />
+                <Loader />
+                <Loader />
+                <Loader />
+              </div>
+
             ) : newTutorialJobs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                 {newTutorialJobs.map((job, index) => (
