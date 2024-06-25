@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Tutorial from "./Tutorial";
-import { FaSearch, FaMapMarkerAlt,FaFilter } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ClipLoader } from "react-spinners";
 import crying from "./assets/crying.gif";
 import "./App.css";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -98,80 +97,68 @@ export default function Body() {
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   // const userData = JSON.parse(localStorage.getItem("user"));
   // const [user, setUser] = useState(userData);
-  const [searchTitle, setSearchTitle] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
   const [premium, setPremium] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPages] = useState(1);
+
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
+
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("https://learndukeserver.vercel.app/getReviewedJobs")
-      .then((response) => {
-        setTutorialJobs(response.data);
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
 
-        const jobPromises = response.data.map((job) =>
-          axios
-            .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
-            .then((userResponse) => {
-              job.userName = userResponse.data.name;
-              job.imageLink = userResponse.data.profilephoto.url;
-              return job;
-            })
-        );
+    const timeoutId = setTimeout(() => {
+      const fetchJobs = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get(
+            "http://localhost:3000/getReviewedJobs",
+            {
+              params: {
+                title: searchTitle,
+                location: searchLocation,
+                jobType: selectedFilter==="All" ? "" :
+                selectedFilter,
+                domain: selectedDomains.length>0 ? selectedDomains : "",
+                education: selectedEducations.length>0 ? selectedEducations: "",
+                page,
+              },
+            }
+          );
 
-        Promise.all(jobPromises).then((jobsWithUserData) => {
-          setNewTutorialJobs(jobsWithUserData);
-          setLoading(false);
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching jobs:", error);
-        setLoading(false);
-      });
+          const jobPromises = response.data.jobs.map((job) =>
+            axios
+              .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
+              .then((userResponse) => {
+                job.userName = userResponse.data.name;
+                job.imageLink = userResponse.data.profilephoto.url;
+                return job;
+              })
+          );
 
+          Promise.all(jobPromises).then(resolvedJobs => {
+            setTutorialJobs(resolvedJobs);
+            setNewTutorialJobs(resolvedJobs);
+            setLoading(false);
+          });
+
+          setTotalPages(response.data.totalPages);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      };
+
+      fetchJobs();
+    }, 1000);
+
+    setDebounceTimeout(timeoutId);
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchTitle, searchLocation, selectedFilter, selectedDomains, selectedEducations]);
-
-  const handleSearch = () => {
-    let filteredJobs = [...tutorialJobs];
-
-    if (searchTitle) {
-      filteredJobs = filteredJobs.filter((job) =>
-        job.title.toLowerCase().includes(searchTitle.toLowerCase())
-      );
-    }
-
-    if (searchLocation) {
-      filteredJobs = filteredJobs.filter((job) =>
-        job.location.toLowerCase().includes(searchLocation.toLowerCase())
-      );
-    }
-
-    if (selectedFilter !== "All") {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.jobType.toLowerCase() === selectedFilter.toLowerCase()
-      );
-    }
-
-    if (selectedDomains.length > 0) {
-      filteredJobs = filteredJobs.filter((job) =>
-        selectedDomains.includes(job.domain)
-      );
-    }
-
-    if (selectedEducations.length > 0) {
-      filteredJobs = filteredJobs.filter((job) =>
-        selectedEducations.includes(job.education)
-      );
-    }
-
-    setNewTutorialJobs(filteredJobs);
-  };
+  }, [searchTitle, selectedDomains, selectedEducations, selectedFilter, searchLocation, page]);
 
   const toggleContent = () => {
     setShowFullContent(!showFullContent);
@@ -239,7 +226,12 @@ export default function Body() {
               />
             </div>
             {loading ? (
-              <Loader />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                <Loader />
+                <Loader />
+                <Loader />
+                <Loader />
+              </div>
             ) : newTutorialJobs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                 {newTutorialJobs.map((job, index) => (
@@ -274,6 +266,27 @@ export default function Body() {
             )}
           </div>
         </div>
+        <div className="m-4 flex items-center justify-center">
+          <button
+              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white"
+              onClick={() => setPage((prev) => prev-1)}
+              disabled={page<=1}>
+                Prev
+          </button>
+          <button
+              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white"
+              disabled={true}
+            >
+              {page}
+            </button>
+          <button
+              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white active:scale-95"
+              onClick={() => setPage((prev) => prev+1)}
+              disabled={page>=totalPage}>
+                Next
+          </button>
+
+        </div>
       </div>
     </div>
   );
@@ -289,8 +302,10 @@ function FilterOptions({
 }) {
   const containerRef = useRef(null);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedDomainOptions, setSelectedDomainOptions] = useState(selectedDomains);
-  const [selectedEducationOptions, setSelectedEducationOptions] = useState(selectedEducations);
+  const [selectedDomainOptions, setSelectedDomainOptions] =
+    useState(selectedDomains);
+  const [selectedEducationOptions, setSelectedEducationOptions] =
+    useState(selectedEducations);
 
   const [selectedDomain, setSelectedDomain] = useState(true);
 
@@ -389,12 +404,15 @@ function FilterOptions({
       </div>
       {openModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-10">
-          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
-            style={{zIndex: 1000}}
+          <div
+            className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
+            style={{ zIndex: 1000 }}
           >
             <div className="flex relative justify-between items-center mb-4">
               <div
-                className={`text-xl font-semibold cursor-pointer ${selectedDomain ? "text-blue-500" : "text-black"}`}
+                className={`text-xl font-semibold cursor-pointer ${
+                  selectedDomain ? "text-blue-500" : "text-black"
+                }`}
                 onClick={() => setSelectedDomain(true)}
               >
                 Select Domain
@@ -402,7 +420,9 @@ function FilterOptions({
               {/* vertical line */}
               <div className="border-r-2 h-10 w-0.5 mx-2"></div>
               <div
-                className={`text-xl font-semibold cursor-pointer ${!selectedDomain ? "text-blue-500" : "text-black"}`}
+                className={`text-xl font-semibold cursor-pointer ${
+                  !selectedDomain ? "text-blue-500" : "text-black"
+                }`}
                 onClick={() => setSelectedDomain(false)}
               >
                 Select Education

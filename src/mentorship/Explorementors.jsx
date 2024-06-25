@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
 import { MdSchool } from "react-icons/md";
-import Loader from "../Loader";
+import MentorLoader from "./MentorLoader";
 
 
 const domainOptions = [
@@ -349,8 +349,7 @@ function Explorementors() {
   }
 
   return (
-    <div>
-      {onLoad && (
+    <div>     
         <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
           <div className="text-3xl font-sans text-center mb-10 mt-5">
             Connect with{" "}
@@ -463,6 +462,7 @@ function Explorementors() {
               </div>
             )}
           </div>
+          {onLoad && (
           <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
             {filteredMentors.map((mentor, index) => (
               <div
@@ -524,10 +524,15 @@ function Explorementors() {
               </div>
             )}
           </div>
+          )}
         </div>
-      )}
       {onLoad === false && (
-        <Loader />
+      <div className="w-full lg:w-10/12 mx-auto -mt-7 p-4 flex-grow">  
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
+        <MentorLoader />
+        <MentorLoader />
+      </div>
+        </div>
       )}
     </div>
   );
