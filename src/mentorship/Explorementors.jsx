@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import {
   FaPhone,
@@ -23,7 +23,6 @@ import crying from "../assets/crying.gif";
 import { MdSchool } from "react-icons/md";
 import Loader from "../Loader";
 
-
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />, number: 0 },
   { name: "Engineering", icon: <FaLaptopCode />, number: 1 },
@@ -43,21 +42,21 @@ const subDomainOptions = [
     name: "Engineering",
     options: [
       "Frontend Developer",
-        "Backend Developer",
-        "Full Stack Developer",
-        "DevOps/SRE/Cloud Engineer",
-        "Cyber Security Engineer",
-        "QA Automation Engineer",
-        "Engineering Manager",
-        "Electrical Engineering",
-        "Mechanical Engineering",
-        "Civil Engineering",
-        "Chemical Engineering",
-        "Aerospace Engineering",
-        "Biomedical Engineering",
-        "Environmental Engineering",
-        "Instruments Engineering",
-        "AIML Engineer",
+      "Backend Developer",
+      "Full Stack Developer",
+      "DevOps/SRE/Cloud Engineer",
+      "Cyber Security Engineer",
+      "QA Automation Engineer",
+      "Engineering Manager",
+      "Electrical Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Chemical Engineering",
+      "Aerospace Engineering",
+      "Biomedical Engineering",
+      "Environmental Engineering",
+      "Instruments Engineering",
+      "AIML Engineer",
     ],
   },
   {
@@ -81,72 +80,75 @@ const subDomainOptions = [
       "Sales manager",
       "HR manager",
     ],
-  },{
+  },
+  {
     name: "Career Counselling",
     options: [
       "Career Path",
-        "Study Abroad ",
-        "Admission Path",
-        "Life Skill",
-        "College Path",
-        "Course Path",
-        "Job Path",
-        "Career Advisor",
-        "Career Consultant",
-    ]
+      "Study Abroad ",
+      "Admission Path",
+      "Life Skill",
+      "College Path",
+      "Course Path",
+      "Job Path",
+      "Career Advisor",
+      "Career Consultant",
+    ],
   },
   {
     name: "School",
     options: [
       "Class 1",
-        "Class 2",
-        "Class 3",
-        "Class 4",
-        "Class 5",
-        "Class 6",
-        "Class 7",
-        "Class 8",
-        "Class 9",
-        "Class 10",
-        "Class 11",
-        "Class 12",
+      "Class 2",
+      "Class 3",
+      "Class 4",
+      "Class 5",
+      "Class 6",
+      "Class 7",
+      "Class 8",
+      "Class 9",
+      "Class 10",
+      "Class 11",
+      "Class 12",
     ],
   },
   {
     name: "College",
     options: [
       "Pharmacy",
-        "Management",
-        "Commerce",
-        "Arts",
-        "Science",
-        "Law",
-        "Medical",
-        "Engineering",
-        "Fashion",
-        "Design",
-        "Mass Communication",
-        "Hotel Management",
-        "Agriculture",
-        "Computer Application",
+      "Management",
+      "Commerce",
+      "Arts",
+      "Science",
+      "Law",
+      "Medical",
+      "Engineering",
+      "Fashion",
+      "Design",
+      "Mass Communication",
+      "Hotel Management",
+      "Agriculture",
+      "Computer Application",
     ],
   },
   {
     name: "Govt Exams",
-    options: ["UPSC",
-        "MPPSC",
-        "NDA",
-        "SSC CHSL",
-        "SSC CGL",
-        "OPSC OAS",
-        "OSSSC",
-        "Railway Group D ",
-        "Banking",
-        "Judiciary",
-        "Defence",
-        "State PSC",
-        "Police",
-        "Teaching",],
+    options: [
+      "UPSC",
+      "MPPSC",
+      "NDA",
+      "SSC CHSL",
+      "SSC CGL",
+      "OPSC OAS",
+      "OSSSC",
+      "Railway Group D ",
+      "Banking",
+      "Judiciary",
+      "Defence",
+      "State PSC",
+      "Police",
+      "Teaching",
+    ],
   },
   {
     name: "Jee/neet",
@@ -155,33 +157,33 @@ const subDomainOptions = [
   {
     name: "Extra class",
     options: [
-      "Dance", 
-        "Music",
-        "Art and Craft",
-        "Yoga",
-        "Meditation",
-        "Cooking",
-        "Photography",
-        "Fitness",
-        "Personality Development",
-        "Public Speaking",
-        "Communication Skills",
-        "Debate",
-        "Instrumental Music",
-        "Painting",
-        "Sketching",
-        "Craft",
+      "Dance",
+      "Music",
+      "Art and Craft",
+      "Yoga",
+      "Meditation",
+      "Cooking",
+      "Photography",
+      "Fitness",
+      "Personality Development",
+      "Public Speaking",
+      "Communication Skills",
+      "Debate",
+      "Instrumental Music",
+      "Painting",
+      "Sketching",
+      "Craft",
     ],
   },
   {
     name: "Interview prep",
     options: [
       "Resume Round",
-        "GD Round",
-        "Aptitude Round",
-        "Technical Interview",
-        "HR Interview",
-        "Salary Negotiation"
+      "GD Round",
+      "Aptitude Round",
+      "Technical Interview",
+      "HR Interview",
+      "Salary Negotiation",
     ],
   },
 ];
@@ -195,66 +197,51 @@ function Explorementors() {
   const [showSubDomains, setShowSubDomains] = useState(null);
   const cardRefs = useRef([]);
   const subDomainDropdownRef = useRef(null);
-  const [displayedNames, setDisplayedNames] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [left, setLeft] = useState(0);
   const [filteredMentors, setFilteredMentors] = useState([]);
   const [onLoad, setOnLoad] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const observer = useRef();
 
-  const handleResize = () => {
-    const newDisplayedNames = mentors.map((mentor, index) => {
-      const cardWidth = cardRefs.current[index]?.offsetWidth || 250;
-      const maxChars = Math.floor(cardWidth / 13); // Approximate number of characters per pixel width
-      return mentor.name.length > maxChars
-        ? `${mentor.name.substring(0, maxChars - 3)}...`
-        : mentor.name;
-    });
-    setDisplayedNames(newDisplayedNames);
-  };
+  useEffect(() => {
+    // fetchJobs();
+    fetchMentors();
+  }, [page]);
 
   const fetchMentors = async () => {
-    try {
-      const response = await axios.get("https://learndukeserver.vercel.app/getMentors");
-      setMentors(response.data);
-      setOriginalMentors(response.data);
-      setOnLoad(true);
-      handleResize(); // Calculate displayed names right after setting mentors data
-    } catch (error) {
-      console.error("Error fetching mentors:", error);
-    }
+    const response = await axios.get(
+      "http://localhost:3000/getMentor?page=" + page + "&limit=12"
+    );
+    setMentors((prevMentors) => [...prevMentors, ...response.data.mentors]);
+    setOriginalMentors((prevMentors) => [
+      ...prevMentors,
+      ...response.data.mentors,
+    ]);
+    setTotalPages(response.data.totalPages);
+    setOnLoad(true);
   };
 
+  const lastMentorElementRef = useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && page < totalPages) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [onLoad, page, totalPages]
+  );
+
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-    fetchMentors();
+    // window.scrollTo({
+    //   top: 0,
+    //   behavior: "smooth",
+    // });
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [mentors]);
-
-  useEffect(() => {
-    handleResize();
-  }, [mentors, windowWidth]);
-
-  const calculateSkillsToShow = (cardWidth, skills) => {
-    const padding = 16; // Adjust based on your padding/margin
-    const skillWidth = 50; // Approximate width of a skill item in pixels
-
-    // Calculate how many skill items can fit in the card
-    const maxSkills = Math.floor((cardWidth - padding) / skillWidth);
-
-    return maxSkills;
-  };
-
-  const getDomainIcon = (domain) => {
-    const domainOption = domainOptions.find((option) => option.name === domain);
-    return domainOption ? domainOption.icon : null;
-  };
 
   const handleDomainClick = (domain, e) => {
     const left = e.target.getBoundingClientRect().left;
@@ -291,62 +278,62 @@ function Explorementors() {
         : [...prevSelectedSubDomains, subDomain]
     );
     if (windowWidth < 768) {
-      setShowSubDomains(selectedDomain); // Keep the dropdown open on small screens
+      setShowSubDomains(selectedDomain);
     }
   };
 
   useEffect(() => {
-    const filteredMentors = originalMentors.filter((mentor) => {
-      if (selectedDomain === "All Domains") {
-        return true;
-      }
-      if (!mentor.domain.includes(selectedDomain)) {
-        return false;
-      }
-      if (
-        selectedSubDomains.length > 0 &&
-        !selectedSubDomains.some((subDomain) =>
-          mentor.subDomain.includes(subDomain)
-        )
-      ) {
-        return false;
-      }
-      return true;
-    });
+    setOnLoad(false);
 
-    setFilteredMentors(filteredMentors);
+    axios
+      .get(
+        "http://localhost:3000/getMentor?page=" +
+          page +
+          "&limit=12" +
+          "&domain=" +
+          selectedDomain +
+          "&subDomain=" +
+          selectedSubDomains
+      )
+      .then((response) => {
+        const filteredMentors = response.data.mentors;
+        setFilteredMentors(filteredMentors);
+        setTotalPages(response.data.totalPages);
+        setOnLoad(true);
+      });
   }, [selectedDomain, selectedSubDomains, originalMentors]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(null);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      clearTimeout(debouncedSearchTerm);
+    }
+
+    const timeoutId = setTimeout(() => {
+      setPage(1); // Reset to the first page on new search
+      searchMentors(searchTerm);
+    }, 1000);
+
+    setDebouncedSearchTerm(timeoutId);
+  }, [searchTerm]);
+
+  const searchMentors = async (searchValue) => {
+    const response = await axios.get(
+      `http://localhost:3000/getMentor?page=${page}&limit=12&search=${searchValue}`
+    );
+    // displayingnames of mentors
+    console.log(response.data.mentors);
+    setFilteredMentors(response.data.mentors);
+    setTotalPages(response.data.totalPages);
+    setOnLoad(true);
+  };
 
   const handleOnchange = (e) => {
     const searchValue = e.target.value.toLowerCase();
-
-    const filteredMentors = originalMentors.filter((mentor) => {
-      const nameMatch = mentor.name.toLowerCase().includes(searchValue);
-
-      const domainMatch = mentor.domain.some((domain) =>
-        domain.toLowerCase().includes(searchValue)
-      );
-      const subdomainMatch = mentor.subDomain.some((subdomain) =>
-        subdomain.toLowerCase().includes(searchValue)
-      );
-      const skillsMatch = mentor.skills.some((skill) =>
-        skill.toLowerCase().includes(searchValue)
-      );
-
-      const locationMatch = mentor.location.toLowerCase().includes(searchValue);
-
-      return domainMatch || subdomainMatch || skillsMatch || nameMatch || locationMatch;
-    });
-
-    setFilteredMentors(filteredMentors);
+    setSearchTerm(searchValue);
   };
-
-  const calculateNameToShow = (name) => {
-
-   
-    const index = mentors.findIndex((mentor) => mentor.name === name);
-    return displayedNames[index];
-  }
 
   return (
     <div>
@@ -466,52 +453,63 @@ function Explorementors() {
           <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
             {filteredMentors.map((mentor, index) => (
               <div
-              key={index}
-              className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
-              ref={(el) => (cardRefs.current[index] = el)}
-              onClick={() => {
-                navigation(`/detailedmentor/${mentor._id}`);
-              }}
-            >
-              <div className="relative w-full" style={{ paddingTop: '100%' }}>
-                <img
-                  src={mentor.profilePhoto.url || user2}
-                  alt="profile photo"
-                  className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute inset-0"></div>
-              </div>
-              <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
-                <div className="flex justify-between items-center">
-                  <div className="text-base font-semibold whitespace-nowrap">
-                    {calculateNameToShow(mentor.name)}
-                  </div>
-                  <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
-                    {mentor.experience} YOE
-                  </div>
-                  <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
-                    {mentor.experience} Y
-                  </div>
+                key={index}
+                className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
+                ref={(el) => (cardRefs.current[index] = el)}
+                onClick={() => {
+                  navigation(`/detailedmentor/${mentor._id}`);
+                }}
+                // lastmentor
+              >
+                <div className="relative w-full" style={{ paddingTop: "100%" }}>
+                  <img
+                    src={mentor.profilePhoto.url || user2}
+                    alt="profile photo"
+                    className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
+                  />
+                  <div className="absolute inset-0"></div>
                 </div>
-                <div className="text-gray-500 text-sm whitespace-nowrap">
-                  Hourly Fees : ₹{mentor.hourlyFees}
-                </div>
-                <div className="flex overflow-hidden w-full">
-                  <MdSchool className="mr-1"/>
-                  {mentor.skills.sort().slice(0, 3).map((skill, index) => (
+                <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
+                  <div className="flex justify-between items-center">
                     <div
-                      key={index}
-                      className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${index!=0 && "ml-1"}`}
+                      className="text-base font-semibold whitespace-nowrap"
+                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
                     >
-                      {skill}
-                      {index<2 && <span className="text-gray-400">,</span>}
-                      {index === 2 && mentor.skills.length > 3 && "..."}
+                      {mentor.name}
                     </div>
-                  ))}
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
+                      {mentor.experience} YOE
+                    </div>
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+                      {mentor.experience} Y
+                    </div>
+                  </div>
+                  <div className="text-gray-500 text-sm whitespace-nowrap">
+                    Hourly Fees : ₹{mentor.hourlyFees}
+                  </div>
+                  <div className="flex">
+                    <MdSchool className="mr-1" />
+                    <div
+                      className="flex  w-full"
+                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                    >
+                      {mentor.skills.map((skill, index) => (
+                        <div
+                          key={index}
+                          className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                            index != 0 && "ml-1"
+                          }`}
+                        >
+                          {skill}
+                          {index < 2 && (
+                            <span className="text-gray-400">,</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            
             ))}
             {filteredMentors.length === 0 && (
               <div className="text-center w-full col-span-full">
@@ -524,11 +522,33 @@ function Explorementors() {
               </div>
             )}
           </div>
+          {/* <div className="flex ">
+            <div className="flex items-center justify-center w-full mt-5">
+              <button
+                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg mr-2"
+                onClick={() => setPage((prevPage) => prevPage - 1)}
+                disabled={page <= 1}
+              >
+                Prev
+              </button>
+              <button
+                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg mr-2"
+                disabled
+              >
+                {page}
+              </button>
+              <button
+                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg"
+                onClick={() => setPage((prevPage) => prevPage + 1)}
+                disabled={page >= totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div> */}
         </div>
       )}
-      {onLoad === false && (
-        <Loader />
-      )}
+      {onLoad === false && <Loader />}
     </div>
   );
 }
