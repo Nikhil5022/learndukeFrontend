@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Tutorial from "./Tutorial";
 import { FaSearch, FaMapMarkerAlt, FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import axios from "axios";
 import crying from "./assets/crying.gif";
 import "./App.css";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "./Loader";
 
 // Define the filter options
@@ -107,6 +108,27 @@ export default function Body() {
 
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
+  const [firstTimeFetch, setFirstTimeFetch] = useState(true);
+
+  // const observer = useRef(null);
+
+  // const lastJobElementRef = useCallback(
+  //   (node) => {
+  //     console.log("1")
+  //     if (observer.current) observer.current.disconnect();
+  //     console.log("2")
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       console.log("3")
+  //       if (entries[0].isIntersecting && page < totalPage) {
+  //         setPage(page + 1);
+  //         console.log("incremented")
+  //       }
+  //     });
+  //     console.log("last")
+  //     if (node) observer.current.observe(node);
+  //   },
+  // [page, totalPage, loading])
+
   useEffect(() => {
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
@@ -116,20 +138,26 @@ export default function Body() {
       const fetchJobs = async () => {
         setLoading(true);
         try {
+          if(searchTitle=== "" && searchLocation === "" && selectedFilter === "All" && selectedDomains.length === 0 && selectedEducations.length === 0){
+            setNewTutorialJobs([]);
+            setTutorialJobs([]);
+          }
           const response = await axios.get(
             "http://localhost:3000/getReviewedJobs",
             {
               params: {
                 title: searchTitle,
                 location: searchLocation,
-                jobType: selectedFilter==="All" ? "" :
-                selectedFilter,
-                domain: selectedDomains.length>0 ? selectedDomains : "",
-                education: selectedEducations.length>0 ? selectedEducations: "",
+                jobType: selectedFilter === "All" ? "" : selectedFilter,
+                domain: selectedDomains.length > 0 ? selectedDomains : "",
+                education:
+                selectedEducations.length > 0 ? selectedEducations : "",
                 page,
               },
             }
           );
+
+          console.log(response);
 
           const jobPromises = response.data.jobs.map((job) =>
             axios
@@ -142,11 +170,16 @@ export default function Body() {
           );
 
           Promise.all(jobPromises).then(resolvedJobs => {
-            setTutorialJobs(resolvedJobs);
-            setNewTutorialJobs(resolvedJobs);
-            setLoading(false);
+            if(page===1 && firstTimeFetch){
+              setFirstTimeFetch(false)
+              setTutorialJobs([...resolvedJobs]);
+              setNewTutorialJobs([...resolvedJobs]);
+            }else{
+              setTutorialJobs([...tutorialJobs, ...resolvedJobs]);
+              setNewTutorialJobs([...tutorialJobs, ...resolvedJobs]);
+              setLoading(false);
+            }
           });
-
           setTotalPages(response.data.totalPages);
         } catch (error) {
           console.error("Error fetching jobs:", error);
@@ -154,11 +187,18 @@ export default function Body() {
       };
 
       fetchJobs();
-    }, 1000);
+    }, 500);
 
     setDebounceTimeout(timeoutId);
-    window.scrollTo(0, 0);
-  }, [searchTitle, selectedDomains, selectedEducations, selectedFilter, searchLocation, page]);
+    // window.scrollTo(0, 0);
+  }, [
+    searchTitle,
+    selectedDomains,
+    selectedEducations,
+    selectedFilter,
+    searchLocation,
+    page,
+  ]);
 
   const toggleContent = () => {
     setShowFullContent(!showFullContent);
@@ -166,15 +206,32 @@ export default function Body() {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
 
   const handleDomainChange = (newDomains) => {
     setSelectedDomains(newDomains);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
 
   const handleEducationChange = (newEducations) => {
     setSelectedEducations(newEducations);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
+
+  function InfiniteLoader() {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <Loader />
+        <Loader />
+        <Loader />
+        <Loader />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -191,7 +248,10 @@ export default function Body() {
                   type="text"
                   placeholder="Search for a job"
                   value={searchTitle}
-                  onChange={(e) => setSearchTitle(e.target.value)}
+                  onChange={(e) => {setSearchTitle(e.target.value)
+                    setPage(1);
+                    setFirstTimeFetch(true);
+                  }}
                   className="border-none rounded-l-lg p-4 w-full focus:outline-none"
                 />
               </div>
@@ -203,7 +263,11 @@ export default function Body() {
                   type="text"
                   placeholder="Search by location"
                   value={searchLocation}
-                  onChange={(e) => setSearchLocation(e.target.value)}
+                  onChange={(e) => {
+                    setSearchLocation(e.target.value)
+                    setPage(1);
+                    setFirstTimeFetch(true);
+                  }}
                   className="border-none rounded-r-lg p-4 w-full focus:outline-none"
                 />
               </div>
@@ -225,67 +289,52 @@ export default function Body() {
                 onEducationChange={handleEducationChange}
               />
             </div>
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <Loader />
-                <Loader />
-                <Loader />
-                <Loader />
-              </div>
-            ) : newTutorialJobs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                {newTutorialJobs.map((job, index) => (
-                  <Tutorial
-                    key={index}
-                    imageLink={job.imageLink}
-                    userName={job.userName}
-                    title={job.title}
-                    description={job.description}
-                    minAmountPerHour={job.minAmountPerHour}
-                    maxAmountPerHour={job.maxAmountPerHour}
-                    jobType={job.jobType}
-                    phoneNumber={job.phoneNumber}
-                    location={job.location}
-                    whatsappNumber={job.whatsappNumber}
-                    email={job.email}
-                    requirements={job.requirements}
-                    responsibilities={job.responsibilities}
-                    tags={job.tags}
-                    id={job._id}
-                    isPremium={job.isPremium}
-                  />
-                ))}
-              </div>
-            ) : (
+            {
+            // loading ? (
+            //   <InfiniteLoader />
+            // ) : 
+            newTutorialJobs.length > 0 ? (
+              <InfiniteScroll
+                dataLength={newTutorialJobs.length}
+                next={() => setPage(page + 1)}
+                hasMore={page < totalPage}
+                loader={<InfiniteLoader />}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  {newTutorialJobs.map((job, index) => (
+                    <Tutorial
+                      key={index}
+                      imageLink={job.imageLink}
+                      userName={job.userName}
+                      title={job.title}
+                      description={job.description}
+                      minAmountPerHour={job.minAmountPerHour}
+                      maxAmountPerHour={job.maxAmountPerHour}
+                      jobType={job.jobType}
+                      phoneNumber={job.phoneNumber}
+                      location={job.location}
+                      whatsappNumber={job.whatsappNumber}
+                      email={job.email}
+                      requirements={job.requirements}
+                      responsibilities={job.responsibilities}
+                      tags={job.tags}
+                      id={job._id}
+                      isPremium={job.isPremium}
+                    />
+                  ))}
+                </div>
+              </InfiniteScroll>
+            ) 
+            : (
               <div className="flex flex-col items-center justify-center mt-10">
                 <img src={crying} alt="No jobs found" className="w-32" />
                 <div className="text-center text-lg font-semibold text-gray-500">
                   No jobs found
                 </div>
               </div>
-            )}
+            )
+            }
           </div>
-        </div>
-        <div className="m-4 flex items-center justify-center">
-          <button
-              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white"
-              onClick={() => setPage((prev) => prev-1)}
-              disabled={page<=1}>
-                Prev
-          </button>
-          <button
-              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white"
-              disabled={true}
-            >
-              {page}
-            </button>
-          <button
-              className="border-2 shadow-sm shadow-orange-400 border-orange-500 m-4 p-2 text-lg px-5 rounded-lg hover:bg-orange-500 hover:text-white active:scale-95"
-              onClick={() => setPage((prev) => prev+1)}
-              disabled={page>=totalPage}>
-                Next
-          </button>
-
         </div>
       </div>
     </div>

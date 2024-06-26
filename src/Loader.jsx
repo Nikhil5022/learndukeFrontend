@@ -1,4 +1,3 @@
-import { FaBriefcase, FaPhone, FaWallet, FaWhatsapp } from "react-icons/fa";
 import "./Loader.css"
 
 function Loader() {
