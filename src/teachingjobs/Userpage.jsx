@@ -5,6 +5,7 @@ import { FaWallet } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
+import Loader from "../Loader";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -243,9 +244,7 @@ export default function UserPage() {
         {/* loader animation */}
 
         <div className="w-full flex justify-center h-screen items-center">
-          <div className="w-full md:w-10/12 lg:w-9/12 flex flex-col px-4">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
-          </div>
+          <Loader />
         </div>
       </>
     );

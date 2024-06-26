@@ -21,8 +21,8 @@ import { useNavigate } from "react-router-dom";
 import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
 import { MdSchool } from "react-icons/md";
-import Loader from "../Loader";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "../Loader";
 
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />, number: 0 },
@@ -218,7 +218,7 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     const response = await axios.get(
-      "http://localhost:3000/getMentor?page=" + page + "&limit=5"
+      "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=5"
     );
     // console.log(response.data)
     console.log("fetchMentors")
@@ -308,7 +308,7 @@ function Explorementors() {
       console.log("fetchFilteredMentors")
 
       const response = await axios.get(
-        "http://localhost:3000/getMentor?page=" +
+        "https://learndukeserver.vercel.app/getMentor?page=" +
           page +
           "&limit=5" +
           "&domain=" +
@@ -348,9 +348,10 @@ function Explorementors() {
 
     const timeoutId = setTimeout(() => {
       setPage(1); // Reset to the first page on new search
-      if(searchTerm !== "") {
+      // if(searchTerm !== "") {
         searchMentors(searchTerm);
-      }
+      // }
+      
     }, 1000);
 
     setDebouncedSearchTerm(timeoutId);
@@ -367,7 +368,7 @@ function Explorementors() {
     console.log("searchMentors")
 
     const response = await axios.get(
-      `http://localhost:3000/getMentor?page=${page}&limit=5&search=${searchValue}`
+      `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=5&search=${searchValue}`
     );
     if (page === 1) {
       setFilteredMentors(response.data.mentors);
@@ -387,13 +388,7 @@ function Explorementors() {
     setSearchTerm(searchValue);
   };
 
-  const Loader = () => {
-    return (
-      <div className="flex justify-center items-center overflow-hidden">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  };
+  
 
   return (
     <div>     
@@ -515,11 +510,7 @@ function Explorementors() {
             next={() => setPage((prevPage) => prevPage + 1)}
             hasMore={page < totalPages}
             loader={<Loader />}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
+           
           >
             <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
               {filteredMentors.map((mentor, index) => (
@@ -584,7 +575,7 @@ function Explorementors() {
                   </div>
                 </div>
               ))}
-              {/* {filteredMentors.length === 0 && (
+              {filteredMentors.length === 0 && onLoad === true&& (
                 <div className="text-center w-full col-span-full">
                   <div className="flex justify-center p-3">
                     <img src={crying} alt="No mentors found" className="w-40" />
@@ -593,36 +584,17 @@ function Explorementors() {
                     No mentors found
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </InfiniteScroll>
 
-          {/* <div className="flex ">
-            <div className="flex items-center justify-center w-full mt-5">
-              <button
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg mr-2"
-                onClick={() => setPage((prevPage) => prevPage - 1)}
-                disabled={page <= 1}
-              >
-                Prev
-              </button>
-              <button
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg mr-2"
-                disabled
-              >
-                {page}
-              </button>
-              <button
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg"
-                onClick={() => setPage((prevPage) => prevPage + 1)}
-                disabled={page >= totalPages}
-              >
-                Next
-              </button>
-            </div>
-          </div> */}
+         
         </div>
-      {onLoad === false && <Loader />}
+      {onLoad === false && (
+        <div className="flex justify-center">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }

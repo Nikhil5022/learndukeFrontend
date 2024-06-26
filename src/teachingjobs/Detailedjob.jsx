@@ -14,6 +14,7 @@ import "../App.css";
 import Modal from "../Modal";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
+import Loader from "../Loader";
 
 export default function Detailedjob() {
   const navigate = useNavigate();
@@ -122,7 +123,7 @@ export default function Detailedjob() {
     return (
       <div className="h-screen items-center flex justify-center">
         {/* loading circle with animatin */}
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        <Loader />  
       </div>
     );
   }

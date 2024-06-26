@@ -107,8 +107,13 @@ export default function Tutorial({
           </div>
         </div>
         <div className="text-3xl font-semibold">{title}</div>
-        <div style={{ color: borderColor }} className="mt-3">
-          {description.slice(0, 150) + "...."}
+        <div style={{ color: borderColor }} className="mt-3 h-10">
+          {description.length>150 ?(
+            <div>{description.slice(0,150)}...</div>
+          )
+          :(
+            <div>{description}</div>
+          )}
         </div>
         <div className="flex flex-wrap mt-4 space-x-1 sm:space-x-3">
           <div

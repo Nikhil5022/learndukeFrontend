@@ -141,7 +141,7 @@ export default function Body() {
             setNewTutorialJobs([]);
           }
           const response = await axios.get(
-            "http://localhost:3000/getReviewedJobs",
+            "https://learndukeserver.vercel.app/getReviewedJobs",
             {
               params: {
                 title: searchTitle,
@@ -155,11 +155,16 @@ export default function Body() {
             }
           );
 
+          // if(response.data.jobs.length>0){
+          //   setLoading(false);
+          // }
+
           console.log(response)
 
           if(page===1 && firstTimeFetch){
             setFirstTimeFetch(false)
             setNewTutorialJobs([...response.data.jobs]);
+            setLoading(false);
           }else{
             setNewTutorialJobs([...newTutorialJobs, ...response.data.jobs]);
             setLoading(false);
@@ -168,6 +173,8 @@ export default function Body() {
         } catch (error) {
           console.error("Error fetching jobs:", error);
         }
+
+        
       };
 
       fetchJobs();
@@ -205,19 +212,7 @@ export default function Body() {
     setFirstTimeFetch(true);
   };
 
-  function InfiniteLoader() {
-    return (
-      // <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-      //   <Loader />
-      //   <Loader />
-      //   <Loader />
-      //   <Loader />
-      // </div>
-      <div className="flex justify-center items-center overflow-hidden mt-10">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    )
-  }
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -276,15 +271,17 @@ export default function Body() {
               />
             </div>
             {
-            // loading ? (
-            //   <InfiniteLoader />
-            // ) : 
+            loading ? (
+              <div className="flex justify-center mt-10">
+                <Loader />
+              </div>
+            ) : 
             newTutorialJobs.length > 0 ? (
               <InfiniteScroll
                 dataLength={newTutorialJobs.length}
                 next={() => setPage(page + 1)}
                 hasMore={page < totalPage}
-                loader={<InfiniteLoader />}
+                loader={<Loader/>}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                   {newTutorialJobs.map((job, index) => (
