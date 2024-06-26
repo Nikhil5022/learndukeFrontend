@@ -224,11 +224,14 @@ export default function Body() {
 
   function InfiniteLoader() {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-        <Loader />
-        <Loader />
-        <Loader />
-        <Loader />
+      // <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+      //   <Loader />
+      //   <Loader />
+      //   <Loader />
+      //   <Loader />
+      // </div>
+      <div className="flex justify-center items-center overflow-hidden mt-10">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }

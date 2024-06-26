@@ -622,7 +622,6 @@ function Explorementors() {
             </div>
           </div> */}
         </div>
-      )}
       {onLoad === false && <Loader />}
     </div>
   );
