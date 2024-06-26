@@ -22,6 +22,7 @@ import user2 from "../assets/user.png";
 import crying from "../assets/crying.gif";
 import { MdSchool } from "react-icons/md";
 import Loader from "../Loader";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const domainOptions = [
   { name: "All Domains", icon: <FaGlobe />, number: 0 },
@@ -203,38 +204,36 @@ function Explorementors() {
   const [onLoad, setOnLoad] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const observer = useRef();
+  const [isFirstDomainClick, setIsFirstDomainClick] = useState(true);
+  const [isFirstSearchClick, setIsFirstSearchClick] = useState(true);
+  const [isFirstSubDomainClick, setIsFirstSubDomainClick] = useState(true);
+
 
   useEffect(() => {
     // fetchJobs();
-    fetchMentors();
+    if(searchTerm === "" && selectedDomain === "All Domains" && selectedSubDomains.length === 0) {
+      fetchMentors();
+    }
   }, [page]);
 
   const fetchMentors = async () => {
     const response = await axios.get(
-      "http://localhost:3000/getMentor?page=" + page + "&limit=12"
+      "http://localhost:3000/getMentor?page=" + page + "&limit=5"
     );
-    setMentors((prevMentors) => [...prevMentors, ...response.data.mentors]);
+    // console.log(response.data)
+    console.log("fetchMentors")
     setOriginalMentors((prevMentors) => [
+      ...prevMentors,
+      ...response.data.mentors,
+    ]);
+    setFilteredMentors((prevMentors) => [
       ...prevMentors,
       ...response.data.mentors,
     ]);
     setTotalPages(response.data.totalPages);
     setOnLoad(true);
   };
-
-  const lastMentorElementRef = useCallback(
-    (node) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && page < totalPages) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [onLoad, page, totalPages]
-  );
+  
 
   useEffect(() => {
     // window.scrollTo({
@@ -244,6 +243,7 @@ function Explorementors() {
   }, []);
 
   const handleDomainClick = (domain, e) => {
+    setPage(1);
     const left = e.target.getBoundingClientRect().left;
     setLeft(left);
     setSelectedDomain(domain);
@@ -251,7 +251,8 @@ function Explorementors() {
 
     if (domain === "All Domains") {
       setSelectedSubDomains([]);
-      setMentors(originalMentors); // Reset mentors to all mentors if "All Domains" is selected
+      setFilteredMentors([]);
+      fetchMentors();
     }
   };
 
@@ -272,6 +273,16 @@ function Explorementors() {
   }, [subDomainDropdownRef, windowWidth]);
 
   const handleSubDomainChange = (subDomain) => {
+
+    // if(!isFirstSubDomainClick) {
+    //   setPage(1);
+    //   setIsFirstSubDomainClick(false);
+    //   console.log("First sub domain click")
+    // }
+
+    setPage(1);
+
+
     setSelectedSubDomains((prevSelectedSubDomains) =>
       prevSelectedSubDomains.includes(subDomain)
         ? prevSelectedSubDomains.filter((sd) => sd !== subDomain)
@@ -283,25 +294,49 @@ function Explorementors() {
   };
 
   useEffect(() => {
-    setOnLoad(false);
+    
+    const fetchFilteredMentors = async () => {
 
-    axios
-      .get(
+      console.log(isFirstDomainClick)
+
+      if(isFirstDomainClick) {
+        setPage(1);
+        setIsFirstDomainClick(false);
+        console.log("First domain click")
+      }
+
+      console.log("fetchFilteredMentors")
+
+      const response = await axios.get(
         "http://localhost:3000/getMentor?page=" +
           page +
-          "&limit=12" +
+          "&limit=5" +
           "&domain=" +
           selectedDomain +
           "&subDomain=" +
           selectedSubDomains
-      )
-      .then((response) => {
-        const filteredMentors = response.data.mentors;
-        setFilteredMentors(filteredMentors);
-        setTotalPages(response.data.totalPages);
-        setOnLoad(true);
-      });
-  }, [selectedDomain, selectedSubDomains, originalMentors]);
+      );
+
+      console.log(response.data)
+      console.log(page)
+      if (page === 1) {
+        
+        setFilteredMentors(response.data.mentors);
+      } else {
+        setFilteredMentors((prevMentors) => [
+          ...prevMentors,
+          ...response.data.mentors,
+        ]);
+      }
+      setTotalPages(response.data.totalPages);
+      setOnLoad(true);
+    };
+  
+    if(selectedDomain !== "All Domains" || selectedSubDomains.length > 0) {
+      fetchFilteredMentors();
+    }
+  }, [selectedDomain, selectedSubDomains,page]);
+  
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(null);
@@ -313,26 +348,51 @@ function Explorementors() {
 
     const timeoutId = setTimeout(() => {
       setPage(1); // Reset to the first page on new search
-      searchMentors(searchTerm);
+      if(searchTerm !== "") {
+        searchMentors(searchTerm);
+      }
     }, 1000);
 
     setDebouncedSearchTerm(timeoutId);
   }, [searchTerm]);
 
   const searchMentors = async (searchValue) => {
+
+    if(!isFirstSearchClick) {
+      setPage(1);
+      setIsFirstSearchClick(false);
+      console.log("First search click")
+    }
+
+    console.log("searchMentors")
+
     const response = await axios.get(
-      `http://localhost:3000/getMentor?page=${page}&limit=12&search=${searchValue}`
+      `http://localhost:3000/getMentor?page=${page}&limit=5&search=${searchValue}`
     );
-    // displayingnames of mentors
-    console.log(response.data.mentors);
-    setFilteredMentors(response.data.mentors);
+    if (page === 1) {
+      setFilteredMentors(response.data.mentors);
+    } else {
+      setFilteredMentors((prevMentors) => [
+        ...prevMentors,
+        ...response.data.mentors,
+      ]);
+    }
     setTotalPages(response.data.totalPages);
     setOnLoad(true);
   };
+  
 
   const handleOnchange = (e) => {
     const searchValue = e.target.value.toLowerCase();
     setSearchTerm(searchValue);
+  };
+
+  const Loader = () => {
+    return (
+      <div className="flex justify-center items-center overflow-hidden">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   };
 
   return (
@@ -450,78 +510,94 @@ function Explorementors() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
-            {filteredMentors.map((mentor, index) => (
-              <div
-                key={index}
-                className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
-                ref={(el) => (cardRefs.current[index] = el)}
-                onClick={() => {
-                  navigation(`/detailedmentor/${mentor._id}`);
-                }}
-                // lastmentor
-              >
-                <div className="relative w-full" style={{ paddingTop: "100%" }}>
-                  <img
-                    src={mentor.profilePhoto.url || user2}
-                    alt="profile photo"
-                    className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
-                  />
-                  <div className="absolute inset-0"></div>
-                </div>
-                <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
-                  <div className="flex justify-between items-center">
-                    <div
-                      className="text-base font-semibold whitespace-nowrap"
-                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                    >
-                      {mentor.name}
+
+          <InfiniteScroll
+            dataLength={filteredMentors.length}
+            next={() => setPage((prevPage) => prevPage + 1)}
+            hasMore={page < totalPages}
+            loader={<Loader />}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+          >
+            <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
+              {filteredMentors.map((mentor, index) => (
+                <div
+                  key={index}
+                  className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
+                  ref={(el) => (cardRefs.current[index] = el)}
+                  onClick={() => {
+                    navigation(`/detailedmentor/${mentor._id}`);
+                  }}
+                >
+                  <div
+                    className="relative w-full"
+                    style={{ paddingTop: "100%" }}
+                  >
+                    <img
+                      src={mentor.profilePhoto.url || user2}
+                      alt="profile photo"
+                      className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
+                    />
+                    <div className="absolute inset-0"></div>
+                  </div>
+                  <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
+                    <div className="flex justify-between items-center">
+                      <div
+                        className="text-base font-semibold whitespace-nowrap"
+                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                      >
+                        {mentor.name}
+                      </div>
+                      <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
+                        {mentor.experience} YOE
+                      </div>
+                      <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+                        {mentor.experience} Y
+                      </div>
                     </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
-                      {mentor.experience} YOE
+                    <div className="text-gray-500 text-sm whitespace-nowrap">
+                      Hourly Fees : ₹{mentor.hourlyFees}
                     </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
-                      {mentor.experience} Y
+                    <div className="flex">
+                      <MdSchool className="mr-1" />
+                      <div
+                        className="flex  w-full"
+                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                      >
+                        {mentor.skills.map((skill, index) => (
+                          <div
+                            key={index}
+                            className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                              index != 0 && "ml-1"
+                            }`}
+                          >
+                            {skill}
+                            {index < 2 && (
+                              <span className="text-gray-400">,</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-gray-500 text-sm whitespace-nowrap">
-                    Hourly Fees : ₹{mentor.hourlyFees}
+                </div>
+              ))}
+              {/* {filteredMentors.length === 0 && (
+                <div className="text-center w-full col-span-full">
+                  <div className="flex justify-center p-3">
+                    <img src={crying} alt="No mentors found" className="w-40" />
                   </div>
-                  <div className="flex">
-                    <MdSchool className="mr-1" />
-                    <div
-                      className="flex  w-full"
-                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                    >
-                      {mentor.skills.map((skill, index) => (
-                        <div
-                          key={index}
-                          className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
-                            index != 0 && "ml-1"
-                          }`}
-                        >
-                          {skill}
-                          {index < 2 && (
-                            <span className="text-gray-400">,</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                  <div className="text-2xl font-bold -translate-x-4">
+                    No mentors found
                   </div>
                 </div>
-              </div>
-            ))}
-            {filteredMentors.length === 0 && (
-              <div className="text-center w-full col-span-full">
-                <div className="flex justify-center p-3">
-                  <img src={crying} alt="No mentors found" className="w-40" />
-                </div>
-                <div className="text-2xl font-bold -translate-x-4">
-                  No mentors found
-                </div>
-              </div>
-            )}
-          </div>
+              )} */}
+            </div>
+          </InfiniteScroll>
+
           {/* <div className="flex ">
             <div className="flex items-center justify-center w-full mt-5">
               <button
