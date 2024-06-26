@@ -66,9 +66,11 @@ function MentorPayment() {
           if (res.status === 200) {
             setUpdatedModal(true);
           }
+          setLoading(false);
         });
+    }else{
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   console.log(location.state)
@@ -85,8 +87,10 @@ function MentorPayment() {
       if (res.status === 200) {
         setUpdatedModal(true);
       }
+      setLoading(false)
+    }else{
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const plans = [

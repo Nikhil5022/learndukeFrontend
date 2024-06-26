@@ -396,8 +396,7 @@ function Explorementors() {
   };
 
   return (
-    <div>
-      {onLoad && (
+    <div>     
         <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
           <div className="text-3xl font-sans text-center mb-10 mt-5">
             Connect with{" "}

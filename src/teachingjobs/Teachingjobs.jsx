@@ -78,7 +78,7 @@ export default function Teachingjobs() {
         >
           <div
             className="flex-1 flex items-center justify-center"
-            data-aos="slide-right"
+            data-aos="fade-in"
           >
             <video ref={vidRef} muted autoPlay loop controls>
               <source src={"/LearnDuke_Intro.mp4"} type="video/mp4" />

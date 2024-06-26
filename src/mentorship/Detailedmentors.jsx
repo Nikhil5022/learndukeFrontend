@@ -20,6 +20,8 @@ import { MdAddCall } from "react-icons/md";
 import { IoLocation } from "react-icons/io5";
 import { PiBuildingsLight } from "react-icons/pi";
 import { FaArrowLeft } from "react-icons/fa";
+import Modal from "../Modal";
+import { FcGoogle } from "react-icons/fc";
 
 
 function Detailedmentors() {
@@ -30,10 +32,9 @@ function Detailedmentors() {
   const [selectedReview, setSelectedReview] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const reviewsSectionRef = useRef(null);
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-
-   
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -91,6 +92,10 @@ function Detailedmentors() {
     setSelectedReview(null);
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+  };
+
   const handleScrollToReviews = () => {
     reviewsSectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
@@ -103,6 +108,8 @@ function Detailedmentors() {
     );
     return (totalRating / mentor.reviews.length).toFixed(1);
   };
+
+  const user = JSON.parse(localStorage.getItem('user'))
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen montserrat ">
@@ -415,14 +422,14 @@ function Detailedmentors() {
               <div className="mt-4 flex flex-col space-y-3 justify-evenly">
                 <button
                   className="bg-orange-400  px-3 py-2 rounded-lg font-semibold text-white flex justify-center space-x-3 items-center"
-                  onClick={() => window.open(`tel:${mentor.phoneNumber}`, "blank")}
+                  onClick={() => user ? window.open(`tel:${mentor.phoneNumber}`, "blank") : setShowModal(true)}
                 >
                   <MdAddCall /> <span>Call Mentor</span>
                 </button>
                 <button
                   className="bg-green-400  px-3 py-2 rounded-lg font-semibold text-white  justify-center space-x-3 flex items-center"
-                  onClick={() =>
-                    window.open(`https://wa.me/${whatsappNumber}?text=${"Hello Mentor! I saw your profile on Learnduke. Can I take a free class  for "}`, 'blank')
+                  onClick={() => user ?
+                    window.open(`https://wa.me/${mentor.whatsappNumber}?text=${"Hello Mentor! I saw your profile on Learnduke. Can I take a free class  for "}`, 'blank') : setShowModal(true)
                   }
                 >
                   <FaWhatsapp /> <span>WhatsApp Mentor</span>
@@ -430,6 +437,19 @@ function Detailedmentors() {
               </div>
               <div className="text-center font-semibold mt-4">1st class free</div>
             </div>
+            {
+              <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                <div className="flex flex-col items-center justify-center text-lg">Please login to connect with mentor
+                <button
+            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={handleGoogleLogin}
+          >
+            <FcGoogle className=" text-xl mr-2 mt-0.5" />
+            <div>Login</div>
+          </button>
+                </div>
+              </Modal>
+            }
           </div>
         </div>
       )}

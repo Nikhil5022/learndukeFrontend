@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Tutorial from "./Tutorial";
-import { FaSearch, FaMapMarkerAlt,FaFilter } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ClipLoader } from "react-spinners";
 import crying from "./assets/crying.gif";
 import "./App.css";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from "./Loader";
 
 // Define the filter options
@@ -98,80 +98,107 @@ export default function Body() {
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   // const userData = JSON.parse(localStorage.getItem("user"));
   // const [user, setUser] = useState(userData);
-  const [searchTitle, setSearchTitle] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
   const [premium, setPremium] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get("https://learndukeserver.vercel.app/getReviewedJobs")
-      .then((response) => {
-        setTutorialJobs(response.data);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPages] = useState(1);
 
-        const jobPromises = response.data.map((job) =>
-          axios
-            .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
-            .then((userResponse) => {
-              job.userName = userResponse.data.name;
-              job.imageLink = userResponse.data.profilephoto.url;
-              return job;
-            })
-        );
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
-        Promise.all(jobPromises).then((jobsWithUserData) => {
-          setNewTutorialJobs(jobsWithUserData);
-          setLoading(false);
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching jobs:", error);
-        setLoading(false);
-      });
+  const [firstTimeFetch, setFirstTimeFetch] = useState(true);
 
-    window.scrollTo(0, 0);
-  }, []);
+  // const observer = useRef(null);
+
+  // const lastJobElementRef = useCallback(
+  //   (node) => {
+  //     console.log("1")
+  //     if (observer.current) observer.current.disconnect();
+  //     console.log("2")
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       console.log("3")
+  //       if (entries[0].isIntersecting && page < totalPage) {
+  //         setPage(page + 1);
+  //         console.log("incremented")
+  //       }
+  //     });
+  //     console.log("last")
+  //     if (node) observer.current.observe(node);
+  //   },
+  // [page, totalPage, loading])
 
   useEffect(() => {
-    handleSearch();
-  }, [searchTitle, searchLocation, selectedFilter, selectedDomains, selectedEducations]);
-
-  const handleSearch = () => {
-    let filteredJobs = [...tutorialJobs];
-
-    if (searchTitle) {
-      filteredJobs = filteredJobs.filter((job) =>
-        job.title.toLowerCase().includes(searchTitle.toLowerCase())
-      );
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
     }
 
-    if (searchLocation) {
-      filteredJobs = filteredJobs.filter((job) =>
-        job.location.toLowerCase().includes(searchLocation.toLowerCase())
-      );
-    }
+    const timeoutId = setTimeout(() => {
+      const fetchJobs = async () => {
+        setLoading(true);
+        try {
+          if(searchTitle=== "" && searchLocation === "" && selectedFilter === "All" && selectedDomains.length === 0 && selectedEducations.length === 0){
+            setNewTutorialJobs([]);
+            setTutorialJobs([]);
+          }
+          const response = await axios.get(
+            "http://localhost:3000/getReviewedJobs",
+            {
+              params: {
+                title: searchTitle,
+                location: searchLocation,
+                jobType: selectedFilter === "All" ? "" : selectedFilter,
+                domain: selectedDomains.length > 0 ? selectedDomains : "",
+                education:
+                selectedEducations.length > 0 ? selectedEducations : "",
+                page,
+              },
+            }
+          );
 
-    if (selectedFilter !== "All") {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.jobType.toLowerCase() === selectedFilter.toLowerCase()
-      );
-    }
+          console.log(response);
 
-    if (selectedDomains.length > 0) {
-      filteredJobs = filteredJobs.filter((job) =>
-        selectedDomains.includes(job.domain)
-      );
-    }
+          const jobPromises = response.data.jobs.map((job) =>
+            axios
+              .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
+              .then((userResponse) => {
+                job.userName = userResponse.data.name;
+                job.imageLink = userResponse.data.profilephoto.url;
+                return job;
+              })
+          );
 
-    if (selectedEducations.length > 0) {
-      filteredJobs = filteredJobs.filter((job) =>
-        selectedEducations.includes(job.education)
-      );
-    }
+          Promise.all(jobPromises).then(resolvedJobs => {
+            if(page===1 && firstTimeFetch){
+              setFirstTimeFetch(false)
+              setTutorialJobs([...resolvedJobs]);
+              setNewTutorialJobs([...resolvedJobs]);
+            }else{
+              setTutorialJobs([...tutorialJobs, ...resolvedJobs]);
+              setNewTutorialJobs([...tutorialJobs, ...resolvedJobs]);
+              setLoading(false);
+            }
+          });
+          setTotalPages(response.data.totalPages);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      };
 
-    setNewTutorialJobs(filteredJobs);
-  };
+      fetchJobs();
+    }, 500);
+
+    setDebounceTimeout(timeoutId);
+    // window.scrollTo(0, 0);
+  }, [
+    searchTitle,
+    selectedDomains,
+    selectedEducations,
+    selectedFilter,
+    searchLocation,
+    page,
+  ]);
 
   const toggleContent = () => {
     setShowFullContent(!showFullContent);
@@ -179,15 +206,32 @@ export default function Body() {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
 
   const handleDomainChange = (newDomains) => {
     setSelectedDomains(newDomains);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
 
   const handleEducationChange = (newEducations) => {
     setSelectedEducations(newEducations);
+    setPage(1);
+    setFirstTimeFetch(true);
   };
+
+  function InfiniteLoader() {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <Loader />
+        <Loader />
+        <Loader />
+        <Loader />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -204,7 +248,10 @@ export default function Body() {
                   type="text"
                   placeholder="Search for a job"
                   value={searchTitle}
-                  onChange={(e) => setSearchTitle(e.target.value)}
+                  onChange={(e) => {setSearchTitle(e.target.value)
+                    setPage(1);
+                    setFirstTimeFetch(true);
+                  }}
                   className="border-none rounded-l-lg p-4 w-full focus:outline-none"
                 />
               </div>
@@ -216,7 +263,11 @@ export default function Body() {
                   type="text"
                   placeholder="Search by location"
                   value={searchLocation}
-                  onChange={(e) => setSearchLocation(e.target.value)}
+                  onChange={(e) => {
+                    setSearchLocation(e.target.value)
+                    setPage(1);
+                    setFirstTimeFetch(true);
+                  }}
                   className="border-none rounded-r-lg p-4 w-full focus:outline-none"
                 />
               </div>
@@ -238,40 +289,51 @@ export default function Body() {
                 onEducationChange={handleEducationChange}
               />
             </div>
-            {loading ? (
-              <Loader />
-            ) : newTutorialJobs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                {newTutorialJobs.map((job, index) => (
-                  <Tutorial
-                    key={index}
-                    imageLink={job.imageLink}
-                    userName={job.userName}
-                    title={job.title}
-                    description={job.description}
-                    minAmountPerHour={job.minAmountPerHour}
-                    maxAmountPerHour={job.maxAmountPerHour}
-                    jobType={job.jobType}
-                    phoneNumber={job.phoneNumber}
-                    location={job.location}
-                    whatsappNumber={job.whatsappNumber}
-                    email={job.email}
-                    requirements={job.requirements}
-                    responsibilities={job.responsibilities}
-                    tags={job.tags}
-                    id={job._id}
-                    isPremium={job.isPremium}
-                  />
-                ))}
-              </div>
-            ) : (
+            {
+            // loading ? (
+            //   <InfiniteLoader />
+            // ) : 
+            newTutorialJobs.length > 0 ? (
+              <InfiniteScroll
+                dataLength={newTutorialJobs.length}
+                next={() => setPage(page + 1)}
+                hasMore={page < totalPage}
+                loader={<InfiniteLoader />}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  {newTutorialJobs.map((job, index) => (
+                    <Tutorial
+                      key={index}
+                      imageLink={job.imageLink}
+                      userName={job.userName}
+                      title={job.title}
+                      description={job.description}
+                      minAmountPerHour={job.minAmountPerHour}
+                      maxAmountPerHour={job.maxAmountPerHour}
+                      jobType={job.jobType}
+                      phoneNumber={job.phoneNumber}
+                      location={job.location}
+                      whatsappNumber={job.whatsappNumber}
+                      email={job.email}
+                      requirements={job.requirements}
+                      responsibilities={job.responsibilities}
+                      tags={job.tags}
+                      id={job._id}
+                      isPremium={job.isPremium}
+                    />
+                  ))}
+                </div>
+              </InfiniteScroll>
+            ) 
+            : (
               <div className="flex flex-col items-center justify-center mt-10">
                 <img src={crying} alt="No jobs found" className="w-32" />
                 <div className="text-center text-lg font-semibold text-gray-500">
                   No jobs found
                 </div>
               </div>
-            )}
+            )
+            }
           </div>
         </div>
       </div>
@@ -289,8 +351,10 @@ function FilterOptions({
 }) {
   const containerRef = useRef(null);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedDomainOptions, setSelectedDomainOptions] = useState(selectedDomains);
-  const [selectedEducationOptions, setSelectedEducationOptions] = useState(selectedEducations);
+  const [selectedDomainOptions, setSelectedDomainOptions] =
+    useState(selectedDomains);
+  const [selectedEducationOptions, setSelectedEducationOptions] =
+    useState(selectedEducations);
 
   const [selectedDomain, setSelectedDomain] = useState(true);
 
@@ -389,12 +453,15 @@ function FilterOptions({
       </div>
       {openModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm z-10">
-          <div className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
-            style={{zIndex: 1000}}
+          <div
+            className="bg-white p-4 rounded-lg w-96 h-3/4 overflow-y-auto  relative"
+            style={{ zIndex: 1000 }}
           >
             <div className="flex relative justify-between items-center mb-4">
               <div
-                className={`text-xl font-semibold cursor-pointer ${selectedDomain ? "text-blue-500" : "text-black"}`}
+                className={`text-xl font-semibold cursor-pointer ${
+                  selectedDomain ? "text-blue-500" : "text-black"
+                }`}
                 onClick={() => setSelectedDomain(true)}
               >
                 Select Domain
@@ -402,7 +469,9 @@ function FilterOptions({
               {/* vertical line */}
               <div className="border-r-2 h-10 w-0.5 mx-2"></div>
               <div
-                className={`text-xl font-semibold cursor-pointer ${!selectedDomain ? "text-blue-500" : "text-black"}`}
+                className={`text-xl font-semibold cursor-pointer ${
+                  !selectedDomain ? "text-blue-500" : "text-black"
+                }`}
                 onClick={() => setSelectedDomain(false)}
               >
                 Select Education

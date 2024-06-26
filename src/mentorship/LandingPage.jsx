@@ -155,7 +155,7 @@ fetchData();
               {quality.title1}
               <br /> {quality.title2}
             </p>
-            <img className="w-3/6 lg:w-3/12" src={quality.img} alt="Img" />
+            <img className="w-3/6 max-w-80 max-h-80 lg:w-3/12" src={quality.img} alt="Img" />
           </div>
         ))}
       </div>
@@ -302,7 +302,7 @@ fetchData();
         >
           <div className="text-lg flex flex-col space-y-3 items-center justify-center">
             <div className="text-center">
-                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg" />
+                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg max-w-52 max-h-52 md:max-w-60 md:max-h-60 aspect-square object-cover" />
               <h1 className="text-xl font-semibold mt-2">{user.name}</h1>
             </div>
             <div className="text-center">You are already a mentor and 
