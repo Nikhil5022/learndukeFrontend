@@ -94,7 +94,6 @@ export default function Body() {
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedDomains, setSelectedDomains] = useState([]);
   const [selectedEducations, setSelectedEducations] = useState([]);
-  const [tutorialJobs, setTutorialJobs] = useState([]);
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   // const userData = JSON.parse(localStorage.getItem("user"));
   // const [user, setUser] = useState(userData);
@@ -140,7 +139,6 @@ export default function Body() {
         try {
           if(searchTitle=== "" && searchLocation === "" && selectedFilter === "All" && selectedDomains.length === 0 && selectedEducations.length === 0){
             setNewTutorialJobs([]);
-            setTutorialJobs([]);
           }
           const response = await axios.get(
             "http://localhost:3000/getReviewedJobs",
@@ -157,29 +155,15 @@ export default function Body() {
             }
           );
 
-          console.log(response);
+          console.log(response)
 
-          const jobPromises = response.data.jobs.map((job) =>
-            axios
-              .get(`https://learndukeserver.vercel.app/getUser/${job.email}`)
-              .then((userResponse) => {
-                job.userName = userResponse.data.name;
-                job.imageLink = userResponse.data.profilephoto.url;
-                return job;
-              })
-          );
-
-          Promise.all(jobPromises).then(resolvedJobs => {
-            if(page===1 && firstTimeFetch){
-              setFirstTimeFetch(false)
-              setTutorialJobs([...resolvedJobs]);
-              setNewTutorialJobs([...resolvedJobs]);
-            }else{
-              setTutorialJobs([...tutorialJobs, ...resolvedJobs]);
-              setNewTutorialJobs([...tutorialJobs, ...resolvedJobs]);
-              setLoading(false);
-            }
-          });
+          if(page===1 && firstTimeFetch){
+            setFirstTimeFetch(false)
+            setNewTutorialJobs([...response.data.jobs]);
+          }else{
+            setNewTutorialJobs([...newTutorialJobs, ...response.data.jobs]);
+            setLoading(false);
+          }
           setTotalPages(response.data.totalPages);
         } catch (error) {
           console.error("Error fetching jobs:", error);
@@ -190,7 +174,6 @@ export default function Body() {
     }, 500);
 
     setDebounceTimeout(timeoutId);
-    // window.scrollTo(0, 0);
   }, [
     searchTitle,
     selectedDomains,
