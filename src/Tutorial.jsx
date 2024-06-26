@@ -107,7 +107,7 @@ export default function Tutorial({
           </div>
         </div>
         <div className="text-3xl font-semibold">{title}</div>
-        <div style={{ color: borderColor }} className="mt-3 h-10">
+        <div style={{ color: borderColor }} className="mt-3 h-12 overflow-hidden">
           {description.length>150 ?(
             <div>{description.slice(0,150)}...</div>
           )
