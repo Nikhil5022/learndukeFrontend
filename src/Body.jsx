@@ -18,8 +18,8 @@ const filterOptions = [
   "Full-time",
   "Internship",
   "Contract",
-  "Hometuition",
-  "Onlinetuition",
+  "Home-tuition",
+  "Online-tuition",
 ];
 const domainOptions = [
   "Information Technology (IT)",
@@ -283,7 +283,7 @@ export default function Body() {
                 hasMore={page < totalPage}
                 loader={<Loader/>}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:m-3">
                   {newTutorialJobs.map((job, index) => (
                     <Tutorial
                       key={index}

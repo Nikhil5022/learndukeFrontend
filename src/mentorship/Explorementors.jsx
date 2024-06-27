@@ -440,14 +440,14 @@ function Explorementors() {
                   .options.map((subDomain, subDomainIndex) => (
                     <div
                       key={subDomainIndex}
-                      className={`whitespace-nowrap border border-gray-200 rounded-3xl text-sm px-2 py-1 mx-auto cursor-pointer ${
+                      className={`whitespace-nowrap border border-gray-500 rounded-3xl text-sm px-2 py-1 mx-auto cursor-pointer ${
                         selectedSubDomains.includes(subDomain)
                           ? "bg-black text-white"
-                          : "text-black"
+                          : "text-gray-800"
                       }`}
                     >
                       <label
-                        className="whitespace-nowrap text-sm font-light"
+                        className="whitespace-nowrap text-sm font-normal"
                         htmlFor={subDomain}
                       >
                         {subDomain}
@@ -517,11 +517,11 @@ function Explorementors() {
             loader={<Loader />}
            
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6 overflow-hidden md:p-3">
               {filteredMentors.map((mentor, index) => (
                 <div
                   key={index}
-                  className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col"
+                  className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col jobcard"
                   ref={(el) => (cardRefs.current[index] = el)}
                   onClick={() => {
                     navigation(`/detailedmentor/${mentor._id}`);

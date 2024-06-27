@@ -89,8 +89,7 @@ export default function Tutorial({
 
   return (
     <div
-      className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer`}
-      style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+      className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard `}
     >
       <div onClick={handleJobClick}>
         <div className="flex items-center mb-4">

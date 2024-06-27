@@ -50,8 +50,8 @@ export default function CreateJob() {
     "Full-time",
     "Internship",
     "Contract",
-    "Hometuition",
-    "Onlinetuition",
+    "Home-tuition",
+    "Online-tuition",
   ];
 
   const languageOptions = [
