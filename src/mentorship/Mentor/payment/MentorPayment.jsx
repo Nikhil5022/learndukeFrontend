@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import sampleUser from "../../../assets/user.png";
 import Modal from "../../../Modal.jsx";
 import image from "../../../assets/learnDuke.png";
+import Loader from "../../../Loader.jsx";
 
 function MentorPayment() {
   const [mentorData, setMentorData] = useState({});
@@ -15,7 +16,7 @@ function MentorPayment() {
   const navigate = useNavigate();
   const [photo, setPhoto] = useState(null);
   const [updatedModal, setUpdatedModal] = useState(false);
-  const [Loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const userPresent = JSON.parse(localStorage.getItem("user"));
@@ -28,27 +29,28 @@ function MentorPayment() {
   useEffect(() => {
     window.scrollTo(0, 0);
     async function getMentorData() {
-      let data = await location.state.mentorData;
-      let newData = location.state.newData;
+      setLoading(true);
+      let data = await location.state?.mentorData;
       if (!data) {
         navigate("/mentorship");
       }
+      let newData = await location.state?.newData;
       setMentorData(data);
-      if (newData === true && location.state.modified === false) {
+      if (newData === true && location.state?.modified === false) {
         setPhoto(data.profilePhoto);
       }
-      if (location.state.modified === false && newData == false) {
+      if (location.state?.modified === false && newData == false) {
         setPhoto(data.profilePhoto?.url);
       }
     }
     getMentorData();
-
-    if (location.state.newData === true && location.state.modified === false) {
+    setLoading(false);
+    if (location.state?.newData === true && location.state?.modified === false) {
       sendData();
       window.history.replaceState(null, "");
     } else if (
-      location.state.modified === true &&
-      location.state.newData === false
+      location.state?.modified === true &&
+      location.state?.newData === false
     ) {
       updateData();
       window.history.replaceState(null, "");
@@ -63,11 +65,8 @@ function MentorPayment() {
         .post(`https://learndukeserver.vercel.app/addMentor/${u.email}`, mentorData)
         .then((res) => {
           setPhoto(res.data.profilePhoto.url);
-          if (res.status === 200) {
-            setUpdatedModal(true);
-          }
-          setLoading(false);
         });
+        setLoading(false);
     }else{
       setLoading(false);
     }
@@ -189,8 +188,9 @@ function MentorPayment() {
     }
   }
 
-  return user ? (
-    <div className=" flex item-center justify-center flex-col">
+  return user ? 
+  !loading ? (
+    <div className=" flex item-center justify-center flex-col relative">
       <div className="flex flex-col lg:flex-row">
         <div className="flex-col flex-1 flex items-center w-full">
           <div className="flex w-9/12 h-72 items-center justify-center  rounded-xl mt-10 p-1 shodow-lg flex-col">
@@ -298,13 +298,19 @@ function MentorPayment() {
           </div>
         </div>
       </Modal>
+      
       <Modal isOpen={updatedModal} onClose={handleNavigate}>
         <div className="text-xl flex items-center justify-center">
           Your profile has been updated successfully
         </div>
       </Modal>
     </div>
-  ) : (
+  ) :(
+    <div className="flex items-center justify-center h-screen">
+    <Loader />
+    </div>
+  )
+  :(
     <div className="flex items-center justify-center h-screen text-2xl font-semibold text-gray-500">
       Please login to view mentor plans
     </div>
