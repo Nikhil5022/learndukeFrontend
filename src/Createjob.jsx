@@ -12,6 +12,8 @@ export default function CreateJob() {
 
   const domainOptions = [
     "Information Technology (IT)",
+    "Engineering",
+    "Technician",
     "Finance",
     "Healthcare",
     "Education",
@@ -41,6 +43,18 @@ export default function CreateJob() {
     "Food and Beverage",
     "Environmental Services",
     "Sports and Recreation",
+    "Data entry",
+    "Content writing",
+    "Security Guard",
+    "Driver",
+    "Plumber",
+    "Domestic",
+    "Sales and Marketing",
+    "BPO",
+    "Medical",
+    "Paramedical",
+    "Nursing",
+    "Others"
   ];
 
   const filterOptions = [
@@ -760,7 +774,7 @@ export default function CreateJob() {
                 <option value="10 pass">10 pass</option>
                 <option value="12 pass">12 pass</option>
                 <option value="Graduate">Graduate</option>
-                <option value="Deploma">Deploma</option>
+                <option value="Deploma">Diploma</option>
                 <option value="ITI">ITI</option>
                 <option value="BTech">BTech</option>
                 <option value="MTech">MTech</option>

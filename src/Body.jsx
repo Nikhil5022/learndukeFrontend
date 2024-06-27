@@ -62,6 +62,9 @@ const domainOptions = [
   "Domestic",
   "Sales and Marketing",
   "BPO",
+  "Medical",
+  "Paramedical",
+  "Nursing",
   "Others",
 ];
 
@@ -69,7 +72,7 @@ const educationOptions = [
   "10 pass",
   "12 pass",
   "Graduate",
-  "Deploma",
+  "Diploma",
   "ITI",
   "BTech",
   "MTech",
@@ -137,7 +140,13 @@ export default function Body() {
       const fetchJobs = async () => {
         setLoading(true);
         try {
-          if(searchTitle=== "" && searchLocation === "" && selectedFilter === "All" && selectedDomains.length === 0 && selectedEducations.length === 0){
+          if (
+            searchTitle === "" &&
+            searchLocation === "" &&
+            selectedFilter === "All" &&
+            selectedDomains.length === 0 &&
+            selectedEducations.length === 0
+          ) {
             setNewTutorialJobs([]);
           }
           const response = await axios.get(
@@ -149,7 +158,7 @@ export default function Body() {
                 jobType: selectedFilter === "All" ? "" : selectedFilter,
                 domain: selectedDomains.length > 0 ? selectedDomains : "",
                 education:
-                selectedEducations.length > 0 ? selectedEducations : "",
+                  selectedEducations.length > 0 ? selectedEducations : "",
                 page,
               },
             }
@@ -159,13 +168,13 @@ export default function Body() {
           //   setLoading(false);
           // }
 
-          console.log(response)
+          console.log(response);
 
-          if(page===1 && firstTimeFetch){
-            setFirstTimeFetch(false)
+          if (page === 1 && firstTimeFetch) {
+            setFirstTimeFetch(false);
             setNewTutorialJobs([...response.data.jobs]);
             setLoading(false);
-          }else{
+          } else {
             setNewTutorialJobs([...newTutorialJobs, ...response.data.jobs]);
             setLoading(false);
           }
@@ -173,8 +182,6 @@ export default function Body() {
         } catch (error) {
           console.error("Error fetching jobs:", error);
         }
-
-        
       };
 
       fetchJobs();
@@ -212,8 +219,6 @@ export default function Body() {
     setFirstTimeFetch(true);
   };
 
-  
-
   return (
     <div className="flex flex-col min-h-screen">
       <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
@@ -229,7 +234,8 @@ export default function Body() {
                   type="text"
                   placeholder="Search for a job"
                   value={searchTitle}
-                  onChange={(e) => {setSearchTitle(e.target.value)
+                  onChange={(e) => {
+                    setSearchTitle(e.target.value);
                     setPage(1);
                     setFirstTimeFetch(true);
                   }}
@@ -245,7 +251,7 @@ export default function Body() {
                   placeholder="Search by location"
                   value={searchLocation}
                   onChange={(e) => {
-                    setSearchLocation(e.target.value)
+                    setSearchLocation(e.target.value);
                     setPage(1);
                     setFirstTimeFetch(true);
                   }}
@@ -270,18 +276,16 @@ export default function Body() {
                 onEducationChange={handleEducationChange}
               />
             </div>
-            {
-            loading ? (
+            {loading ? (
               <div className="flex justify-center mt-10">
                 <Loader />
               </div>
-            ) : 
-            newTutorialJobs.length > 0 ? (
+            ) : newTutorialJobs.length > 0 ? (
               <InfiniteScroll
                 dataLength={newTutorialJobs.length}
                 next={() => setPage(page + 1)}
                 hasMore={page < totalPage}
-                loader={<Loader/>}
+                loader={<Loader />}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:m-3">
                   {newTutorialJobs.map((job, index) => (
@@ -307,16 +311,14 @@ export default function Body() {
                   ))}
                 </div>
               </InfiniteScroll>
-            ) 
-            : (
+            ) : (
               <div className="flex flex-col items-center justify-center mt-10">
                 <img src={crying} alt="No jobs found" className="w-32" />
                 <div className="text-center text-lg font-semibold text-gray-500">
                   No jobs found
                 </div>
               </div>
-            )
-            }
+            )}
           </div>
         </div>
       </div>

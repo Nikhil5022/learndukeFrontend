@@ -58,6 +58,7 @@ const subDomainOptions = [
       "Environmental Engineering",
       "Instruments Engineering",
       "AIML Engineer",
+      "Computer Science",
     ],
   },
   {
@@ -208,10 +209,13 @@ function Explorementors() {
   const [isFirstSearchClick, setIsFirstSearchClick] = useState(true);
   const [isFirstSubDomainClick, setIsFirstSubDomainClick] = useState(true);
 
-
   useEffect(() => {
     // fetchJobs();
-    if(searchTerm === "" && selectedDomain === "All Domains" && selectedSubDomains.length === 0) {
+    if (
+      searchTerm === "" &&
+      selectedDomain === "All Domains" &&
+      selectedSubDomains.length === 0
+    ) {
       fetchMentors();
     }
   }, [page]);
@@ -221,7 +225,7 @@ function Explorementors() {
       "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
     );
     // console.log(response.data)
-    console.log("fetchMentors")
+    console.log("fetchMentors");
     setOriginalMentors((prevMentors) => [
       ...prevMentors,
       ...response.data.mentors,
@@ -233,7 +237,6 @@ function Explorementors() {
     setTotalPages(response.data.totalPages);
     setOnLoad(true);
   };
-  
 
   useEffect(() => {
     // window.scrollTo({
@@ -274,7 +277,6 @@ function Explorementors() {
   }, [subDomainDropdownRef, windowWidth]);
 
   const handleSubDomainChange = (subDomain) => {
-
     // if(!isFirstSubDomainClick) {
     //   setPage(1);
     //   setIsFirstSubDomainClick(false);
@@ -283,7 +285,6 @@ function Explorementors() {
 
     setPage(1);
     setOnLoad(false);
-
 
     setSelectedSubDomains((prevSelectedSubDomains) =>
       prevSelectedSubDomains.includes(subDomain)
@@ -296,18 +297,16 @@ function Explorementors() {
   };
 
   useEffect(() => {
-    
     const fetchFilteredMentors = async () => {
+      console.log(isFirstDomainClick);
 
-      console.log(isFirstDomainClick)
-
-      if(isFirstDomainClick) {
+      if (isFirstDomainClick) {
         setPage(1);
         setIsFirstDomainClick(false);
-        console.log("First domain click")
+        console.log("First domain click");
       }
 
-      console.log("fetchFilteredMentors")
+      console.log("fetchFilteredMentors");
 
       const response = await axios.get(
         "https://learndukeserver.vercel.app/getMentor?page=" +
@@ -319,10 +318,9 @@ function Explorementors() {
           selectedSubDomains
       );
 
-      console.log(response.data)
-      console.log(page)
+      console.log(response.data);
+      console.log(page);
       if (page === 1) {
-        
         setFilteredMentors(response.data.mentors);
       } else {
         setFilteredMentors((prevMentors) => [
@@ -333,12 +331,11 @@ function Explorementors() {
       setTotalPages(response.data.totalPages);
       setOnLoad(true);
     };
-  
-    if(selectedDomain !== "All Domains" || selectedSubDomains.length > 0) {
+
+    if (selectedDomain !== "All Domains" || selectedSubDomains.length > 0) {
       fetchFilteredMentors();
     }
-  }, [selectedDomain, selectedSubDomains,page]);
-  
+  }, [selectedDomain, selectedSubDomains, page]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(null);
@@ -351,23 +348,21 @@ function Explorementors() {
     const timeoutId = setTimeout(() => {
       setPage(1); // Reset to the first page on new search
       // if(searchTerm !== "") {
-        searchMentors(searchTerm);
+      searchMentors(searchTerm);
       // }
-      
     }, 1000);
 
     setDebouncedSearchTerm(timeoutId);
   }, [searchTerm]);
 
   const searchMentors = async (searchValue) => {
-
-    if(!isFirstSearchClick) {
+    if (!isFirstSearchClick) {
       setPage(1);
       setIsFirstSearchClick(false);
-      console.log("First search click")
+      console.log("First search click");
     }
 
-    console.log("searchMentors")
+    console.log("searchMentors");
 
     const response = await axios.get(
       `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
@@ -383,33 +378,31 @@ function Explorementors() {
     setTotalPages(response.data.totalPages);
     setOnLoad(true);
   };
-  
 
   const handleOnchange = (e) => {
     const searchValue = e.target.value.toLowerCase();
     setSearchTerm(searchValue);
   };
 
-  
-
   return (
-    <div>     
-        <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
-          <div className="text-3xl font-sans text-center mb-10 mt-5">
-            Connect with{" "}
-            <span className="bg-gradient-to-r from-orange-200 to-orange-500 text-transparent bg-clip-text">
-              Mentor
-            </span>{" "}
-            of your choice.
-          </div>
-          {/* Filter options */}
-          <input
-            type="text"
-            placeholder="Search by name, domain, or skill"
-            className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-            onChange={handleOnchange}
-          />
-          <div className="flex space-x-1 md:space-x-2 lg:space-x-3 mb-3 overflow-x-auto hidden-scrollbar">
+    <div>
+      <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
+        <div className="text-3xl font-sans text-center mb-10 mt-5">
+          Connect with{" "}
+          <span className="bg-gradient-to-r from-orange-200 to-orange-500 text-transparent bg-clip-text">
+            Mentor
+          </span>{" "}
+          of your choice.
+        </div>
+        {/* Filter options */}
+        <input
+          type="text"
+          placeholder="Search by name, domain, or skill"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+          onChange={handleOnchange}
+        />
+        <div className="relative">
+          <div className="flex space-x-1 md:space-x-2 lg:space-x-3 mb-3 overflow-x-auto hidden-scrollbar ">
             {domainOptions.map((option, index) => (
               <div key={index} className="relative">
                 <button
@@ -426,8 +419,16 @@ function Explorementors() {
                 </button>
               </div>
             ))}
+            <div
+              className={`absolute top-0 right-0 h-full w-10 bg-gradient-to-l from-white pointer-events-none ${
+                selectedDomain === "Career Counselling" ? "hidden" : ""
+              }`}
+            ></div>
           </div>
-          <div className="lg:hidden overflow-x-auto hidden-scrollbar mt-3 mb-3">
+        </div>
+
+        <div className="relative">
+          <div className="lg:hidden overflow-x-auto hidden-scrollbar mt-3 mb-3 ">
             {showSubDomains && selectedDomain !== "All Domains" && (
               <div
                 className="flex w-fit space-x-1"
@@ -462,139 +463,135 @@ function Explorementors() {
                   ))}
               </div>
             )}
+            <div className="absolute top-0 right-0 h-full w-10 bg-gradient-to-l from-white pointer-events-none"></div>
           </div>
+        </div>
 
-          <div className="hidden relative lg:flex z-40">
-            {showSubDomains && selectedDomain !== "All Domains" && (
+        <div className="hidden relative lg:flex z-40">
+          {showSubDomains && selectedDomain !== "All Domains" && (
+            <div
+              ref={subDomainDropdownRef}
+              className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto max-h-96 section  overflow-y-scroll`}
+              style={{
+                boxShadow: "0 0 30px 10px rgba(0,0,0,0.3)",
+                // left: left - 180,
+                // if selectedDoman is Career counselling then dont use left or else left:left-180
+                left: selectedDomain === "Career Counselling" ? "" : left - 180,
+                right: selectedDomain === "Career Counselling" ? 0 : "",
+              }}
+            >
+              <div className="whitespace-nowrap text-2xl font-bold m-2">
+                {selectedDomain + " "} Sub Domains
+              </div>
+              <hr />
+              {subDomainOptions
+                .find(
+                  (subDomainOption) => subDomainOption.name === selectedDomain
+                )
+                .options.map((subDomain, subDomainIndex) => (
+                  <div
+                    key={subDomainIndex}
+                    className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md flex m-1"
+                  >
+                    <input
+                      type="checkbox"
+                      id={subDomain}
+                      name={subDomain}
+                      className="mr-2"
+                      checked={selectedSubDomains.includes(subDomain)}
+                      onChange={() => handleSubDomainChange(subDomain)}
+                    />
+                    <label
+                      className="whitespace-nowrap text-md"
+                      htmlFor={subDomain}
+                    >
+                      {subDomain}
+                    </label>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+
+        <InfiniteScroll
+          dataLength={filteredMentors.length}
+          next={() => setPage((prevPage) => prevPage + 1)}
+          hasMore={page < totalPages}
+          loader={<Loader />}
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6 overflow-hidden md:p-3">
+            {filteredMentors.map((mentor, index) => (
               <div
-                ref={subDomainDropdownRef}
-                className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto max-h-96 section  overflow-y-scroll`}
-                style={{
-                  boxShadow: "0 0 30px 10px rgba(0,0,0,0.3)",
-                  // left: left - 180,
-                  // if selectedDoman is Career counselling then dont use left or else left:left-180
-                  left: selectedDomain === "Career Counselling" ? "" : left - 180,
-                  right: selectedDomain === "Career Counselling" ? 0 : "",
+                key={index}
+                className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col jobcard"
+                ref={(el) => (cardRefs.current[index] = el)}
+                onClick={() => {
+                  navigation(`/detailedmentor/${mentor._id}`);
                 }}
               >
-                <div className="whitespace-nowrap text-2xl font-bold m-2">
-                  {selectedDomain + " "} Domains
+                <div className="relative w-full" style={{ paddingTop: "100%" }}>
+                  <img
+                    src={mentor.profilePhoto.url || user2}
+                    alt="profile photo"
+                    className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
+                  />
+                  <div className="absolute inset-0"></div>
                 </div>
-                <hr />
-                {subDomainOptions
-                  .find(
-                    (subDomainOption) => subDomainOption.name === selectedDomain
-                  )
-                  .options.map((subDomain, subDomainIndex) => (
+                <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
+                  <div className="flex justify-between items-center">
                     <div
-                      key={subDomainIndex}
-                      className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md flex m-1"
+                      className="text-base font-semibold whitespace-nowrap"
+                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
                     >
-                      <input
-                        type="checkbox"
-                        id={subDomain}
-                        name={subDomain}
-                        className="mr-2"
-                        checked={selectedSubDomains.includes(subDomain)}
-                        onChange={() => handleSubDomainChange(subDomain)}
-                      />
-                      <label
-                        className="whitespace-nowrap text-md"
-                        htmlFor={subDomain}
-                      >
-                        {subDomain}
-                      </label>
+                      {mentor.name}
                     </div>
-                  ))}
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
+                      {mentor.experience} YOE
+                    </div>
+                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+                      {mentor.experience} Y
+                    </div>
+                  </div>
+                  <div className="text-gray-500 text-sm whitespace-nowrap">
+                    Hourly Fees : ₹{mentor.hourlyFees}
+                  </div>
+                  <div className="flex">
+                    <MdSchool className="mr-1" />
+                    <div
+                      className="flex  w-full"
+                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                    >
+                      {mentor.skills.map((skill, index) => (
+                        <div
+                          key={index}
+                          className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                            index != 0 && "ml-1"
+                          }`}
+                        >
+                          {skill}
+                          {index < 2 && (
+                            <span className="text-gray-400">,</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {filteredMentors.length === 0 && onLoad === true && (
+              <div className="text-center w-full col-span-full">
+                <div className="flex justify-center p-3">
+                  <img src={crying} alt="No mentors found" className="w-40" />
+                </div>
+                <div className="text-2xl font-bold -translate-x-4">
+                  No mentors found
+                </div>
               </div>
             )}
           </div>
-
-          <InfiniteScroll
-            dataLength={filteredMentors.length}
-            next={() => setPage((prevPage) => prevPage + 1)}
-            hasMore={page < totalPages}
-            loader={<Loader />}
-           
-          >
-            <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6 overflow-hidden md:p-3">
-              {filteredMentors.map((mentor, index) => (
-                <div
-                  key={index}
-                  className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col jobcard"
-                  ref={(el) => (cardRefs.current[index] = el)}
-                  onClick={() => {
-                    navigation(`/detailedmentor/${mentor._id}`);
-                  }}
-                >
-                  <div
-                    className="relative w-full"
-                    style={{ paddingTop: "100%" }}
-                  >
-                    <img
-                      src={mentor.profilePhoto.url || user2}
-                      alt="profile photo"
-                      className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
-                    />
-                    <div className="absolute inset-0"></div>
-                  </div>
-                  <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
-                    <div className="flex justify-between items-center">
-                      <div
-                        className="text-base font-semibold whitespace-nowrap"
-                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                      >
-                        {mentor.name}
-                      </div>
-                      <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
-                        {mentor.experience} YOE
-                      </div>
-                      <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
-                        {mentor.experience} Y
-                      </div>
-                    </div>
-                    <div className="text-gray-500 text-sm whitespace-nowrap">
-                      Hourly Fees : ₹{mentor.hourlyFees}
-                    </div>
-                    <div className="flex">
-                      <MdSchool className="mr-1" />
-                      <div
-                        className="flex  w-full"
-                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                      >
-                        {mentor.skills.map((skill, index) => (
-                          <div
-                            key={index}
-                            className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
-                              index != 0 && "ml-1"
-                            }`}
-                          >
-                            {skill}
-                            {index < 2 && (
-                              <span className="text-gray-400">,</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {filteredMentors.length === 0 && onLoad === true&& (
-                <div className="text-center w-full col-span-full">
-                  <div className="flex justify-center p-3">
-                    <img src={crying} alt="No mentors found" className="w-40" />
-                  </div>
-                  <div className="text-2xl font-bold -translate-x-4">
-                    No mentors found
-                  </div>
-                </div>
-              )}
-            </div>
-          </InfiniteScroll>
-
-         
-        </div>
+        </InfiniteScroll>
+      </div>
       {onLoad === false && (
         <div className="flex justify-center">
           <Loader />
