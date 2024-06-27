@@ -65,7 +65,7 @@ function App() {
   };
 
   const handleWhatsApp = () => {
-    window.open(`https://wa.me/6371313613?text=${"I was facing an issue in the learnduke job dekho"}`, 'blank');
+    window.open(`https://wa.me/6371313613?text=${"I was facing an issue in the LearnDuke job dekho"}`, 'blank');
   };
 
   return (
