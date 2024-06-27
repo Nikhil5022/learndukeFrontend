@@ -31,7 +31,7 @@ const domainOptions = [
   { name: "Business", icon: <FaChartLine />, number: 3 },
   { name: "School", icon: <FaSchool />, number: 4 },
   { name: "College", icon: <FaGraduationCap />, number: 5 },
-  { name: "Govt Exams", icon: <FaUniversity />, number: 6 },
+  { name: "Govt. Exams", icon: <FaUniversity />, number: 6 },
   { name: "Jee/neet", icon: <FaBook />, number: 7 },
   { name: "Extra class", icon: <FaChalkboardTeacher />, number: 8 },
   { name: "Interview prep", icon: <FaChalkboardTeacher />, number: 9 },
@@ -133,7 +133,7 @@ const subDomainOptions = [
     ],
   },
   {
-    name: "Govt Exams",
+    name: "Govt. Exams",
     options: [
       "UPSC",
       "MPPSC",
@@ -218,7 +218,7 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     const response = await axios.get(
-      "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=5"
+      "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
     );
     // console.log(response.data)
     console.log("fetchMentors")
@@ -248,6 +248,7 @@ function Explorementors() {
     setLeft(left);
     setSelectedDomain(domain);
     setShowSubDomains(domain);
+    setOnLoad(false);
 
     if (domain === "All Domains") {
       setSelectedSubDomains([]);
@@ -281,6 +282,7 @@ function Explorementors() {
     // }
 
     setPage(1);
+    setOnLoad(false);
 
 
     setSelectedSubDomains((prevSelectedSubDomains) =>
@@ -310,7 +312,7 @@ function Explorementors() {
       const response = await axios.get(
         "https://learndukeserver.vercel.app/getMentor?page=" +
           page +
-          "&limit=5" +
+          "&limit=12" +
           "&domain=" +
           selectedDomain +
           "&subDomain=" +
@@ -368,7 +370,7 @@ function Explorementors() {
     console.log("searchMentors")
 
     const response = await axios.get(
-      `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=5&search=${searchValue}`
+      `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
     );
     if (page === 1) {
       setFilteredMentors(response.data.mentors);
@@ -462,14 +464,17 @@ function Explorementors() {
             )}
           </div>
 
-          <div className="hidden relative lg:flex">
+          <div className="hidden relative lg:flex z-40">
             {showSubDomains && selectedDomain !== "All Domains" && (
               <div
                 ref={subDomainDropdownRef}
-                className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto`}
+                className={`absolute top-50  bg-white p-4 rounded-lg z-50 w-fit mx-auto max-h-96 section  overflow-y-scroll`}
                 style={{
-                  boxShadow: "0 0 10px 10px rgba(0,0,0,0.1)",
-                  left: left - 180,
+                  boxShadow: "0 0 30px 10px rgba(0,0,0,0.3)",
+                  // left: left - 180,
+                  // if selectedDoman is Career counselling then dont use left or else left:left-180
+                  left: selectedDomain === "Career Counselling" ? "" : left - 180,
+                  right: selectedDomain === "Career Counselling" ? 0 : "",
                 }}
               >
                 <div className="whitespace-nowrap text-2xl font-bold m-2">

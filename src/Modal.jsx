@@ -1,4 +1,6 @@
 import React from 'react';
+import { ImCancelCircle } from "react-icons/im";
+
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -10,7 +12,7 @@ const Modal = ({ isOpen, onClose, children }) => {
           onClick={onClose}
           className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
         >
-          X
+          <ImCancelCircle />
         </button>
         <div className="mt-4">
           {children}
