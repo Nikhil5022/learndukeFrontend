@@ -561,7 +561,7 @@ function Explorementors() {
                       className="flex  w-full"
                       style={{ textOverflow: "ellipsis", overflow: "hidden" }}
                     >
-                      {mentor.skills.map((skill, index) => (
+                      {mentor.skills.slice(0,3).map((skill, index) => (
                         <div
                           key={index}
                           className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
@@ -571,6 +571,9 @@ function Explorementors() {
                           {skill}
                           {index < 2 && (
                             <span className="text-gray-400">,</span>
+                          )}
+                          {index === 2 && mentor.skills.length > 3 && (
+                            <span className="text-gray-400">...</span>
                           )}
                         </div>
                       ))}
