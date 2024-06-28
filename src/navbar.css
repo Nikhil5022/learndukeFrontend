@@ -1,19 +1,41 @@
 /* teaching.css */
 
-@keyframes slide-down {
+.animate-slide-left {
+  animation: slide-left 0.3s linear;
+}
+
+.glow-animation{
+  animation: glow 0.3s infinite linear;
+}
+@keyframes glow {
+  0%{
+    filter: brightness(100%);
+    transform: rotateZ(0deg);
+  }
+  25%{
+    transform: rotateZ(-5deg);
+  }
+  50%{
+    transform: rotateZ(0deg);
+  }
+  100%{
+    filter: brightness(150%);
+    transform: rotateZ(5deg);
+  }
+}
+
+@keyframes slide-left {
     0% {
-      transform: translateY(-100%);
+      transform: translateX(-100%);
       opacity: 0;
     }
     100% {
-      transform: translateY(0);
+      transform: translateX(0);
       opacity: 1;
     }
   }
   
-  .animate-slide-down {
-    animation: slide-down 0.3s ease-out;
-  }
+  
   
   .sticky {
     position: -webkit-sticky;

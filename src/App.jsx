@@ -31,6 +31,9 @@ import BecomeMentor from "./mentorship/Mentor/BecomeMentor";
 import MentorPayment from "./mentorship/Mentor/payment/MentorPayment";
 import Explorementors from './mentorship/Explorementors';
 import MentorPaymentSuccess from "./mentorship/Mentor/MentorPaymentSuccess";
+import PrivacyPolicyPage from "./policies/Policyforprivacy";
+import TermsAndConditionsPage from "./policies/TermsConditions";
+import CancellationAndRefundPolicyPage from "./policies/RefundCancellation";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -94,6 +97,9 @@ function App() {
         <Route path="/become-a-mentor" element={<BecomeMentor />} />
         <Route path="/mentor/payment" element={<MentorPayment />} />
         <Route path="/mentor/paymentsuccess" element={<MentorPaymentSuccess />} />
+        <Route path="/privacyPolicy" element={<PrivacyPolicyPage />} />
+        <Route path="/termsAndConditions" element={<TermsAndConditionsPage />} />
+        <Route path="/cancellationAndRefund" element={<CancellationAndRefundPolicyPage />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}
