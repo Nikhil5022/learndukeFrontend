@@ -167,7 +167,7 @@ export default function Navbar() {
       <div className="flex items-center space-x-6">
         {showMenu && (
           <div
-            className="absolute top-0 w-full left-0  rounded-lg h-screen backdrop-blur-sm z-10 flex flex-col lg:hidden animate-slide-left"
+            className="absolute top-0 w-full left-0  rounded-lg h-dvh backdrop-blur-sm z-10 flex flex-col lg:hidden animate-slide-left"
           >
             <div ref={clickoutside} className="relative bg-white w-4/6 sm:w-3/6 md:max-w-80 h-full p-5" style={{
               boxShadow: "10px 0 50px 30px rgba(0,0,0,0.1)"
