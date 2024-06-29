@@ -80,8 +80,10 @@ export default function UserPage() {
           setSelectedDomains(response.data.jobAllerts);
           axios
             .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+
             .then((jobsResponse) => {
               setJobs(jobsResponse.data);
+              console.log(jobsResponse.data);
             });
           setLoading(false);
         })
