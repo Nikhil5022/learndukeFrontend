@@ -299,13 +299,20 @@ export default function Navbar() {
                   <div className="h-10/12 ">
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
-                      onClick={() => navigate("/teachingjobs")}
+                      onClick={() => {
+                        navigate("/teachingjobs")
+                        setShowMenu(false)}
+                      }
                     >
                       Explore Jobs
                     </div>
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
-                      onClick={() => navigate("/mentorship")}
+                      onClick={() =>
+                        {
+                          setShowMenu(false)
+                        navigate("/mentorship")
+                      }}
                     >
                       Mentorship
                     </div>
