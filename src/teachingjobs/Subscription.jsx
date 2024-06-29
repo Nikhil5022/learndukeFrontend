@@ -195,8 +195,8 @@ export default function Subscription() {
       )}
     </div>
   ) : (
-    <div className="flex items-center justify-center h-screen text-2xl font-semibold text-gray-500">
-      Please login to view subscription plans
+    <div className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500" style={{height:"70vh"}}>
+      Please login to view subscription plans.
     </div>
   );
 }
