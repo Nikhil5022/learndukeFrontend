@@ -209,12 +209,12 @@ export default function Detailedjob() {
               </button>
             </div>
 
-            <div className="flex items-center p-3 rounded-lg">
-              <img src={photo} alt="" className="w-12 h-12 rounded-full" />
-              <div className="text-lg font-semibold text-gray-800 ml-3">
-                {user}
-              </div>
+          <div className="flex items-center py-2 -mx-1 rounded-lg">
+            <img src={photo} alt="" className="w-12 h-12 rounded-full" />
+            <div className="text-lg font-semibold text-gray-800 ml-3">
+              {user}
             </div>
+          </div>
 
             <div className="text-2xl font-semibold text-gray-800 mb-3">
               {job.title}
