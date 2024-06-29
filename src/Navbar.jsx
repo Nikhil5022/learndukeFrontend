@@ -94,9 +94,9 @@ export default function Navbar() {
 
     document.addEventListener("mousedown", handleClick);
     // scroll event
-    window.addEventListener("scroll", () => {
-      setShowMenu(false);
-    });
+    // window.addEventListener("scroll  ", () => {
+    //   setShowMenu(false);
+    // });
 
     return () => {
       document.removeEventListener("mousedown", handleClick);
@@ -167,13 +167,13 @@ export default function Navbar() {
       <div className="flex items-center space-x-6">
         {showMenu && (
           <div
-            className="absolute top-0 w-full left-0  rounded-lg h-dvh backdrop-blur-sm z-10 flex flex-col lg:hidden animate-slide-left"
+            className="absolute top-0 w-full left-0  rounded-lg h-svh backdrop-blur-sm z-10 flex flex-col lg:hidden animate-slide-left"
           >
             <div ref={clickoutside} className="relative bg-white w-4/6 sm:w-3/6 md:max-w-80 h-full p-5" style={{
               boxShadow: "10px 0 50px 30px rgba(0,0,0,0.1)"
             }}>
               {user ? (
-                <>
+                <div className="overflow-scroll h-11/12">
                   <div
                     className="flex items-center mb-4 cursor-pointer"
                     onClick={() => {
@@ -242,9 +242,9 @@ export default function Navbar() {
                   >
                     Logout
                   </button>
-                </>
+                </div>
               ) : (
-                <>
+                <div className="overflow-scroll h-svh">
                   <div
                     className="text-base font-semibold mb-4 cursor-pointer p-1"
                     onClick={() => navigate("/teachingjobs")}
@@ -294,7 +294,7 @@ export default function Navbar() {
                   >
                     Log in with Google
                   </button>
-                </>
+                </div>
               )}
             </div>
           </div>
