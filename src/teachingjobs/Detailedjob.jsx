@@ -28,6 +28,7 @@ export default function Detailedjob() {
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [setModal, setIsModal] = useState(false);
   const [setLoginModal, setIsLoginModal] = useState(false);
+  const [noJobs, setNoJobs] = useState(false);
 
   useEffect(() => {
     // when ever this page renders i need to scroll up
@@ -131,6 +132,8 @@ export default function Detailedjob() {
   if (!job || isLoadingJobs) {
     return <div className="h-screen">No job details available</div>;
   }
+
+
 
   return (
     <div className="flex flex-col-reverse w-full p-5 justify-start text-gray-800  md:flex-row">

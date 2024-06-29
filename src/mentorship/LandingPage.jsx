@@ -25,6 +25,7 @@ import { useState } from "react";
 import Modal from "../Modal.jsx";
 import { CiEdit } from "react-icons/ci";
 import { MdPayment } from "react-icons/md";
+import { FcGoogle } from "react-icons/fc";
 
 function LandingPage() {
   const qualities = [
@@ -94,6 +95,10 @@ function LandingPage() {
     
 fetchData();
 }, []);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+  }
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
       <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
@@ -134,7 +139,6 @@ fetchData();
                  hover:bg-white hover:text-black border-2 border-orange-400 
                    ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
-            disabled={disabled}
           >
             Become a Mentor
           </button>
@@ -283,15 +287,13 @@ fetchData();
           <div className="text-xl flex flex-col space-y-3 items-center justify-center">
             <div>Please login to become a mentor</div>
             <div>
-              <button
-                className="px-3 py-1 bg-blue-500 rounded-xl text-white"
-                onClick={() => {
-                  window.location.href =
-                    "https://learndukeserver.vercel.app/auth/google";
-                }}
-              >
-                Login
-              </button>
+            <button
+            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={handleGoogleLogin}
+          >
+            <FcGoogle className=" text-xl mr-2 mt-0.5" />
+            <div>Login</div>
+          </button>
             </div>
           </div>
         </Modal>
