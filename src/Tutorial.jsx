@@ -104,7 +104,7 @@ export default function Tutorial({
         className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard `}
       >
         <div onClick={handleJobClick}>
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-1">
             <img
               src={
                 imageLink ??
@@ -117,10 +117,10 @@ export default function Tutorial({
               {userName}
             </div>
           </div>
-          <div className="text-3xl font-semibold">{title}</div>
+          <div className="text-2xl font-semibold">{title}</div>
           <div
             style={{ color: borderColor }}
-            className="mt-3 h-12 overflow-hidden"
+            className="mt-1 h-12 overflow-hidden"
           >
             {description.length > 150 ? (
               <div>{description.slice(0, 150)}...</div>
