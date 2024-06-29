@@ -103,7 +103,7 @@ export default function Footer() {
             <FaApplePay className="text-xl" />
           </div>
           <div className="font-normal text-center text-sm m-5" style={{ color: "#404040" }}>
-           Powered by YCY Class Edutech Pvt. Ltd. | © 2021 LearnDuke. All rights reserved.
+           Powered by YCY Class Edutech Pvt. Ltd. | © 2024 LearnDuke. All rights reserved.
           </div>
         </div>
       </div>
