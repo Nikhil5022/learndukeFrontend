@@ -36,19 +36,14 @@ export default function Detailedjob() {
     axios
       .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
       .then((response) => {
-        axios
-          .get(
-            `https://learndukeserver.vercel.app/getUser/${response.data.email}`
-          )
-          .then((userResponse) => {
-            setPhoto(userResponse.data.profilephoto.url);
-            setUser(userResponse.data.name);
-            if (userResponse.data) {
+            setPhoto(response.data.imageLink);
+            setUser(response.data.userName);
+            if (response.data) {
               setIsLoadingJobs(false);
             }
+            setJob(response.data);
           });
-        setJob(response.data);
-      });
+          
     axios
       .get(`https://learndukeserver.vercel.app/getSimilarJobs/${jobId}`)
       .then((response) => {
