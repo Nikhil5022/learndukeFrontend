@@ -60,7 +60,7 @@ export default function Footer() {
             >FAQ</div>
           </div>
           <div className="w-full md:w-1/2">
-            <div className="text-xl font-semibold my-5">Our Policies</div>
+            <div className="text-xl font-semibold my-5">Our Policy</div>
             <div className="font-normal hover:underline my-3">
               <Link to="/privacyPolicy">Privacy Policy</Link>
             </div>
