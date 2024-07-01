@@ -129,7 +129,7 @@ export default function Tutorial({
               <div>{description}</div>
             )}
           </div>
-          <div className="flex flex-wrap mt-4 space-x-1 sm:space-x-3">
+          <div className="flex flex-wrap mt-1 space-x-1 sm:space-x-3">
             <div
               className={`border-2 border-${borderColor}  rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
             >
