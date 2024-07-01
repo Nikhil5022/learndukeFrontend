@@ -16,7 +16,6 @@ function MentorPayment() {
   const [photo, setPhoto] = useState(null);
   const [updatedModal, setUpdatedModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isPhotoLoaded, setIsPhotoLoaded] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -177,7 +176,7 @@ function MentorPayment() {
         <div className="flex flex-col lg:flex-row">
           <div className="flex-col flex-1 flex items-center w-full">
             <div className="flex w-9/12 h-72 items-center justify-center  rounded-xl mt-10 p-1 shodow-lg flex-col">
-              {photo && isPhotoLoaded ? (
+              {photo  ? (
                 <img
                   src={photo || sampleUser}
                   alt={user?.name}
