@@ -84,15 +84,13 @@ export default function UserPage() {
           setJobAlerts(response.data.jobAllerts);
           setIsPremium(response.data.isPremium);
           setSelectedDomains(response.data.jobAllerts);
-          if (userData) {
-            axios
-              .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+          axios
+            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
 
-              .then((jobsResponse) => {
-                setJobs(jobsResponse.data);
-                console.log(jobsResponse.data);
-              });
-          }
+            .then((jobsResponse) => {
+              setJobs(jobsResponse.data);
+              console.log(jobsResponse.data);
+            });
           setLoading(false);
         })
         .catch((error) => {
@@ -101,15 +99,14 @@ export default function UserPage() {
           setLoading(false);
         });
 
-      if (userData) {
-        axios
-          .get(
-            `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
-          )
-          .then((response) => {
-            setActiveSubscriptions(response.data);
-          });
-      }
+      axios
+        .get(
+          `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
+        )
+        .then((response) => {
+          console.log("response", response.data);
+          setActiveSubscriptions(response.data);
+        });
     } else {
       setLoading(false);
     }
