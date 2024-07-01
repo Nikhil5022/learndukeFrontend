@@ -17,6 +17,7 @@ function MentorPayment() {
   const [photo, setPhoto] = useState(null);
   const [updatedModal, setUpdatedModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isPhotoLoaded, setIsPhotoLoaded] = useState(false);
 
   useEffect(() => {
     const userPresent = JSON.parse(localStorage.getItem("user"));
@@ -42,6 +43,8 @@ function MentorPayment() {
       if (location.state?.modified === false && newData == false) {
         setPhoto(data.profilePhoto?.url);
       }
+
+      
     }
     getMentorData();
     setLoading(false);
@@ -194,16 +197,15 @@ function MentorPayment() {
       <div className="flex flex-col lg:flex-row">
         <div className="flex-col flex-1 flex items-center w-full">
           <div className="flex w-9/12 h-72 items-center justify-center  rounded-xl mt-10 p-1 shodow-lg flex-col">
-            {photo ? (
+            {photo && isPhotoLoaded ? (
               <img
-                src={photo}
+                src={photo|| sampleUser}
                 alt={user?.name}
                 className="h-40 border-2 border-slate-300 rounded-2xl"
               />
             ) : (
-              <div className="text-center flex items-center justify-center h-40 w-40 border-2 border-slate-300 rounded-2xl">
-                Loading
-              </div>
+              // skeliton loader
+              <div className="animate-pulse h-40 w-40 bg-gray-300 rounded-full"></div>
             )}
             <div className="mt-4 text-2xl font-serif">{user?.name}</div>
           </div>

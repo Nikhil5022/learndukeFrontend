@@ -29,8 +29,8 @@ export default function UserPage() {
   const [isGithubValid, setIsGithubValid] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [profileUpdate, setProfileUpdate] = useState(false);
-  const [IsValidPhoneNumber,setIsValidPhoneNumber] = useState(false);
-  const [isValidWhatsappNumber,setIsValidWhatsappNumber] = useState(false);
+  const [IsValidPhoneNumber, setIsValidPhoneNumber] = useState(false);
+  const [isValidWhatsappNumber, setIsValidWhatsappNumber] = useState(false);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -67,24 +67,33 @@ export default function UserPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .get(`http://localhost:3000/getUser/${user.email}`)
         .then((response) => {
+          console.log("response", response);
+          if (response.data === "") {
+            localStorage.removeItem("user");
+            window.location.reload();
+            navigator("/");
+            return;
+          }
           setUserData(response.data);
           setJobAlerts(response.data.jobAllerts);
           setIsPremium(response.data.isPremium);
           setSelectedDomains(response.data.jobAllerts);
-          axios
-            .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
+          if (userData) {
+            axios
+              .get(`https://learndukeserver.vercel.app/getJobs/${user.email}`)
 
-            .then((jobsResponse) => {
-              setJobs(jobsResponse.data);
-              console.log(jobsResponse.data);
-            });
+              .then((jobsResponse) => {
+                setJobs(jobsResponse.data);
+                console.log(jobsResponse.data);
+              });
+          }
           setLoading(false);
         })
         .catch((error) => {
@@ -93,13 +102,15 @@ export default function UserPage() {
           setLoading(false);
         });
 
-      axios
-        .get(
-          `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
-        )
-        .then((response) => {
-          setActiveSubscriptions(response.data);
-        });
+      if (userData) {
+        axios
+          .get(
+            `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
+          )
+          .then((response) => {
+            setActiveSubscriptions(response.data);
+          });
+      }
     } else {
       setLoading(false);
     }
@@ -196,12 +207,12 @@ export default function UserPage() {
       return;
     }
 
-    if(userData.phoneNumber.length !== 10){
+    if (userData.phoneNumber.length !== 10) {
       setIsValidPhoneNumber(true);
       return;
     }
 
-    if(userData.whatsappNumber.length !== 10){
+    if (userData.whatsappNumber.length !== 10) {
       setIsValidWhatsappNumber(true);
       return;
     }
@@ -364,17 +375,16 @@ export default function UserPage() {
                   <input
                     type="number"
                     value={userData.phoneNumber}
-                    onChange={(e) =>{
-                      
-                      setUserData({ ...userData, phoneNumber: e.target.value })
-                    }
-                    }
+                    onChange={(e) => {
+                      setUserData({ ...userData, phoneNumber: e.target.value });
+                    }}
                     className="w-full p-2 border rounded"
                     // number of digits 10
-                    
                   />
                   {IsValidPhoneNumber && (
-                    <div className="text-red-500">Enter a valid Phone Number</div>
+                    <div className="text-red-500">
+                      Enter a valid Phone Number
+                    </div>
                   )}
                 </div>
                 <div>
@@ -581,9 +591,8 @@ export default function UserPage() {
             </div>
           </Modal>
         )}
-        {
-          profileUpdate && (
-            <Modal isOpen={profileUpdate} onClose={() => setProfileUpdate(false)}>
+        {profileUpdate && (
+          <Modal isOpen={profileUpdate} onClose={() => setProfileUpdate(false)}>
             <div className="text-xl flex items-center justify-center">
               Profile Updated successfully.
             </div>

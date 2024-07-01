@@ -100,7 +100,6 @@ export default function Body() {
   const [newTutorialJobs, setNewTutorialJobs] = useState([]);
   // const userData = JSON.parse(localStorage.getItem("user"));
   // const [user, setUser] = useState(userData);
-  const [premium, setPremium] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [searchTitle, setSearchTitle] = useState("");
@@ -112,24 +111,25 @@ export default function Body() {
 
   const [firstTimeFetch, setFirstTimeFetch] = useState(true);
 
-  // const observer = useRef(null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
-  // const lastJobElementRef = useCallback(
-  //   (node) => {
-  //     console.log("1")
-  //     if (observer.current) observer.current.disconnect();
-  //     console.log("2")
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       console.log("3")
-  //       if (entries[0].isIntersecting && page < totalPage) {
-  //         setPage(page + 1);
-  //         console.log("incremented")
-  //       }
-  //     });
-  //     console.log("last")
-  //     if (node) observer.current.observe(node);
-  //   },
-  // [page, totalPage, loading])
+  useEffect(() => {
+
+    if(user && user.email){
+      axios.get(`https://learndukeserver.vercel.app/getUser/${user.email}`).then((userResponse) => {
+      
+        if(userResponse.data === ""){
+            localStorage.removeItem("user");
+            setUser(null);
+            window.location.reload();
+          }
+        
+      
+      }).catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (debounceTimeout) {

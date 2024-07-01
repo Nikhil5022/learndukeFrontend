@@ -384,6 +384,32 @@ function Explorementors() {
     setSearchTerm(searchValue);
   };
 
+  const calculateHowManySkillsToShow = (skills, index) => {
+    const cardWidth = cardRefs.current[index]?.clientWidth || 0;
+    let remainingWidth = cardWidth;
+    const skillsToShow = [];
+
+    skills.forEach((skill) => {
+      const skillWidth = skill.length * 8; 
+      if (skillWidth < remainingWidth) {
+        skillsToShow.push(skill);
+        remainingWidth -= skillWidth + 8;
+      }
+    });
+
+    if(skills.length > skillsToShow.length) {
+
+      if(remainingWidth < 0) {
+        skillsToShow.pop();
+      }
+
+      
+      skillsToShow.push("...");
+    }
+    console.log(skillsToShow);
+    return skillsToShow;
+  };
+
   return (
     <div>
       <div className="w-full lg:w-10/12 mx-auto p-4 flex-grow">
@@ -555,28 +581,38 @@ function Explorementors() {
                   <div className="text-gray-500 text-sm whitespace-nowrap">
                     Hourly Fees : ₹{mentor.hourlyFees}
                   </div>
-                  <div className="flex">
+                  <div
+                    className="flex"
+                    style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                  >
                     <MdSchool className="mr-1" />
                     <div
-                      className="flex  w-full"
+                      className="flex"
                       style={{ textOverflow: "ellipsis", overflow: "hidden" }}
                     >
-                      {mentor.skills.slice(0,3).map((skill, index) => (
-                        <div
-                          key={index}
-                          className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
-                            index != 0 && "ml-1"
-                          }`}
-                        >
-                          {skill}
-                          {index < 2 && (
-                            <span className="text-gray-400">,</span>
-                          )}
-                          {index === 2 && mentor.skills.length > 3 && (
-                            <span className="text-gray-400">...</span>
-                          )}
-                        </div>
-                      ))}
+                      <div
+                        className="flex w-full"
+                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                      >
+                        {calculateHowManySkillsToShow(mentor.skills, index)
+                          .map((skill, skillIndex) => (
+                            <div
+                              key={skillIndex}
+                              className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                                skillIndex !== 0 && "ml-1"
+                              }`}
+                            >
+                              {skill}
+                              {skillIndex <
+                                calculateHowManySkillsToShow(
+                                  mentor.skills,
+                                  index
+                                ).length -
+                                  1 && <span className="text-gray-400">,</span>}
+                            </div>
+                          ))
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
