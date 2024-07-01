@@ -72,14 +72,13 @@ export default function UserPage() {
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`http://localhost:3000/getUser/${user.email}`)
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
           console.log("response", response);
           if (response.data === "") {
             localStorage.removeItem("user");
             window.location.reload();
             navigator("/");
-            return;
           }
           setUserData(response.data);
           setJobAlerts(response.data.jobAllerts);
