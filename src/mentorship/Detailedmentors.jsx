@@ -22,6 +22,7 @@ import { PiBuildingsLight } from "react-icons/pi";
 import { FaArrowLeft } from "react-icons/fa";
 import Modal from "../Modal";
 import { FcGoogle } from "react-icons/fc";
+import Loader from "../Loader";
 
 
 function Detailedmentors() {
@@ -115,7 +116,7 @@ function Detailedmentors() {
     <div className="flex flex-col items-center justify-center min-h-screen montserrat ">
       {loading && (
         <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-900"></div>
+          <Loader />
         </div>
       )}
       {!loading && noData && !mentor && (

@@ -23,6 +23,9 @@ import { connectingLines } from "./TsParticles/options.js";
 import axios from "axios";
 import { useState } from "react";
 import Modal from "../Modal.jsx";
+import { CiEdit } from "react-icons/ci";
+import { MdPayment } from "react-icons/md";
+import { FcGoogle } from "react-icons/fc";
 
 function LandingPage() {
   const qualities = [
@@ -92,6 +95,10 @@ function LandingPage() {
     
 fetchData();
 }, []);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+  }
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
       <div className="absolute top-0 w-full h-8 flex items-center  justify-center bg-gradient-to-r from-yellow-300 to-orange-300">
@@ -132,7 +139,6 @@ fetchData();
                  hover:bg-white hover:text-black border-2 border-orange-400 
                    ${isAlreadyMentor ? "cursor-not-allowed " : "cursor-pointer"}`}
             onClick={handleClick}
-            disabled={disabled}
           >
             Become a Mentor
           </button>
@@ -281,15 +287,13 @@ fetchData();
           <div className="text-xl flex flex-col space-y-3 items-center justify-center">
             <div>Please login to become a mentor</div>
             <div>
-              <button
-                className="px-3 py-1 bg-blue-500 rounded-xl text-white"
-                onClick={() => {
-                  window.location.href =
-                    "https://learndukeserver.vercel.app/auth/google";
-                }}
-              >
-                Login
-              </button>
+            <button
+            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={handleGoogleLogin}
+          >
+            <FcGoogle className=" text-xl mr-2 mt-0.5" />
+            <div>Login</div>
+          </button>
             </div>
           </div>
         </Modal>
@@ -302,30 +306,35 @@ fetchData();
         >
           <div className="text-lg flex flex-col space-y-3 items-center justify-center">
             <div className="text-center">
-                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg max-w-52 max-h-52 md:max-w-60 md:max-h-60 aspect-square object-cover" />
+                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg max-w-52 max-h-52 md:max-w-60 md:max-h-60 aspect-square object-cover" 
+                  style={{boxShadow: "0 0 20px 10px rgba(0,0,0,0.2)"}}
+                />
               <h1 className="text-xl font-semibold mt-2">{user.name}</h1>
             </div>
             <div className="text-center">You are already a mentor and 
               <br/>Your profile is 
-             <span>{mentorData.isPremium ? " Active" : " Inactive"}</span> 
+             {mentorData.isPremium && <span className="text-green-600 text-center border border-green-700 bg-green-200 px-1 mx-2 rounded-md font-semibold">Active</span>}
+              {!mentorData.isPremium && <span className="text-red-600 text-center border border-red-700 bg-red-200 px-1 mx-2 rounded-md font-semibold">Inactive</span>}
             </div>
             <div className="flex flex-col md:flex-row space-x-3 items-center justify-center space-y-3 md:space-y-0">
               {/* edit mentor */}
               <button
-                className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
+                className="px-3 py-1 bg-gradient-to-l from-yellow-500 to-orange-500 rounded-xl text-white whitespace-nowrap flex items-center justify-center space-x-1"
                 onClick={() => {
                   navigate("/become-a-mentor",{state:{mentorData, newData:false }});
                 }}
               >
+                <CiEdit className="w-5 h-5 mr-2" />
                 Edit Mentor
               </button>
               {!mentorData.isPremium && (
                 <button
-                  className="px-3 py-1 bg-blue-500 rounded-xl text-white whitespace-nowrap"
+                  className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl text-white whitespace-nowrap flex items-center justify-center space-x-1"
                   onClick={() => {
                     navigate("/mentor/payment",{state:{mentorData, newData:false, modified: false}});
                   }}
                 >
+                  <MdPayment className="w-5 h-5 mr-2" />
                   Pay to Activate
                 </button>
               

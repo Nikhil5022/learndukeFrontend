@@ -77,46 +77,13 @@ export default function Subscription() {
     setShowModal(true);
   };
 
-  const checkoutHandler = async (plan) => {
-    if (!user) {
-      alert("Please login first to proceed to checkout");
-      return;
+  const handlePayment =  (price, name, days) => {
+    console.log("clicked")
+    if(userData){
+      window.location.href = `http://localhost:3000/pay/${price}/${name}/${days}/${userData.email}`;
     }
+  }
 
-    try {
-      const { data } = await axios.post("https://learndukeserver.vercel.app/checkout", {
-        amount: plan.price, // amount in paisa
-      });
-
-      const options = {
-        key: "rzp_test_jH3t9W8Up3P2iW",
-        amount: plan.price * 100, // amount in paisa
-        currency: "INR",
-        name: user.name || "Sample User",
-        description: `${plan.name} Plan Purchase`,
-        image: image,
-        order_id: data.order.id,
-        callback_url: `https://learndukeserver.vercel.app/verify/payment/${user.email}/${plan.name}/${plan.price}/${plan.days}`,
-        redirect: true,
-        prefill: {
-          name: user.name || "Sample User",
-          email: user.email || "Sample@gmail.com",
-          contact: user.mobile || "0000000000",
-        },
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-        theme: {
-          color: "#121212",
-        },
-      };
-
-      const razor = new window.Razorpay(options);
-      razor.open();
-    } catch (error) {
-      console.error("Error initiating payment:", error);
-    }
-  };
 
   return user ? (
     <div className="flex justify-center py-10 bg-white text-black ">
@@ -180,7 +147,7 @@ export default function Subscription() {
                 <button
                   className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
                   onClick={() => {
-                    checkoutHandler(selectedPlan);
+                    handlePayment(selectedPlan.price, selectedPlan.name, selectedPlan.days);
                     setShowModal(false);
                   }}
                 >
@@ -195,8 +162,8 @@ export default function Subscription() {
       )}
     </div>
   ) : (
-    <div className="flex items-center justify-center h-screen text-2xl font-semibold text-gray-500">
-      Please login to view subscription plans
+    <div className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500" style={{height:"70vh"}}>
+      Please login to view subscription plans.
     </div>
   );
 }

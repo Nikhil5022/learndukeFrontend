@@ -59,6 +59,18 @@ export default function Footer() {
               onClick={() => {navigator("/faq")}}
             >FAQ</div>
           </div>
+          <div className="w-full md:w-1/2">
+            <div className="text-xl font-semibold my-5">Our Policy</div>
+            <div className="font-normal hover:underline my-3">
+              <Link to="/privacyPolicy">Privacy Policy</Link>
+            </div>
+            <div className="font-normal hover:underline my-3">
+              <Link to="/termsAndConditions">Terms & Conditions</Link>
+            </div>
+            <div className="font-normal hover:underline my-3">
+              <Link to="/cancellationAndRefund">Cancellation & Refund Policy </Link>
+            </div>
+          </div>
         </div>
         <div className="flex justify-center space-x-10 text-xl mb-5">
           <FaFacebook
@@ -90,8 +102,8 @@ export default function Footer() {
             <FaCcDiscover className="text-xl" />
             <FaApplePay className="text-xl" />
           </div>
-          <div className=" font-normal text-sm m-5" style={{ color: "#404040" }}>
-            © 2021 LearnDuke. All rights reserved.
+          <div className="font-normal text-center text-sm m-5" style={{ color: "#404040" }}>
+           Powered by YCY Class Edutech Pvt. Ltd. | © 2024 LearnDuke. All rights reserved.
           </div>
         </div>
       </div>
