@@ -78,9 +78,10 @@ export default function Subscription() {
   };
 
   const handlePayment =  (price, name, days) => {
+    const isMentor=false;
     console.log("clicked")
     if(userData){
-      window.location.href = `http://localhost:3000/pay/${price}/${name}/${days}/${userData.email}`;
+      window.location.href = `https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;
     }
   }
 
