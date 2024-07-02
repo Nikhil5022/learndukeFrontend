@@ -31,17 +31,32 @@ export default function Detailedjob() {
   const [noJobs, setNoJobs] = useState(false);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+   async function isPremiumCheck() {
+    if (user) {
+      await axios
+        .get(`https://learndukeserver.vercel.app/premiumCheck/${user.email}`)
+        .then((response) => {
+          setIsPremium(response.data);
+          setIsLogin(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setIsLogin(false);
+        });
+    }
+   }
+   isPremiumCheck()
+  }, [isLogin, user]);
+
+  useEffect(() => {
     // when ever this page renders i need to scroll up
     window.scrollTo(0, 0);
     const jobId = window.location.pathname.split("/").pop();
+
     axios
       .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
       .then((response) => {
-        // setPhoto(response.data.imageLink);
-        // setUser(response.data.userName);
-
-        // setJob(response.data);
-
         if (response.status === 200) {
           setPhoto(response.data.imageLink);
           setUser(response.data.userName);
@@ -71,22 +86,6 @@ export default function Detailedjob() {
           setIsLoading(false);
         });
   }, []);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
-        .then((response) => {
-          setIsPremium(response.data.isPremium);
-          setIsLogin(true);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setIsLogin(false);
-        });
-    }
-  }, [isLogin, user]);
 
   const formatNumber = (num) => {
     return num.toLocaleString();
