@@ -31,17 +31,28 @@ export default function Detailedjob() {
   const [noJobs, setNoJobs] = useState(false);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      axios
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .then((response) => {
+          setIsPremium(response.data.isPremium);
+          setIsLogin(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setIsLogin(false);
+        });
+    }
+  }, [isLogin, user]);
+
+  useEffect(() => {
     // when ever this page renders i need to scroll up
     window.scrollTo(0, 0);
     const jobId = window.location.pathname.split("/").pop();
     axios
       .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
       .then((response) => {
-        // setPhoto(response.data.imageLink);
-        // setUser(response.data.userName);
-
-        // setJob(response.data);
-
         if (response.status === 200) {
           setPhoto(response.data.imageLink);
           setUser(response.data.userName);
@@ -71,22 +82,6 @@ export default function Detailedjob() {
           setIsLoading(false);
         });
   }, []);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
-        .then((response) => {
-          setIsPremium(response.data.isPremium);
-          setIsLogin(true);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setIsLogin(false);
-        });
-    }
-  }, [isLogin, user]);
 
   const formatNumber = (num) => {
     return num.toLocaleString();
@@ -345,7 +340,7 @@ export default function Detailedjob() {
                   onClick={() => {
                     if (isLogin) {
                       if (isPremium) {
-                        window.open(`tel:${phoneNumber}`, "blank");
+                        window.open(`tel:${job.phoneNumber}`, "blank");
                       } else {
                         setIsModal(true);
                       }
@@ -363,7 +358,7 @@ export default function Detailedjob() {
                     if (isLogin) {
                       if (isPremium) {
                         window.open(
-                          `https://wa.me/${whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`,
+                          `https://wa.me/${job.whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`,
                           "blank"
                         );
                       } else {

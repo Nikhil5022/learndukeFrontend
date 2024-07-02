@@ -98,6 +98,7 @@ export default function UserPage() {
           `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
         )
         .then((response) => {
+          console.log(response.data)
           setActiveSubscriptions(response.data);
         });
     } else {
@@ -615,7 +616,7 @@ export default function UserPage() {
             <div className="mt-10">
               <h1 className="text-2xl font-bold">Active Subscriptions</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
-                {activeSubscriptions.map((subscription) => (
+                {activeSubscriptions.map((subscription) => subscription && (
                   <div
                     key={subscription._id}
                     className="rounded-xl border-2 border-slate-300 p-5"
