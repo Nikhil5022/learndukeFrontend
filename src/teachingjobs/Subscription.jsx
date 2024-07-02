@@ -56,7 +56,8 @@ export default function Subscription() {
         "Minimum 10k earning",
         "Online tuition connect",
         "24/7 support",
-        "24/7 Job Alert"
+        "24/7 Job Alert",
+        "Teacher Pro includes free mentorship subscription."
       ],
       days: 100,
     },
