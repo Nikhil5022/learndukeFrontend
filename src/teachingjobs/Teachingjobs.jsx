@@ -60,6 +60,13 @@ export default function Teachingjobs() {
       axios
         .get("https://learndukeserver.vercel.app/getUser/" + user.email)
         .then((res) => {
+
+          if(res.data === ""){
+            localStorage.removeItem("user");
+            window.location.reload();
+            
+          }
+
           setUserData(res.data);
           if (res.data.isPremium) {
             navigate("/teachingJobs");

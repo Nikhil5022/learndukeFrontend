@@ -28,6 +28,12 @@ export default function Navbar() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${userdata.email}`)
         .then((response) => {
+          if(response.data===""){
+            localStorage.removeItem("user");
+            setUser(null);
+            window.location.reload();
+            
+          }
           setPhoto(response.data.profilephoto.url);
         });
     }

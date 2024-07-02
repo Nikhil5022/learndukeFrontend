@@ -32,11 +32,12 @@ export default function Detailedjob() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
+   async function isPremiumCheck() {
     if (user) {
-      axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+      await axios
+        .get(`https://learndukeserver.vercel.app/premiumCheck/${user.email}`)
         .then((response) => {
-          setIsPremium(response.data.isPremium);
+          setIsPremium(response.data);
           setIsLogin(true);
         })
         .catch((error) => {
@@ -44,12 +45,15 @@ export default function Detailedjob() {
           setIsLogin(false);
         });
     }
+   }
+   isPremiumCheck()
   }, [isLogin, user]);
 
   useEffect(() => {
     // when ever this page renders i need to scroll up
     window.scrollTo(0, 0);
     const jobId = window.location.pathname.split("/").pop();
+
     axios
       .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
       .then((response) => {

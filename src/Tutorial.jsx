@@ -47,6 +47,7 @@ export default function Tutorial({
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
         .then((userResponse) => {
+          
           setUser(userResponse.data);
           setIsPremium(userResponse.data.isPremium);
         })
