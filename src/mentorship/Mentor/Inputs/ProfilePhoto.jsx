@@ -42,12 +42,6 @@ function ProfilePhoto({ back, handleProfilePhotoChange, mentorData }) {
     setChange(true);
   };
 
-  useEffect(() => {
-    if (avatar) {
-      console.log(avatar, "changed");
-    }
-  }, [avatar]);
-
   return (
     <div className="flex flex-col items-center justify-center">
       <form className="flex flex-col items-center justify-center">

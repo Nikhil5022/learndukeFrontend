@@ -164,12 +164,6 @@ export default function Body() {
             }
           );
 
-          // if(response.data.jobs.length>0){
-          //   setLoading(false);
-          // }
-
-          console.log(response);
-
           if (page === 1 && firstTimeFetch) {
             setFirstTimeFetch(false);
             setNewTutorialJobs([...response.data.jobs]);

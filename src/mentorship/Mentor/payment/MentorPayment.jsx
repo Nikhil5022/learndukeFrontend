@@ -90,7 +90,6 @@ function MentorPayment() {
     }
   }
 
-  console.log(location.state);
   async function updateData() {
     setLoading(true);
     if (Object.keys(mentorData).length > 0 && !updatedModal) {
@@ -151,7 +150,6 @@ function MentorPayment() {
   ];
 
   const handlePayment = (price, name, days) => {
-    console.log(price,name,days,userData.email)
     const isMentor = true;
     if(userData){
       window.location.href=`https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;

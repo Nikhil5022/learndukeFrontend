@@ -224,8 +224,6 @@ function Explorementors() {
     const response = await axios.get(
       "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
     );
-    // console.log(response.data)
-    console.log("fetchMentors");
     setOriginalMentors((prevMentors) => [
       ...prevMentors,
       ...response.data.mentors,
@@ -277,12 +275,6 @@ function Explorementors() {
   }, [subDomainDropdownRef, windowWidth]);
 
   const handleSubDomainChange = (subDomain) => {
-    // if(!isFirstSubDomainClick) {
-    //   setPage(1);
-    //   setIsFirstSubDomainClick(false);
-    //   console.log("First sub domain click")
-    // }
-
     setPage(1);
     setOnLoad(false);
 
@@ -298,15 +290,12 @@ function Explorementors() {
 
   useEffect(() => {
     const fetchFilteredMentors = async () => {
-      console.log(isFirstDomainClick);
 
       if (isFirstDomainClick) {
         setPage(1);
         setIsFirstDomainClick(false);
-        console.log("First domain click");
       }
 
-      console.log("fetchFilteredMentors");
 
       const response = await axios.get(
         "https://learndukeserver.vercel.app/getMentor?page=" +
@@ -318,8 +307,6 @@ function Explorementors() {
           selectedSubDomains
       );
 
-      console.log(response.data);
-      console.log(page);
       if (page === 1) {
         setFilteredMentors(response.data.mentors);
       } else {
@@ -359,10 +346,8 @@ function Explorementors() {
     if (!isFirstSearchClick) {
       setPage(1);
       setIsFirstSearchClick(false);
-      console.log("First search click");
     }
 
-    console.log("searchMentors");
 
     const response = await axios.get(
       `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
@@ -406,7 +391,6 @@ function Explorementors() {
       
       skillsToShow.push("...");
     }
-    console.log(skillsToShow);
     return skillsToShow;
   };
 

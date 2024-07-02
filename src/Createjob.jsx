@@ -117,8 +117,6 @@ export default function CreateJob() {
     if (data) {
       const user = JSON.parse(data);
       setEmail(user.email);
-    } else {
-      console.log("User not found in local storage");
     }
   }, []);
 

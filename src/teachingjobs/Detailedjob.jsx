@@ -41,7 +41,6 @@ export default function Detailedjob() {
           setIsLogin(true);
         })
         .catch((error) => {
-          console.error("Error fetching user data:", error);
           setIsLogin(false);
         });
     }
@@ -65,7 +64,6 @@ export default function Detailedjob() {
         }
       })
       .catch((error) => {
-        console.error("Error fetching job details:", error);
         setIsLoadingJobs(false);
         setNoJobs(true);
       });
@@ -75,13 +73,11 @@ export default function Detailedjob() {
         .then((response) => {
           setSimilarJobs(response.data);
           // Check if there are similar jobs
-          console.log(response.data);
           if (response.data.length === 0 || response.data.length > 0) {
             setIsLoading(false); // Stop loading if there are no similar jobs
           }
         })
         .catch((error) => {
-          console.error("Error fetching similar jobs:", error);
           // Handle error and stop loading
           setIsLoading(false);
         });

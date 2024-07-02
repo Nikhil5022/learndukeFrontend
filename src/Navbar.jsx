@@ -66,7 +66,6 @@ export default function Navbar() {
           .then((response) => {
             setPhoto(response.data.profilephoto.url);
             setIsPremium(response.data.isPremium);
-            console.log(isPremium);
           });
         setUser({ email, name, accessToken });
         navigate("/teachingjobs");

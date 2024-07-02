@@ -74,7 +74,6 @@ export default function UserPage() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
         .then((response) => {
-          console.log("response", response);
           if (response.data === "") {
             localStorage.removeItem("user");
             window.location.reload();
@@ -89,13 +88,11 @@ export default function UserPage() {
 
             .then((jobsResponse) => {
               setJobs(jobsResponse.data);
-              console.log(jobsResponse.data);
             });
           setLoading(false);
         })
         .catch((error) => {
           setError("There was an error fetching the user data.");
-          console.error(error);
           setLoading(false);
         });
 
@@ -104,7 +101,6 @@ export default function UserPage() {
           `https://learndukeserver.vercel.app/getSubscriptions/${user.email}`
         )
         .then((response) => {
-          console.log("response", response.data);
           setActiveSubscriptions(response.data);
         });
     } else {
@@ -149,7 +145,6 @@ export default function UserPage() {
         setShowModal(true);
       })
       .catch((error) => {
-        console.error("Error updating job alerts:", error);
         alert("Error updating job alerts");
       });
     setOpenDomainModal(false);
