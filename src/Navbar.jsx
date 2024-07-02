@@ -28,6 +28,12 @@ export default function Navbar() {
       axios
         .get(`https://learndukeserver.vercel.app/getUser/${userdata.email}`)
         .then((response) => {
+          if(response.data===""){
+            localStorage.removeItem("user");
+            setUser(null);
+            window.location.reload();
+            
+          }
           setPhoto(response.data.profilephoto.url);
         });
     }
@@ -60,7 +66,6 @@ export default function Navbar() {
           .then((response) => {
             setPhoto(response.data.profilephoto.url);
             setIsPremium(response.data.isPremium);
-            console.log(isPremium);
           });
         setUser({ email, name, accessToken });
         navigate("/teachingjobs");

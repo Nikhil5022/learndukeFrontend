@@ -56,7 +56,8 @@ export default function Subscription() {
         "Minimum 10k earning",
         "Online tuition connect",
         "24/7 support",
-        "24/7 Job Alert"
+        "24/7 Job Alert",
+        "Teacher Pro includes free mentorship subscription."
       ],
       days: 100,
     },
@@ -78,9 +79,9 @@ export default function Subscription() {
   };
 
   const handlePayment =  (price, name, days) => {
-    console.log("clicked")
+    const isMentor=false;
     if(userData){
-      window.location.href = `http://localhost:3000/pay/${price}/${name}/${days}/${userData.email}`;
+      window.location.href = `https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;
     }
   }
 

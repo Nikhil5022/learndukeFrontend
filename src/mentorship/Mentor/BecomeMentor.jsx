@@ -136,7 +136,6 @@ function BecomeMentor() {
       newMentorData.profilePhoto = avatar;
       setMentorData(newMentorData)
     }
-    console.log(mentorData)
     handleSubmit();
   }
 
@@ -393,7 +392,6 @@ function BecomeMentor() {
   ];
 
   const handleSubmit = () => {
-    console.log(location.state);
     if (location.state == null) {
       navigate("/mentor/payment", {
         state: { mentorData, newData: true, modified: false },

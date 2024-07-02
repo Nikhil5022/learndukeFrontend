@@ -31,17 +31,31 @@ export default function Detailedjob() {
   const [noJobs, setNoJobs] = useState(false);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+   async function isPremiumCheck() {
+    if (user) {
+      await axios
+        .get(`https://learndukeserver.vercel.app/premiumCheck/${user.email}`)
+        .then((response) => {
+          setIsPremium(response.data);
+          setIsLogin(true);
+        })
+        .catch((error) => {
+          setIsLogin(false);
+        });
+    }
+   }
+   isPremiumCheck()
+  }, [isLogin, user]);
+
+  useEffect(() => {
     // when ever this page renders i need to scroll up
     window.scrollTo(0, 0);
     const jobId = window.location.pathname.split("/").pop();
+
     axios
       .get(`https://learndukeserver.vercel.app/getJobById/${jobId}`)
       .then((response) => {
-        // setPhoto(response.data.imageLink);
-        // setUser(response.data.userName);
-
-        // setJob(response.data);
-
         if (response.status === 200) {
           setPhoto(response.data.imageLink);
           setUser(response.data.userName);
@@ -50,7 +64,6 @@ export default function Detailedjob() {
         }
       })
       .catch((error) => {
-        console.error("Error fetching job details:", error);
         setIsLoadingJobs(false);
         setNoJobs(true);
       });
@@ -60,33 +73,15 @@ export default function Detailedjob() {
         .then((response) => {
           setSimilarJobs(response.data);
           // Check if there are similar jobs
-          console.log(response.data);
           if (response.data.length === 0 || response.data.length > 0) {
             setIsLoading(false); // Stop loading if there are no similar jobs
           }
         })
         .catch((error) => {
-          console.error("Error fetching similar jobs:", error);
           // Handle error and stop loading
           setIsLoading(false);
         });
   }, []);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
-        .then((response) => {
-          setIsPremium(response.data.isPremium);
-          setIsLogin(true);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setIsLogin(false);
-        });
-    }
-  }, [isLogin, user]);
 
   const formatNumber = (num) => {
     return num.toLocaleString();
@@ -345,7 +340,7 @@ export default function Detailedjob() {
                   onClick={() => {
                     if (isLogin) {
                       if (isPremium) {
-                        window.open(`tel:${phoneNumber}`, "blank");
+                        window.open(`tel:${job.phoneNumber}`, "blank");
                       } else {
                         setIsModal(true);
                       }
@@ -363,7 +358,7 @@ export default function Detailedjob() {
                     if (isLogin) {
                       if (isPremium) {
                         window.open(
-                          `https://wa.me/${whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`,
+                          `https://wa.me/${job.whatsappNumber}?text=${"Hello HR, I have seen your job posting at Learnduke. Can you explain what's the next process?"}`,
                           "blank"
                         );
                       } else {

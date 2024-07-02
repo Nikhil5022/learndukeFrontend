@@ -224,8 +224,6 @@ function Explorementors() {
     const response = await axios.get(
       "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
     );
-    // console.log(response.data)
-    console.log("fetchMentors");
     setOriginalMentors((prevMentors) => [
       ...prevMentors,
       ...response.data.mentors,
@@ -277,12 +275,6 @@ function Explorementors() {
   }, [subDomainDropdownRef, windowWidth]);
 
   const handleSubDomainChange = (subDomain) => {
-    // if(!isFirstSubDomainClick) {
-    //   setPage(1);
-    //   setIsFirstSubDomainClick(false);
-    //   console.log("First sub domain click")
-    // }
-
     setPage(1);
     setOnLoad(false);
 
@@ -298,15 +290,12 @@ function Explorementors() {
 
   useEffect(() => {
     const fetchFilteredMentors = async () => {
-      console.log(isFirstDomainClick);
 
       if (isFirstDomainClick) {
         setPage(1);
         setIsFirstDomainClick(false);
-        console.log("First domain click");
       }
 
-      console.log("fetchFilteredMentors");
 
       const response = await axios.get(
         "https://learndukeserver.vercel.app/getMentor?page=" +
@@ -318,8 +307,6 @@ function Explorementors() {
           selectedSubDomains
       );
 
-      console.log(response.data);
-      console.log(page);
       if (page === 1) {
         setFilteredMentors(response.data.mentors);
       } else {
@@ -359,10 +346,8 @@ function Explorementors() {
     if (!isFirstSearchClick) {
       setPage(1);
       setIsFirstSearchClick(false);
-      console.log("First search click");
     }
 
-    console.log("searchMentors");
 
     const response = await axios.get(
       `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
@@ -382,6 +367,31 @@ function Explorementors() {
   const handleOnchange = (e) => {
     const searchValue = e.target.value.toLowerCase();
     setSearchTerm(searchValue);
+  };
+
+  const calculateHowManySkillsToShow = (skills, index) => {
+    const cardWidth = cardRefs.current[index]?.clientWidth || 0;
+    let remainingWidth = cardWidth;
+    const skillsToShow = [];
+
+    skills.forEach((skill) => {
+      const skillWidth = skill.length * 8; 
+      if (skillWidth < remainingWidth) {
+        skillsToShow.push(skill);
+        remainingWidth -= skillWidth + 8;
+      }
+    });
+
+    if(skills.length > skillsToShow.length) {
+
+      if(remainingWidth < 0) {
+        skillsToShow.pop();
+      }
+
+      
+      skillsToShow.push("...");
+    }
+    return skillsToShow;
   };
 
   return (
@@ -555,28 +565,38 @@ function Explorementors() {
                   <div className="text-gray-500 text-sm whitespace-nowrap">
                     Hourly Fees : ₹{mentor.hourlyFees}
                   </div>
-                  <div className="flex">
+                  <div
+                    className="flex"
+                    style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                  >
                     <MdSchool className="mr-1" />
                     <div
-                      className="flex  w-full"
+                      className="flex"
                       style={{ textOverflow: "ellipsis", overflow: "hidden" }}
                     >
-                      {mentor.skills.slice(0,3).map((skill, index) => (
-                        <div
-                          key={index}
-                          className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
-                            index != 0 && "ml-1"
-                          }`}
-                        >
-                          {skill}
-                          {index < 2 && (
-                            <span className="text-gray-400">,</span>
-                          )}
-                          {index === 2 && mentor.skills.length > 3 && (
-                            <span className="text-gray-400">...</span>
-                          )}
-                        </div>
-                      ))}
+                      <div
+                        className="flex w-full"
+                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                      >
+                        {calculateHowManySkillsToShow(mentor.skills, index)
+                          .map((skill, skillIndex) => (
+                            <div
+                              key={skillIndex}
+                              className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                                skillIndex !== 0 && "ml-1"
+                              }`}
+                            >
+                              {skill}
+                              {skillIndex <
+                                calculateHowManySkillsToShow(
+                                  mentor.skills,
+                                  index
+                                ).length -
+                                  1 && <span className="text-gray-400">,</span>}
+                            </div>
+                          ))
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
