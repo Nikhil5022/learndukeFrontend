@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import Modal from "./Modal";
 import axios from "axios";
 import "./navbar.css";
+import Logo from "./assets/logo2.jpg";
 export default function Navbar() {
   const location = useLocation();
   if (location.pathname === "/createjob") {
@@ -126,9 +127,9 @@ export default function Navbar() {
     <div className="p-4 flex justify-between items-center sticky top-0 bg-white h-20 border-b border-gray-200  z-50">
       <div className="flex items-center space-x-4 lg:space-x-6">
         <img
-          src={learnDuke}
+          src={Logo}
           alt="Learn Duke Logo"
-          className="h-16 cursor-pointer"
+          className="h-10 md:h-12 mt-2 md:mt-1 mr-10 cursor-pointer"
           onClick={() => navigate("/")}
         />
 
