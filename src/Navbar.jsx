@@ -129,7 +129,7 @@ export default function Navbar() {
         <img
           src={Logo}
           alt="Learn Duke Logo"
-          className="h-12 mt-1 mr-10 cursor-pointer"
+          className="h-10 md:h-12 mt-2 md:mt-1 mr-10 cursor-pointer"
           onClick={() => navigate("/")}
         />
 
