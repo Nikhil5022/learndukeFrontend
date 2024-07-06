@@ -33,6 +33,7 @@ import PrivacyPolicyPage from "./policies/Policyforprivacy";
 import TermsAndConditionsPage from "./policies/TermsConditions";
 import CancellationAndRefundPolicyPage from "./policies/RefundCancellation";
 import Webinars from "./webinars/Webinars";
+import CreateWebinar from "./webinars/CreateWebinar";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -98,6 +99,7 @@ function App() {
         <Route path="/termsAndConditions" element={<TermsAndConditionsPage />} />
         <Route path="/cancellationAndRefund" element={<CancellationAndRefundPolicyPage />} />
         <Route path="/webinars" element={<Webinars />} />
+        <Route path="/create-webinar" element={<CreateWebinar />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import sample from "../assets/user.png";
+import { useNavigate } from "react-router-dom";
+import sample2 from "../assets/sample2.png"
+import "./Webinar.css"
+import notFound from "../assets/crying.gif"
+import Modal from "../Modal"
+import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
+import { MdPayment } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
 function Webinars() {
-  const url =
-    "https://preplaced.in/_next/image?url=https%3A%2F%2Fimages.bannerbear.com%2Fdirect%2FlPOmJb1Y6aez60g4Ga%2Frequests%2F000%2F058%2F769%2F035%2FMRj52Zwoa6xjOvvvYxWkdO3eE%2Fa5a1bea5e7a790de5df17ce4ec7cd0964f33d023.png&w=384&q=75";
-  const liveWebinars = [
+  const navigate = useNavigate();
+  const url = sample2
+  const sampleWebinars = [
     {
       title: "Ace your coding interviews with Me",
       description:
@@ -85,23 +94,113 @@ function Webinars() {
       liveLink: "https://www.meet.google.com/kon-siqa-nof",
     },
   ];
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [showMentorModal, setShowMentorModal] = useState(false)
+  const [ showPremiumModal, setShowPremiumModal] = useState(false)
+  const [mentorData,setMentorData] = useState(null)
+  const [disabled, setDisabled] = useState(true)
+  const [upcomingWebinars, setUpcomingWebinars] = useState(null)
+  const [liveWebinars, setLiveWebinars] = useState(null)
+  const [pastWebinars, setPastWebinars] = useState(null)
+  const [liveLoading, setLiveLoading] = useState(true)
+  const [pastLoading, setPastLoading] = useState(true)
+  const [upLoading, setUpLoading] = useState(true)
+
+  let user = JSON.parse(localStorage.getItem('user'))
+  
+  useEffect(()=>{
+    // window.scroll(0,0)
+    setDisabled(true)
+    async function isMentor() {
+      let res = await axios.get(`https://learndukeserver.vercel.app/isAlreadyMentor/${user.email}`)
+      setMentorData(res.data.mentor)
+      setDisabled(false)
+    }
+    isMentor()
+  },[])
+
+  const handleGoogleLogin = () => {
+    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+  };
+
+  useEffect(()=>{
+    setUpLoading(true)
+    async function getUpcoming() {
+      const res = await axios.get("http://localhost:3000/upcoming-webinars")
+      setUpcomingWebinars(res.data)
+      setUpLoading(false)
+    }
+    getUpcoming()
+  }, [])
+
+  useEffect(()=>{
+    setLiveLoading(true)
+    async function getLive() {
+      const res = await axios.get("http://localhost:3000/live-webinars")
+      setLiveWebinars(res.data)
+      setLiveLoading(false)
+    }
+    getLive()
+  }, [])
+
+  useEffect(()=>{
+    setPastLoading(true)
+    async function getPast() {
+      const res = await axios.get("http://localhost:3000/past-webinars")
+      setPastWebinars(res.data)
+      setPastLoading(false)
+    }
+    getPast()
+  }, [])
+
+
+
   return (
     <div className="w-full p-4 flex">
       <div className="p-2 my-2  w-full xl:w-4/6">
         <div className="w-full">
-          <h1 className="text-3xl mt-4 ml-5 px-4 font-semibold">
-            Live Webinars
-          </h1>
-          <p className="px-4 my-2 ml-5">
-            Level up your career with live and exclusive webinars from top
-            mentors.
-          </p>
-          <div className="grid grid-cols-1  3xl:grid-cols-2 xl:w-full p-3">
-            {/* live webinar cards */}
-            {liveWebinars.map((webinar, index) => 
-                <WebinarCard key={index} webinar={webinar} />
-            )}
+            <div className="flex flex-col sm:flex-row justify-center md:justify-between w-full ">
+              <div>
+                <h1 className="text-3xl mt-4 ml-2 md:ml-5 md:px-4 font-semibold">
+                  Live Webinars
+                </h1>
+                <p className="px-4 my-2 -ml-1 md:ml-5 md:px-4 ">
+                  Level up your career with live and exclusive webinars from top
+                  mentors.
+                </p>
+              </div>
+              <button
+                className="border-2 w-full border-black p-2 md:p-4 my-4 mx-auto sm:w-60 md:mr-14 sm:mr-0 rounded-lg cursor-pointer"
+                onClick={() => 
+                  user ?
+                  mentorData ? 
+                  mentorData.isPremium ? 
+                   navigate("/create-webinar")
+                   : setShowPremiumModal(true) 
+                   : setShowMentorModal(true)
+                   : setShowLoginModal(true)
+                  }
+                  disabled={disabled}
+              >
+                Create your own Webinar
+              </button>
           </div>
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
+            {/* live webinar cards */}
+            {liveWebinars && liveWebinars.length> 0 ? liveWebinars.map((webinar, index) => (
+              <WebinarCard key={index} webinar={webinar} />
+            ))
+            : <div className="flex-col flex items-center
+            justify-center text-lg p-4">
+              <img src={notFound} className="max-w-40"/>
+            There are currently no live webinars!
+          </div>
+            
+          }
+          </div>
+        </div>
+        <div className="flex items-center justify-center">
+        <p className="w-11/12 my-3 border-2 border-orange-100"></p>
         </div>
         <div className="w-full">
           <h1 className="text-3xl mt-4 ml-5 px-4 font-semibold">
@@ -111,11 +210,17 @@ function Webinars() {
             Level up your career with live and exclusive webinars from top
             mentors.
           </p>
-          <div className="grid grid-cols-1  3xl:grid-cols-2 xl:w-full p-3">
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
             {/* live webinar cards */}
-            {liveWebinars.map((webinar, index) => (
+            {pastWebinars && pastWebinars.length>0 ? pastWebinars.map((webinar, index) => (
               <WebinarCard key={index} webinar={webinar} />
-            ))}
+            ))
+            : <div className="flex-col flex items-center
+            justify-center text-lg p-4">
+              <img src={notFound} className="max-w-40"/>
+            No Past webinars found!
+          </div>
+            }
           </div>
         </div>
       </div>
@@ -129,8 +234,8 @@ function Webinars() {
           <h1 className="text-xl my-2 font-semibold text-center">
             Mentors with upcoming webinars
           </h1>
-          {liveWebinars.map((webinar, index) => (
-            <div className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between">
+          {upcomingWebinars && upcomingWebinars.length>0 ? upcomingWebinars.map((webinar, index) => (
+            <div key={index} className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between">
               <div className="flex flex-col w-9/12">
                 <h1 className="font-semibold p-1">{webinar.title}</h1>
                 <div className="flex items-center p-1">
@@ -145,24 +250,96 @@ function Webinars() {
                 See details {">"}
               </button>
             </div>
-          ))}
+          )) : <div className="flex-col flex items-center
+          justify-center text-lg p-4">
+            <img src={notFound} className="max-w-40"/>
+          No Upcoming Webinars!
+        </div>
+          
+        }
         </div>
       </div>
+        {
+          showLoginModal && 
+          <Modal isOpen={setShowLoginModal} onClose={()=> setShowLoginModal(false)}>
+            <div className="flex flex-col justify-center space-y-4 items-center">
+            <p className="font-semibold text-lg">Please login to create a Webinar!</p>
+            <button
+            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={handleGoogleLogin}
+          >
+            <FcGoogle className=" text-xl mr-2 mt-0.5" />
+            <div>Login</div>
+          </button>
+          </div>
+          </Modal>
+        }
+        {
+          showMentorModal && 
+          <Modal isOpen={showMentorModal} onClose={()=> setShowMentorModal(false)}>
+            <div className="flex flex-col justify-center space-y-4 items-center">
+            <p className="font-semibold text-lg">You are not a Mentor.</p>
+            <button
+            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+            onClick={()=> user && navigate("/become-a-mentor")}
+          >
+            <div>Create Mentor Profile</div>
+          </button>
+          </div>
+          </Modal>
+        }
+        {
+          showPremiumModal && 
+          <Modal isOpen={showPremiumModal} onClose={()=> setShowPremiumModal(false)}>
+           <div className="text-lg flex flex-col space-y-3 items-center justify-center">
+            <div className="text-center">
+                <img src={mentorData.profilePhoto.url} alt="profile photo" className="rounded-lg max-w-52 max-h-52 md:max-w-60 md:max-h-60 aspect-square object-cover" 
+                  style={{boxShadow: "0 0 20px 10px rgba(0,0,0,0.2)"}}
+                />
+              <h1 className="text-xl font-semibold mt-2">{user.name}</h1>
+            </div>
+            <div className="mb-4">
+            Your profile is <span className="text-red-500 font-semibold">Inactive</span>
+            </div>
+            </div>
+            <div className="flex flex-col md:flex-row space-x-3 items-center justify-center mt-2">
+              {/* edit mentor */}
+              <button
+                className="px-3 py-1 bg-gradient-to-l from-yellow-500 to-orange-500 rounded-xl text-white whitespace-nowrap flex items-center justify-center space-x-1"
+                onClick={() => {
+                  navigate("/become-a-mentor",{state:{mentorData, newData:false }});
+                }}
+              >
+                <CiEdit className="w-5 h-5 mr-2" />
+                Edit Mentor
+              </button>
+                <button
+                  className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl text-white whitespace-nowrap flex items-center justify-center space-x-1"
+                  onClick={() => {
+                    navigate("/mentor/payment",{state:{mentorData, newData:false, modified: false}});
+                  }}
+                >
+                  <MdPayment className="w-5 h-5 mr-2" />
+                  Pay to Activate
+                </button>
+              </div>
+          </Modal>
+        }
     </div>
   );
 }
 
 function WebinarCard({ webinar }) {
   return (
-    <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 mx-10 my-5 lg:m-2 flex-col lg:flex-row lg:w-10/12 lg:mx-auto xl:w-11/12">
-      <div className="flex items-center justify-center  px-1 lg:w-7/12">
+    <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col lg:flex-row lg:w-10/12 xl:w-11/12">
+      <div className="flex items-center justify-center px-1 lg:w-6/12 max-w-96 ">
         <img
-          src={webinar.photo.url}
-          className="rounded-lg w-full lg:w-full 2xl:w-10/12"
+          src={sample2}
+          className="rounded-lg w-full 3xl:w-10/12"
           alt="webinar"
         />
       </div>
-      <div className="p-4 flex  justify-center flex-col ">
+      <div className="p-4 flex lg:w-1/2 justify-center flex-col ">
         <p className="text-orange-600 font-semibold">{webinar.startTime}</p>
         <h1 className="font-semibold text-2xl whitespace-break-spaces">
           {webinar.title}
@@ -174,15 +351,11 @@ function WebinarCard({ webinar }) {
           />
           <p>{webinar.creator.name}</p>
         </div>
-        <div className="flex flex-col lg:flex-row">
-          <button
-            className="p-3 mt-3 lg:p-2 lg:mr-5 border-orange-500 border-2 rounded-xl"
-          >
+        <div className="flex flex-col md:flex-row">
+          <button className="p-3 mt-3 lg:p-2 md:mr-5 border-orange-500 border-2 rounded-xl md:w-2/5 lg:w-48">
             Register for Webinar
           </button>
-          <button
-            className="p-3 mt-3 border-orange-500 border-2 bg-orange-500 text-white rounded-xl"
-          >
+          <button className="p-3 mt-3 border-orange-500 border-2 bg-orange-500 text-white rounded-xl md:w-2/5 lg:w-48">
             Book a Free Trial
           </button>
         </div>

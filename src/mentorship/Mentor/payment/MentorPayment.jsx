@@ -152,7 +152,7 @@ function MentorPayment() {
   const handlePayment = (name) => {
     const isMentor = true;
     if(userData){
-      window.location.href = `https://learndukeserver.vercel.app/${name}/${userData.email}/${isMentor}`;
+      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
     }
   };
 
