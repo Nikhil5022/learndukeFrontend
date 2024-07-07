@@ -16,7 +16,11 @@ export default function Subscription() {
     {
       name: "Basic",
       price: 99, // in INR
-      benefits: ["Call to HR directly", "100 days access limit", "24/7 Job Alert"],
+      benefits: [
+        "Call to HR directly",
+        "100 days access limit",
+        "24/7 Job Alert",
+      ],
       days: 100,
     },
     {
@@ -28,7 +32,7 @@ export default function Subscription() {
         "Job update every day",
         "Call to HR",
         "1-year access period",
-        "24/7 Job Alert"
+        "24/7 Job Alert",
       ],
       days: 365,
     },
@@ -43,7 +47,7 @@ export default function Subscription() {
         "Mock interview",
         "100% placement with our side",
         "Upskill program for 6 months",
-        "24/7 Job Alert"
+        "24/7 Job Alert",
       ],
       days: 180,
     },
@@ -57,7 +61,7 @@ export default function Subscription() {
         "Online tuition connect",
         "24/7 support",
         "24/7 Job Alert",
-        "Teacher Pro includes free mentorship subscription."
+        "Teacher Pro includes free mentorship subscription.",
       ],
       days: 100,
     },
@@ -67,9 +71,11 @@ export default function Subscription() {
 
   useEffect(() => {
     if (user) {
-      axios.get(`https://learndukeserver.vercel.app/getUser/${user.email}`).then((response) => {
-        setUserData(response.data);
-      });
+      axios
+        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .then((response) => {
+          setUserData(response.data);
+        });
     }
   }, [user]);
 
@@ -78,14 +84,13 @@ export default function Subscription() {
     setShowModal(true);
   };
 
-  const handlePayment =  (price, name, days) => {
+  const handlePayment =  (name) => {
     const isMentor=false;
     if(userData){
-      window.location.href = `https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;
+      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
       
     }
-  }
-
+};
 
   return user ? (
     <div className="flex justify-center py-10 bg-white text-black ">
@@ -126,45 +131,49 @@ export default function Subscription() {
       </div>
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-        <div className="bg-white p-6 rounded shadow-lg relative w-full max-w-md">
-          <button
-            className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-            onClick={() => setShowModal(false)}
-          >
-            <span className="text-2xl">&times;</span>
-          </button>
-          <h2 className="text-xl font-semibold mb-4">Your Subscriptions</h2>
-          {userData?.plans.includes(selectedPlan.name) ? (
-            <p>You are already subscribed to the {selectedPlan.name} plan.</p>
-          ) : (
-            <div>
-              <h3 className="text-lg font-semibold">{selectedPlan.name}</h3>
-              <p>Price: ₹{selectedPlan.price}</p>
-              <ul className="list-disc list-inside mb-4">
-                {selectedPlan.benefits.map((benefit, index) => (
-                  <li key={index}>{benefit}</li>
-                ))}
-              </ul>
-              <div className="flex justify-end">
-                <button
-                  className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
-                  onClick={() => {
-                    handlePayment(selectedPlan.price, selectedPlan.name, selectedPlan.days);
-                    setShowModal(false);
-                  }}
-                >
-                  Pay
-                </button>
+          <div className="bg-white p-6 rounded shadow-lg relative w-full max-w-md">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+              onClick={() => setShowModal(false)}
+            >
+              <span className="text-2xl">&times;</span>
+            </button>
+            <h2 className="text-xl font-semibold mb-4">Your Subscriptions</h2>
+            {userData?.plans.includes(selectedPlan.name) ? (
+              <p>You are already subscribed to the {selectedPlan.name} plan.</p>
+            ) : (
+              <div>
+                <h3 className="text-lg font-semibold">{selectedPlan.name}</h3>
+                <p>Price: ₹{selectedPlan.price}</p>
+                <ul className="list-disc list-inside mb-4">
+                  {selectedPlan.benefits.map((benefit, index) => (
+                    <li key={index}>{benefit}</li>
+                  ))}
+                </ul>
+                <div className="flex justify-end">
+                  <button
+                    className="px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                    onClick={() => {
+                      handlePayment(
+                        selectedPlan?.name
+                      );
+                      setShowModal(false);
+                    }}
+                  >
+                    Pay
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-      
       )}
     </div>
   ) : (
-    <div className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500" style={{height:"70vh"}}>
+    <div
+      className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500"
+      style={{ height: "70vh" }}
+    >
       Please login to view subscription plans.
     </div>
   );
