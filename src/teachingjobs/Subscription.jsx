@@ -82,6 +82,7 @@ export default function Subscription() {
     const isMentor=false;
     if(userData){
       window.location.href = `https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;
+      
     }
   }
 

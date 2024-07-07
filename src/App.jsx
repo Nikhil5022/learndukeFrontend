@@ -32,6 +32,7 @@ import MentorPaymentSuccess from "./mentorship/Mentor/MentorPaymentSuccess";
 import PrivacyPolicyPage from "./policies/Policyforprivacy";
 import TermsAndConditionsPage from "./policies/TermsConditions";
 import CancellationAndRefundPolicyPage from "./policies/RefundCancellation";
+import Detailedwebinar from "./webinar/Detailedwebinar";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -96,6 +97,7 @@ function App() {
         <Route path="/privacyPolicy" element={<PrivacyPolicyPage />} />
         <Route path="/termsAndConditions" element={<TermsAndConditionsPage />} />
         <Route path="/cancellationAndRefund" element={<CancellationAndRefundPolicyPage />} />
+        <Route path="/detailedwebinar/:id" element={<Detailedwebinar />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}
