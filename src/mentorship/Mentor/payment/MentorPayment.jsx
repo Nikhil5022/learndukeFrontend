@@ -149,10 +149,10 @@ function MentorPayment() {
     },
   ];
 
-  const handlePayment = (price, name, days) => {
+  const handlePayment = (name) => {
     const isMentor = true;
     if(userData){
-      window.location.href=`https://learndukeserver.vercel.app/pay/${price}/${name}/${days}/${userData.email}/${isMentor}`;
+      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
     }
   };
 
@@ -270,9 +270,7 @@ function MentorPayment() {
                 onClick={() => {
                   setShowModal(false);
                   handlePayment(
-                    selectedPlan?.price,
                     selectedPlan?.name,
-                    selectedPlan?.days
                   );
                 }}
               >
