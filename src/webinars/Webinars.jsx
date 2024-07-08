@@ -130,6 +130,7 @@ function Webinars() {
     setUpLoading(true);
     async function getUpcoming() {
       const res = await axios.get("http://localhost:3000/upcoming-webinars");
+      console.log(res.data);
       setUpcomingWebinars(res.data);
       setUpLoading(false);
     }
@@ -258,7 +259,9 @@ function Webinars() {
                     <p>{webinar.creator.name}</p>
                   </div>
                 </div>
-                <button className="rounded-xl text-blue-500 px-2">
+                <button className="rounded-xl text-blue-500 px-2"
+                  onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+                >
                   See details {">"}
                 </button>
               </div>

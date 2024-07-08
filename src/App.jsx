@@ -34,7 +34,7 @@ import TermsAndConditionsPage from "./policies/TermsConditions";
 import CancellationAndRefundPolicyPage from "./policies/RefundCancellation";
 import Webinars from "./webinars/Webinars";
 import CreateWebinar from "./webinars/CreateWebinar";
-import Detailedwebinar from "./webinar/Detailedwebinar";
+import Detailedwebinar from "./webinars/Detailedwebinar";
 
 function App() {
   const [user, setUser] = useState(null);

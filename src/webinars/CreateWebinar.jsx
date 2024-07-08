@@ -57,13 +57,20 @@ function CreateWebinar() {
     e.preventDefault();
     const res = await axios.post("http://localhost:3000/create-webinar", {
       mail: user.email,
-      webinar
+      webinar,
     })
 
-      console.log(res)
+
+
+      console.log(res.data)
       setWebinar(initialWebinarState)
       if(res.status === 200){
-        setSuccessModal(true)
+
+        // need to open the res.data link
+
+        window.open(res.data, "_blank")
+        // setSuccessModal(true)
+        
       }
       // else{
       //   setFailureModal(true)
@@ -187,7 +194,9 @@ function CreateWebinar() {
             }))}
              type="number" id="price" name="price" className="border-b-2 ml-3 h-10 p-2 border-slate-500" placeholder="Entry price of webinar" required/>
             </div>}
+           
           </div>
+          
           <div className="flex items-center justify-center">
             <button type="button" className="w-40 py-4 m-2 rounded-xl bg-orange-500 text-white" onClick={()=> navigate("/webinars")}>Cancel</button>
             <button type="submit" className="border-2 w-40 py-3 m-2 rounded-xl border-orange-500 text-black text-lg">Create</button>
