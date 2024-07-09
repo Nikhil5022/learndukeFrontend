@@ -50,7 +50,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if(location.pathname ==="/mentorship"|| location.pathname ==="/explorementors" || location.pathname.includes("/detailedmentor") || location.pathname === "/mentor/payment" || location.pathname === "/become-a-mentor") {
+    const paths = ["/mentorship", "/explorementors", "/become-a-mentor", "/mentor/payment", "/webinars", "/create-webinar" ]
+    if(location.pathname.includes("/detailedmentor") || location.pathname.includes("/detailedwebinar") ||
+    paths.includes(location.pathname)) {
       setShowCreateJob(false)
     }else{
       setShowCreateJob(true)
@@ -101,7 +103,7 @@ function App() {
         <Route path="/cancellationAndRefund" element={<CancellationAndRefundPolicyPage />} />
         <Route path="/webinars" element={<Webinars />} />
         <Route path="/create-webinar" element={<CreateWebinar />} />
-        <Route path="/detailedwebinar/:id" element={<Detailedwebinar />} />
+        <Route path="/detailedWebinar/:id" element={<Detailedwebinar />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}

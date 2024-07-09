@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Loader";
-import poster from "../assets/poster.webp";
+import poster from "../assets/sample2.png";
 import { MdLiveTv } from "react-icons/md";
 import { MdEmergencyRecording } from "react-icons/md";
 import { IoDocumentSharp } from "react-icons/io5";
@@ -10,6 +10,7 @@ import { BsFillTagsFill } from "react-icons/bs";
 import { SlCalender } from "react-icons/sl";
 import { GiSandsOfTime } from "react-icons/gi";
 import { TiTick } from "react-icons/ti";
+import { IoMdUndo } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 
 function Detailedwebinar() {
@@ -44,17 +45,6 @@ function Detailedwebinar() {
       });
     }
   }, [id]);
-
-  const handleRegister = () => {
-   
-    axios.post("http://localhost:3000/register-for-webinar", {
-      mail: user.email,
-      webinarId: id,
-    }).then((res) => {
-      console.log(res.data);
-    }
-    );
-  };
 
   if (!webinar) {
     return (
@@ -106,6 +96,38 @@ function Detailedwebinar() {
     },
   ];
 
+  const handleUnregister = async () => {
+    await axios
+      .post("http://localhost:3000/unregister-for-webinar", {
+        mail: user.email,
+        webinarId: id,
+      })
+      .then((res) => {
+        console.log(res.data);
+        setWebinar((prev) => ({
+          ...prev,
+          participants: webinar.participants.filter((obj) => obj !== user._id),
+        }));
+      });
+    console.log(webinar);
+  };
+
+  const handleRegister = () => {
+    axios
+      .post("http://localhost:3000/register-for-webinar", {
+        mail: user.email,
+        webinarId: id,
+      })
+      .then((res) => {
+        console.log(res.data);
+        // Updatse the webinar state to reflect the new participant
+        setWebinar((prevWebinar) => ({
+          ...prevWebinar,
+          participants: [...prevWebinar.participants, user._id],
+        }));
+      });
+  };
+
   return (
     <div className="flex justify-center" style={{ backgroundColor: "#fafafa" }}>
       <div className="w-full lg:w-10/12 pt-5 md:pt-10 p-2">
@@ -118,7 +140,7 @@ function Detailedwebinar() {
               {webinar.title}
             </div>
             <div className="border border-gray-300 p-6 rounded-xl bg-white">
-              <img src={poster} alt="webinar" className="w-full h-auto" />
+              <img src={webinar.photo.url} alt="webinar" className="w-full h-auto" />
               <hr className="my-4" />
               <div className="flex justify-between">
                 <div className="flex items-center space-x-5">
@@ -241,26 +263,40 @@ function Detailedwebinar() {
                 </div>
               </div>
               <div>
-                {/* <button className="bg-black text-white p-3 rounded-lg w-full"
-                  onClick={handleRegister}
-                >
-                  Register Now
-                </button> */}
-                {/* i already registered  */}
-               {webinar.participants.includes(user._id) ? (
-                  <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full">
-                    Registered
-                  </button>
-                ) : (
-                  <button
-                    className="bg-black text-white p-3 rounded-lg w-full"
-                    onClick={handleRegister}
-                  >
-                    Register Now
-                  </button>
-                )
-               }
-
+                <div>
+                  {webinar.participants.includes(user._id) ? (
+                    webinar.status === "Live" ? (
+                      <button
+                        className="bg-blue-400 text-white p-3 rounded-lg w-full"
+                        onClick={() => window.open(webinar.liveLink, "_blank")}
+                      >
+                        Join Webinar
+                      </button>
+                    ) : (
+                      <div className="flex md:flex-col flex-row">
+                        <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-10/12 md:w-full mx-1 md:my-2 md:mx-0">
+                          Registered
+                        </button>
+                        <button
+                          className="bg-red-200 text-red-700 border border-red-700 cursor-pointer py-3 rounded-lg w-2/12 md:w-full text-center flex items-center justify-center"
+                          onClick={handleUnregister}
+                        >
+                          Undo
+                          <span className="mx-1">
+                            <IoMdUndo />
+                          </span>
+                        </button>
+                      </div>
+                    )
+                  ) : (
+                    <button
+                      className="bg-black text-white p-3 rounded-lg w-full"
+                      onClick={handleRegister}
+                    >
+                      Register Now
+                    </button>
+                  )}
+                </div>
               </div>
               <hr className="my-4" />
               <div className="flex justify-between">
@@ -355,9 +391,7 @@ function Detailedwebinar() {
             </div>
           </div>
         </div>
-       
       </div>
-   
     </div>
   );
 }

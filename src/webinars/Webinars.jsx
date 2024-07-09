@@ -10,6 +10,7 @@ import axios from "axios";
 import { MdPayment } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import Loader from "../assets/Loader.gif";
+import { FaPlus } from "react-icons/fa";
 function Webinars() {
   const navigate = useNavigate();
   const url = sample2;
@@ -158,38 +159,25 @@ function Webinars() {
   }, []);
 
   return (
-    <div className="w-full p-4 flex">
+    <div className="w-full p-4 flex relative">
       <div className="p-2 my-2  w-full xl:w-4/6">
         <div className="w-full">
-          <div className="flex flex-col sm:flex-row justify-center md:justify-between w-full ">
-            <div>
-              <h1 className="text-3xl mt-4 ml-2 md:ml-5 md:px-4 font-semibold">
+          <div className="flex flex-col sm:flex-row justify-center w-full ">
+            <div className="w-full">
+              <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Live Webinars
               </h1>
-              <p className="px-4 my-2 -ml-1 md:ml-5 md:px-4 ">
+              <p className="px-4 my-2 -ml-1">
                 Level up your career with live and exclusive webinars from top
                 mentors.
               </p>
             </div>
-            <button
-              className="border-2 w-full border-black p-2 md:p-4 my-4 mx-auto sm:w-60 md:mr-14 sm:mr-0 rounded-lg cursor-pointer"
-              onClick={() =>
-                user
-                  ? mentorData
-                    ? mentorData.isPremium
-                      ? navigate("/create-webinar")
-                      : setShowPremiumModal(true)
-                    : setShowMentorModal(true)
-                  : setShowLoginModal(true)
-              }
-              disabled={disabled}
-            >
-              Create your own Webinar
-            </button>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
             {/* live webinar cards */}
-            {liveLoading ? <DataFetchLoading/> : liveWebinars && liveWebinars.length > 0 ? (
+            {liveLoading ? (
+              <DataFetchLoading />
+            ) : liveWebinars && liveWebinars.length > 0 ? (
               liveWebinars.map((webinar, index) => (
                 <WebinarCard key={index} webinar={webinar} />
               ))
@@ -200,6 +188,40 @@ function Webinars() {
               >
                 <img src={notFound} className="max-w-40" />
                 There are currently no live webinars!
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-center xl:hidden">
+          <p className="w-11/12 my-3 border-2 border-orange-100"></p>
+        </div>
+        <div className="w-full xl:hidden">
+          <div className="flex flex-col sm:flex-row justify-center md:justify-between w-full ">
+          <div className="w-full">
+              <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
+                Upcoming Webinars
+              </h1>
+              <p className="px-4 my-2 -ml-1">
+                Level up your career with live and exclusive webinars from top
+                mentors.
+              </p>
+            </div>
+          </div>
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
+            {/* live webinar cards */}
+            {!upcomingWebinars ? (
+              <DataFetchLoading />
+            ) : upcomingWebinars && upcomingWebinars.length > 0 ? (
+              upcomingWebinars.map((webinar, index) => (
+                <WebinarCard key={index} webinar={webinar} />
+              ))
+            ) : (
+              <div
+                className="flex-col flex items-center
+            justify-center text-lg p-4"
+              >
+                <img src={notFound} className="max-w-40" />
+                There are currently no upcoming webinars!
               </div>
             )}
           </div>
@@ -217,7 +239,9 @@ function Webinars() {
           </p>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
             {/* live webinar cards */}
-            {pastLoading ? <DataFetchLoading/> : pastWebinars && pastWebinars.length > 0 ? (
+            {pastLoading ? (
+              <DataFetchLoading />
+            ) : pastWebinars && pastWebinars.length > 0 ? (
               pastWebinars.map((webinar, index) => (
                 <WebinarCard key={index} webinar={webinar} />
               ))
@@ -243,7 +267,9 @@ function Webinars() {
           <h1 className="text-xl my-2 font-semibold text-center">
             Mentors with upcoming webinars
           </h1>
-          {upLoading ? <DataFetchLoading/> : upcomingWebinars && upcomingWebinars.length > 0 ? (
+          {upLoading ? (
+            <DataFetchLoading />
+          ) : upcomingWebinars && upcomingWebinars.length > 0 ? (
             upcomingWebinars.map((webinar, index) => (
               <div
                 key={index}
@@ -259,7 +285,8 @@ function Webinars() {
                     <p>{webinar.creator.name}</p>
                   </div>
                 </div>
-                <button className="rounded-xl text-blue-500 px-2"
+                <button
+                  className="rounded-xl text-blue-500 px-2"
                   onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
                 >
                   See details {">"}
@@ -359,22 +386,47 @@ function Webinars() {
           </div>
         </Modal>
       )}
+      {mentorData && (
+        <div
+          className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
+          onClick={() =>
+            user
+              ? mentorData
+                ? mentorData.isPremium
+                  ? navigate("/create-webinar")
+                  : setShowPremiumModal(true)
+                : setShowMentorModal(true)
+              : setShowLoginModal(true)
+          }
+          disabled={disabled}
+        >
+          <FaPlus className="text-xl" />
+        </div>
+      )}
     </div>
   );
 }
 
 function WebinarCard({ webinar }) {
+  const navigate = useNavigate();
+
+  const calculate = (date) => {
+    let newDate = new Date(date);
+    // return date and time
+    return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
+  }
+
   return (
-    <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col lg:flex-row lg:w-10/12 xl:w-11/12">
-      <div className="flex items-center justify-center px-1 lg:w-6/12 max-w-96 ">
+    <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col md:flex-row lg:w-10/12 xl:w-11/12">
+      <div className="flex items-center justify-center px-1 w-full md:w-6/12 lg:max-w-96">
         <img
-          src={sample2}
+          src={webinar.photo.url}
           className="rounded-lg w-full 3xl:w-10/12"
           alt="webinar"
         />
       </div>
-      <div className="p-4 flex lg:w-1/2 justify-center flex-col ">
-        <p className="text-orange-600 font-semibold">{webinar.startTime}</p>
+      <div className="p-4 flex md:w-1/2 justify-center flex-col ">
+        <p className="text-orange-600 font-semibold">{calculate(webinar.startTime)}</p>
         <h1 className="font-semibold text-2xl whitespace-break-spaces">
           {webinar.title}
         </h1>
@@ -385,13 +437,27 @@ function WebinarCard({ webinar }) {
           />
           <p>{webinar.creator.name}</p>
         </div>
-        <div className="flex flex-col md:flex-row">
-          <button className="p-3 mt-3 lg:p-2 md:mr-5 border-orange-500 border-2 rounded-xl md:w-2/5 lg:w-48">
-            Register for Webinar
-          </button>
-          <button className="p-3 mt-3 border-orange-500 border-2 bg-orange-500 text-white rounded-xl md:w-2/5 lg:w-48">
-            Book a Free Trial
-          </button>
+        <div className="flex flex-col md:flex-row ">
+          {webinar.status === "Past" ? (
+            <button
+              className="p-3 mt-3 lg:p-2 md:mr-5 border-orange-500 border-2 rounded-xl md:w-2/5 lg:w-48"
+              onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+            >
+              See Details
+            </button>
+          ) : (
+            <>
+              <button
+                className="p-3 mt-3 lg:p-2 lg:mr-5 border-orange-500 border-2 rounded-xl md:w-3/5 lg:w-48"
+                onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+              >
+                Register for Webinar
+              </button>
+              <button className="p-3 mt-3 border-orange-500 border-2 bg-orange-500 text-white rounded-xl md:w-3/5 lg:w-48">
+                Book a Free Trial
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
