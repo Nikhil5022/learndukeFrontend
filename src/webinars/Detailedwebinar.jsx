@@ -150,26 +150,26 @@ function Detailedwebinar() {
               {webinar.title}
             </div>
             <div className="border border-gray-300 p-6 rounded-xl bg-white">
-              <img src={webinar.photo.url} alt="webinar" className="w-full h-auto" />
+              <img src={webinar.photo.url} alt="webinar" className="w-full h-auto rounded-lg" />
               <hr className="my-4" />
-              <div className="flex justify-between">
-                <div className="flex items-center space-x-5">
+              <div className="flex md:items-center md:justify-between flex-col sm:flex-row">
+                <div className="flex items-center space-x-3 w-full sm:w-9/12">
                   <img
                     src={mentor.profilePhoto.url}
                     alt=""
                     className="h-14 rounded-full"
                   />
                   <div className="flex space-x-2">
-                    <div>{mentor.name}</div>
-                    <div className="text-sm border border-blue-400 text-blue-400 px-2 rounded-xl">
+                    <div className="text-lg font-semibold">{mentor.name}</div>
+                    <div className="text-sm border border-blue-400 text-blue-400 p-1 rounded-xl">
                       Mentor
                     </div>
                   </div>
                 </div>
-                <div>
-                  <button className="bg-black text-white p-3 rounded-lg">
-                    Book a FREE 1:1 Trial Session
-                  </button>
+                <div className="flex sm:items-center">
+                  <button className="bg-black text-white p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3">
+                    Whatsapp Now
+                    </button>
                 </div>
               </div>
             </div>
@@ -196,24 +196,24 @@ function Detailedwebinar() {
                   </div>
                 ))}
               <hr className="my-4" />
-              <div className="flex justify-between mt-5">
-                <div className="flex items-center space-x-5">
+              <div className="flex md:items-center md:justify-between flex-col sm:flex-row">
+                <div className="flex items-center space-x-3 w-full sm:w-9/12 ">
                   <img
                     src={mentor.profilePhoto.url}
                     alt=""
                     className="h-14 rounded-full"
                   />
                   <div className="flex space-x-2">
-                    <div>{mentor.name}</div>
-                    <div className="text-sm border border-blue-400 text-blue-400 px-2 rounded-xl">
+                    <div className="text-lg font-semibold">{mentor.name}</div>
+                    <div className="text-sm border border-blue-400 text-blue-400 p-1 rounded-xl">
                       Mentor
                     </div>
                   </div>
                 </div>
-                <div>
-                  <button className="bg-black text-white p-3 rounded-lg">
-                    Book a FREE 1:1 Trial Session
-                  </button>
+                <div className="flex sm:items-center">
+                  <button className="bg-black text-white p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3">
+                    Whatsapp Now
+                    </button>
                 </div>
               </div>
             </div>
@@ -332,24 +332,27 @@ function Detailedwebinar() {
               </div></>}
             </div>
 
-            <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3">
-              <div className="flex space-x-3">
+            <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3 ">
+              <div className="flex  items-center justify-between flex-col sm:flex-row md:flex-col">
+
+              <div className="flex flex-col space-x-3 w-10/12 sm:w-5/12 md:w-full items-center text-center justify-center">
                 <img
                   src={mentor.profilePhoto.url}
-                  className="w-24 rounded-lg"
+                  className="rounded-lg w-64 sm:w-36 md:w-64 my-2"
                   alt=""
                 />
-                <div>{mentor.name}</div>
+                <div className="text-xl md:text-2xl font-semibold my-2 text-center">{mentor.name}</div>
               </div>
-              <div className="text-sm leading-tight text-gray-400">
+              <div className="text-lg text-justify md:leading-tight text-gray-400 w-full sm:w-7/12  md:w-full  md:p-3">
                 "{mentor.description}"
+              </div>
               </div>
               <hr className="my-4" />
               <div className="flex flex-wrap">
                 {mentor.skills.map((skill, index) => (
                   <div
-                    key={index}
-                    className="bg-gray-200 text-gray-500 px-2 py-1 rounded-lg m-1"
+                  key={index}
+                    className="bg-gray-200 text-gray-500 px-3 mx-1 py-1 rounded-lg m-1"
                   >
                     {skill}
                   </div>
