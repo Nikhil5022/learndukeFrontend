@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import { MdDelete } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
+import { ImCross } from "react-icons/im";
 
 function CreateWebinar() {
   const initialWebinarState = {
@@ -45,10 +46,13 @@ function CreateWebinar() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/create-webinar`, {
-      mail: user.email,
-      webinar,
-    });
+    const res = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
+      {
+        mail: user.email,
+        webinar,
+      }
+    );
 
     console.log(res.data);
     setWebinar(initialWebinarState);
@@ -111,6 +115,13 @@ function CreateWebinar() {
 
   return (
     <div className="w-full p-4">
+      <div className="flex justify-end ">
+        <button onClick={() => {
+          navigate(-1);
+        }}>
+          <ImCross className="text-xl" />
+        </button>
+      </div>
       <div className="mx-auto flex flex-col items-center">
         <h1 className="text-2xl font-semibold my-1">
           Enter details of Webinar

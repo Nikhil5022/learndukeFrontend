@@ -143,7 +143,7 @@ function Webinars() {
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Live Webinars
               </h1>
-              <p className="px-4 my-2 -ml-1">
+              <p className="px-4 my-2 ml-2   ">
                 Level up your career with live and exclusive webinars from top
                 mentors.
               </p>
@@ -167,15 +167,15 @@ function Webinars() {
               </div>
             )}
           </div>
-          <div className="flex justify-end">
-            {showLiveLoadmore && (
+          <div className="flex justify-center">
+            {showLiveLoadmore && !liveLoading && (
               <button
-                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                className="text-gray-500 my-2 text-xs hover:underline hover:text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 w-auto transition duration-150 ease-in-out whitespace-nowrap flex items-center space-x-2 border border-gray-300 rounded-lg p-2"
                 onClick={() => {
                   setLivePageNumber(livePageNumber + 1);
                 }}
               >
-                Load More
+                <FaPlus className="text-xs" /> <span>Load More</span>
               </button>
             )}
           </div>
@@ -213,15 +213,15 @@ function Webinars() {
               </div>
             )}
           </div>
-          <div className="flex justify-end">
-            {showUpcomingLoadmore && (
+          <div className="flex justify-center">
+            {showUpcomingLoadmore && !upLoading && (
               <button
-                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                className="text-gray-500 my-2 text-xs hover:underline hover:text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 w-auto transition duration-150 ease-in-out whitespace-nowrap flex items-center space-x-2 border border-gray-300 rounded-lg p-2"
                 onClick={() => {
                   setUpcomingPageNumber(upcomingPageNumber + 1);
                 }}
               >
-                Load More
+                <FaPlus className="text-xs" /> <span>Load More</span>
               </button>
             )}
           </div>
@@ -255,15 +255,15 @@ function Webinars() {
               </div>
             )}
           </div>
-          <div className="flex justify-end">
-            {showPastLoadmore && (
+          <div className="flex justify-center">
+            {showPastLoadmore && !pastLoading && (
               <button
-                className="text-gray-500 rounded-lg p-2 my-2 text-sm w-full"
+                className="text-gray-500 my-2 text-xs hover:underline hover:text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 w-auto transition duration-150 ease-in-out whitespace-nowrap flex items-center space-x-2 border border-gray-300 rounded-lg p-2"
                 onClick={() => {
                   setPastPageNumber(pastPageNumber + 1);
                 }}
               >
-                Load More...
+                <FaPlus className="text-xs" /> <span>Load More</span>
               </button>
             )}
           </div>
@@ -314,15 +314,15 @@ function Webinars() {
               No Upcoming Webinars!
             </div>
           )}
-          <div className="flex justify-end">
-            {showUpcomingLoadmore && (
+          <div className="flex justify-center">
+            {showUpcomingLoadmore && !upLoading && (
               <button
-                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                className="text-gray-500 my-2 text-xs hover:underline hover:text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 w-auto transition duration-150 ease-in-out whitespace-nowrap flex items-center space-x-2 border border-gray-300 rounded-lg p-2"
                 onClick={() => {
                   setUpcomingPageNumber(upcomingPageNumber + 1);
                 }}
               >
-                Load More
+                <FaPlus className="text-xs" /> <span>Load More</span>
               </button>
             )}
           </div>
