@@ -23,7 +23,7 @@ function Webinars() {
   const [liveLoading, setLiveLoading] = useState(true);
   const [pastLoading, setPastLoading] = useState(true);
   const [upLoading, setUpLoading] = useState(true);
- 
+
   const [livePageNumber, setLivePageNumber] = useState(1);
 
   const [showLiveLoadmore, setShowLiveLoadmore] = useState(true);
@@ -43,7 +43,7 @@ function Webinars() {
     setDisabled(true);
     async function isMentor() {
       let res = await axios.get(
-        `https://learndukeserver.vercel.app/isAlreadyMentor/${user.email}`
+        `${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/${user.email}`
       );
       setMentorData(res.data.mentor);
       setDisabled(false);
@@ -52,14 +52,16 @@ function Webinars() {
   }, []);
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   useEffect(() => {
     setUpLoading(true);
     async function getUpcoming() {
       const res = await axios.get(
-        `http://localhost:3000/upcoming-webinars?page=${upcomingPageNumber}`
+        `${
+          import.meta.env.VITE_SERVER_URL
+        }/upcoming-webinars?page=${upcomingPageNumber}`
       );
       console.log(res.data);
       setUpcomingWebinars((prev) => {
@@ -82,7 +84,9 @@ function Webinars() {
       console.log(livePageNumber);
 
       const res = await axios.get(
-        `http://localhost:3000/live-webinars?page=${livePageNumber}`
+        `${
+          import.meta.env.VITE_SERVER_URL
+        }/live-webinars?page=${livePageNumber}`
       );
       console.log(res.data);
       setLiveWebinars((prev) => {
@@ -106,7 +110,9 @@ function Webinars() {
 
     async function getPast() {
       const res = await axios.get(
-        `http://localhost:3000/past-webinars?page=${pastPageNumber}`
+        `${
+          import.meta.env.VITE_SERVER_URL
+        }/past-webinars?page=${pastPageNumber}`
       );
 
       console.log(res.data);
@@ -173,7 +179,6 @@ function Webinars() {
               </button>
             )}
           </div>
-          
         </div>
         <div className="flex items-center justify-center xl:hidden">
           <p className="w-11/12 my-3 border-2 border-orange-100"></p>
@@ -322,7 +327,6 @@ function Webinars() {
             )}
           </div>
         </div>
-        
       </div>
       {showLoginModal && (
         <Modal

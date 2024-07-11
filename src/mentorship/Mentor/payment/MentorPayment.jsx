@@ -25,7 +25,7 @@ function MentorPayment() {
     }
 
     axios
-      .get("https://learndukeserver.vercel.app/getUser/" + userPresent.email)
+      .get(`${import.meta.env.VITE_SERVER_URL}/getUser/` + userPresent.email)
       .then((response) => {
         if (response.data === "") {
           localStorage.removeItem("user");
@@ -78,7 +78,7 @@ function MentorPayment() {
       const u = JSON.parse(localStorage.getItem("user"));
       await axios
         .post(
-          `https://learndukeserver.vercel.app/addMentor/${u.email}`,
+          `${import.meta.env.VITE_SERVER_URL}/addMentor/${u.email}`,
           mentorData
         )
         .then((res) => {
@@ -95,7 +95,7 @@ function MentorPayment() {
     if (Object.keys(mentorData).length > 0 && !updatedModal) {
       const u = JSON.parse(localStorage.getItem("user"));
       const res = await axios.put(
-        `https://learndukeserver.vercel.app/updateMentor/${u.email}`,
+        `${import.meta.env.VITE_SERVER_URL}/updateMentor/${u.email}`,
         mentorData
       );
       setPhoto(res.data.profilePhoto.url);
@@ -152,7 +152,7 @@ function MentorPayment() {
   const handlePayment = (name) => {
     const isMentor = true;
     if(userData){
-      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
+      window.location.href = `${import.meta.env.VITE_SERVER_URL}/pay/${name}/${userData.email}/${isMentor}`;
     }
   };
 

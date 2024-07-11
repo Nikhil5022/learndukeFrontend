@@ -32,14 +32,14 @@ function Detailedwebinar() {
   {/* /* --------------------------changed------------------------------- */}
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    axios.get(`http://localhost:3000/getUser/${user.email}`).then((res) => {
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`).then((res) => {
       console.log(res.data);
       setUser(res.data);
     }).then(() => {
 
       
       if (id) {
-        axios.get(`http://localhost:3000/getWebinar/${id}`).then((res) => {
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`).then((res) => {
         console.log(res.data);
         setWebinar(res.data.webinar);
         setMentor(res.data.mentor);
@@ -101,7 +101,7 @@ function Detailedwebinar() {
   {/* /* --------------------------changed------------------------------- */}
 
   const handleUnregister = async() => {
-    await axios.post("http://localhost:3000/unregister-for-webinar", {
+    await axios.post(`${import.meta.env.VITE_SERVER_URL}/unregister-for-webinar`, {
       mail: user.email,
       webinarId: id
     }).then((res)=> {
@@ -121,7 +121,7 @@ function Detailedwebinar() {
       setRegisterModal(true)
     }else{
       await axios
-      .post("http://localhost:3000/register-for-webinar", {
+      .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
         mail: user.email,
         webinarId: webinar._id,
       })
@@ -421,7 +421,7 @@ function Detailedwebinar() {
             </p>
             <button className="px-6 py-2 mt-1 rounded-lg border-2 border-green-500 bg-green-100 text-green-600"
             onClick={() => 
-               window.location.href = `http://localhost:3000/pay/webinar?webinarId=${webinar._id}&mail=${user.email}`
+               window.location.href = `${import.meta.env.VITE_SERVER_URL}/pay/webinar?webinarId=${webinar._id}&mail=${user.email}`
             }
             >Pay Now</button>
           </div>

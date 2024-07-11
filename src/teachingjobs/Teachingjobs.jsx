@@ -58,7 +58,7 @@ export default function Teachingjobs() {
 
     if (user) {
       axios
-        .get("https://learndukeserver.vercel.app/getUser/" + user.email)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/` + user.email)
         .then((res) => {
 
           if(res.data === ""){

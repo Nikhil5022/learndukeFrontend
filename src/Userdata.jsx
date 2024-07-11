@@ -44,7 +44,7 @@ function Userdata() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      axios.post('https://learndukeserver.vercel.app/updateUserInfo/' + User.email, formData).then((response) => {
+      axios.post(`${import.meta.env.VITE_SERVER_URL}/updateUserInfo/` + User.email, formData).then((response) => {
         setModalMessage('User data updated successfully');
         setIsModalOpen(true);
       });

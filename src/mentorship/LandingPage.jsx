@@ -81,7 +81,7 @@ function LandingPage() {
   setUser(u)
   if (u && u.email) {
     await axios
-      .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + u.email)
+      .get(`${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/` + u.email)
       .then((res) => {
         if (res.data.success === true) {
           setIsAlreadyMentor(true);
@@ -97,7 +97,7 @@ fetchData();
 }, []);
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   }
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">

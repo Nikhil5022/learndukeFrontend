@@ -45,7 +45,7 @@ export default function Tutorial({
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${userData.email}`)
         .then((userResponse) => {
           
           setUser(userResponse.data);
@@ -87,7 +87,7 @@ export default function Tutorial({
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   const handleJobClick = () => {

@@ -27,7 +27,7 @@ export default function Navbar() {
     if (storedUser) {
       const userdata = JSON.parse(storedUser);
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${userdata.email}`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${userdata.email}`)
         .then((response) => {
           if(response.data===""){
             localStorage.removeItem("user");
@@ -63,7 +63,7 @@ export default function Navbar() {
           JSON.stringify({ email, name, accessToken })
         );
         await axios
-          .get(`https://learndukeserver.vercel.app/getUser/${email}`)
+          .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${email}`)
           .then((response) => {
             setPhoto(response.data.profilephoto.url);
             setIsPremium(response.data.isPremium);
@@ -76,7 +76,7 @@ export default function Navbar() {
           setUser(JSON.parse(storedUser));
           await axios
             .get(
-              `https://learndukeserver.vercel.app/getUser/${
+              `${import.meta.env.VITE_SERVER_URL}/getUser/${
                 JSON.parse(storedUser).email
               }`
             )
@@ -96,7 +96,7 @@ export default function Navbar() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   const handleLogout = () => {

@@ -222,7 +222,7 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     const response = await axios.get(
-      "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
+      `${import.meta.env.VITE_SERVER_URL}/getMentor?page=` + page + "&limit=12" 
     );
     setOriginalMentors((prevMentors) => [
       ...prevMentors,
@@ -298,7 +298,7 @@ function Explorementors() {
 
 
       const response = await axios.get(
-        "https://learndukeserver.vercel.app/getMentor?page=" +
+        `${import.meta.env.VITE_SERVER_URL}/getMentor?page=` +
           page +
           "&limit=12" +
           "&domain=" +
@@ -350,7 +350,7 @@ function Explorementors() {
 
 
     const response = await axios.get(
-      `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
+      `${import.meta.env.VITE_SERVER_URL}/getMentor?page=${page}&limit=12&search=${searchValue}`
     );
     if (page === 1) {
       setFilteredMentors(response.data.mentors);

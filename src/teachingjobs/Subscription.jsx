@@ -72,7 +72,7 @@ export default function Subscription() {
   useEffect(() => {
     if (user) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
         .then((response) => {
           setUserData(response.data);
         });
@@ -87,7 +87,7 @@ export default function Subscription() {
   const handlePayment =  (name) => {
     const isMentor=false;
     if(userData){
-      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
+      window.location.href = `${import.meta.env.VITE_SERVER_URL}/pay/${name}/${userData.email}/${isMentor}`;
       
     }
 };

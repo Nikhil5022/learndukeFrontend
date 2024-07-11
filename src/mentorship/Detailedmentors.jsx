@@ -57,7 +57,7 @@ function Detailedmentors() {
     const fetchMentorData = async () => {
       try {
         const response = await axios.get(
-          `https://learndukeserver.vercel.app/getMentor/${mentorId}`
+          `${import.meta.env.VITE_SERVER_URL}/getMentor/${mentorId}`
         );
         if (isMounted) {
           setMentor(response.data);
@@ -94,7 +94,7 @@ function Detailedmentors() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   const handleScrollToReviews = () => {
