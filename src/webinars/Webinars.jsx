@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import sample from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
-import sample2 from "../assets/sample2.png";
 import "./Webinar.css";
 import notFound from "../assets/crying.gif";
 import Modal from "../Modal";
@@ -13,89 +12,6 @@ import Loader from "../assets/Loader.gif";
 import { FaPlus } from "react-icons/fa";
 function Webinars() {
   const navigate = useNavigate();
-  const url = sample2;
-  const sampleWebinars = [
-    {
-      title: "Ace your coding interviews with Me",
-      description:
-        "This is the description of the webinar 1 This is the description of the webinar 1 This is the description of the webinar 1",
-      domain: "Hiring",
-      photo: {
-        public_id: "1234",
-        url: url,
-      },
-      startTime: "2021-09-01T10:00:00Z",
-      creator: {
-        id: "1234",
-        name: "Creator 1",
-        photo: sample,
-      },
-      isPaid: true,
-      price: 100,
-      status: "Live",
-      liveLink: "https://www.meet.google.com/kon-siqa-nof",
-    },
-    {
-      title: "Ace your coding interviews with Me",
-      description:
-        "his is the description of the webinar 1 This is the description of the webinar 1 This is the description of the webinar 1",
-      domain: "Hiring",
-      photo: {
-        public_id: "1234",
-        url: url,
-      },
-      startTime: "2021-09-01T10:00:00Z",
-      creator: {
-        id: "1234",
-        name: "Creator 1",
-        photo: sample,
-      },
-      isPaid: true,
-      price: 100,
-      status: "Live",
-      liveLink: "https://www.meet.google.com/kon-siqa-nof",
-    },
-    {
-      title: "Ace your coding interviews with Me",
-      description:
-        "his is the description of the webinar 1 This is the description of the webinar 1 This is the description of the webinar 1",
-      domain: "Hiring",
-      photo: {
-        public_id: "1234",
-        url: url,
-      },
-      startTime: "2021-09-01T10:00:00Z",
-      creator: {
-        id: "1234",
-        name: "Creator 1",
-        photo: sample,
-      },
-      isPaid: true,
-      price: 100,
-      status: "Live",
-      liveLink: "https://www.meet.google.com/kon-siqa-nof",
-    },
-    {
-      title: "Ace your coding interviews with Me",
-      description:
-        "his is the description of the webinar 1 This is the description of the webinar 1 This is the description of the webinar 1",
-      domain: "Hiring",
-      photo: {
-        public_id: "1234",
-        url: url,
-      },
-      startTime: "2021-09-01T10:00:00Z",
-      creator: {
-        id: "1234",
-        name: "Creator 1",
-        photo: sample,
-      },
-      isPaid: true,
-      price: 100,
-      status: "Live",
-      liveLink: "https://www.meet.google.com/kon-siqa-nof",
-    },
-  ];
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showMentorModal, setShowMentorModal] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
@@ -107,6 +23,18 @@ function Webinars() {
   const [liveLoading, setLiveLoading] = useState(true);
   const [pastLoading, setPastLoading] = useState(true);
   const [upLoading, setUpLoading] = useState(true);
+ 
+  const [livePageNumber, setLivePageNumber] = useState(1);
+
+  const [showLiveLoadmore, setShowLiveLoadmore] = useState(true);
+
+  const [upcomingPageNumber, setUpcomingPageNumber] = useState(1);
+
+  const [showUpcomingLoadmore, setShowUpcomingLoadmore] = useState(true);
+
+  const [showPastLoadmore, setShowPastLoadmore] = useState(true);
+
+  const [pastPageNumber, setPastPageNumber] = useState(1);
 
   let user = JSON.parse(localStorage.getItem("user"));
 
@@ -130,33 +58,75 @@ function Webinars() {
   useEffect(() => {
     setUpLoading(true);
     async function getUpcoming() {
-      const res = await axios.get("http://localhost:3000/upcoming-webinars");
+      const res = await axios.get(
+        `http://localhost:3000/upcoming-webinars?page=${upcomingPageNumber}`
+      );
       console.log(res.data);
-      setUpcomingWebinars(res.data);
+      setUpcomingWebinars((prev) => {
+        return prev ? [...prev, ...res.data.webinars] : res.data.webinars;
+      });
       setUpLoading(false);
+      if (
+        res.data.currentPage == res.data.totalPages ||
+        res.data.webinars.length == 0
+      ) {
+        setShowUpcomingLoadmore(false);
+      }
     }
     getUpcoming();
-  }, []);
+  }, [upcomingPageNumber]);
 
   useEffect(() => {
     setLiveLoading(true);
     async function getLive() {
-      const res = await axios.get("http://localhost:3000/live-webinars");
-      setLiveWebinars(res.data);
+      console.log(livePageNumber);
+
+      const res = await axios.get(
+        `http://localhost:3000/live-webinars?page=${livePageNumber}`
+      );
+      console.log(res.data);
+      setLiveWebinars((prev) => {
+        return prev ? [...prev, ...res.data.webinars] : res.data.webinars;
+      });
+
       setLiveLoading(false);
+      if (
+        res.data.currentPage == res.data.totalPages ||
+        res.data.webinars.length == 0
+      ) {
+        setShowLiveLoadmore(false);
+      }
     }
+
     getLive();
-  }, []);
+  }, [livePageNumber]);
 
   useEffect(() => {
     setPastLoading(true);
+
     async function getPast() {
-      const res = await axios.get("http://localhost:3000/past-webinars");
-      setPastWebinars(res.data);
+      const res = await axios.get(
+        `http://localhost:3000/past-webinars?page=${pastPageNumber}`
+      );
+
+      console.log(res.data);
+
+      setPastWebinars((prev) => {
+        return prev ? [...prev, ...res.data.webinars] : res.data.webinars;
+      });
+
       setPastLoading(false);
+
+      if (
+        res.data.currentPage == res.data.totalPages ||
+        res.data.webinars.length == 0
+      ) {
+        setShowPastLoadmore(false);
+      }
     }
+
     getPast();
-  }, []);
+  }, [pastPageNumber]);
 
   return (
     <div className="w-full p-4 flex relative">
@@ -191,13 +161,26 @@ function Webinars() {
               </div>
             )}
           </div>
+          <div className="flex justify-end">
+            {showLiveLoadmore && (
+              <button
+                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                onClick={() => {
+                  setLivePageNumber(livePageNumber + 1);
+                }}
+              >
+                Load More
+              </button>
+            )}
+          </div>
+          
         </div>
         <div className="flex items-center justify-center xl:hidden">
           <p className="w-11/12 my-3 border-2 border-orange-100"></p>
         </div>
         <div className="w-full xl:hidden">
           <div className="flex flex-col sm:flex-row justify-center md:justify-between w-full ">
-          <div className="w-full">
+            <div className="w-full">
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Upcoming Webinars
               </h1>
@@ -223,6 +206,18 @@ function Webinars() {
                 <img src={notFound} className="max-w-40" />
                 There are currently no upcoming webinars!
               </div>
+            )}
+          </div>
+          <div className="flex justify-end">
+            {showUpcomingLoadmore && (
+              <button
+                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                onClick={() => {
+                  setUpcomingPageNumber(upcomingPageNumber + 1);
+                }}
+              >
+                Load More
+              </button>
             )}
           </div>
         </div>
@@ -253,6 +248,18 @@ function Webinars() {
                 <img src={notFound} className="max-w-40" />
                 No Past webinars found!
               </div>
+            )}
+          </div>
+          <div className="flex justify-end">
+            {showPastLoadmore && (
+              <button
+                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                onClick={() => {
+                  setPastPageNumber(pastPageNumber + 1);
+                }}
+              >
+                Load More
+              </button>
             )}
           </div>
         </div>
@@ -302,7 +309,20 @@ function Webinars() {
               No Upcoming Webinars!
             </div>
           )}
+          <div className="flex justify-end">
+            {showUpcomingLoadmore && (
+              <button
+                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                onClick={() => {
+                  setUpcomingPageNumber(upcomingPageNumber + 1);
+                }}
+              >
+                Load More
+              </button>
+            )}
+          </div>
         </div>
+        
       </div>
       {showLoginModal && (
         <Modal
@@ -412,9 +432,8 @@ function WebinarCard({ webinar }) {
 
   const calculate = (date) => {
     let newDate = new Date(date);
-    // return date and time
     return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
-  }
+  };
 
   return (
     <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col md:flex-row lg:w-10/12 xl:w-11/12">
@@ -426,7 +445,9 @@ function WebinarCard({ webinar }) {
         />
       </div>
       <div className="p-4 flex md:w-1/2 justify-center flex-col ">
-        <p className="text-orange-600 font-semibold">{calculate(webinar.startTime)}</p>
+        <p className="text-orange-600 font-semibold">
+          {calculate(webinar.startTime)}
+        </p>
         <h1 className="font-semibold text-2xl whitespace-break-spaces">
           {webinar.title}
         </h1>

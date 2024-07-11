@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Loader";
-import poster from "../assets/sample2.png";
 import { MdLiveTv } from "react-icons/md";
 import { MdEmergencyRecording } from "react-icons/md";
 import { IoDocumentSharp } from "react-icons/io5";
@@ -12,6 +11,7 @@ import { GiSandsOfTime } from "react-icons/gi";
 import { TiTick } from "react-icons/ti";
 import { IoMdUndo } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
+import Modal from "../Modal";
 
 function Detailedwebinar() {
   const { id } = useParams();
@@ -19,14 +19,7 @@ function Detailedwebinar() {
   const [mentor, setMentor] = useState(null);
   const [copy, setCopy] = useState(false);
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    axios.get(`http://localhost:3000/getUser/${user.email}`).then((res) => {
-      console.log(res.data);
-      setUser(res.data);
-    });
-  }, []);
+  const [registerModal, setRegisterModal] = useState(false);
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -36,14 +29,23 @@ function Detailedwebinar() {
     }, 2000);
   };
 
+  {/* /* --------------------------changed------------------------------- */}
   useEffect(() => {
-    if (id) {
-      axios.get(`http://localhost:3000/getWebinar/${id}`).then((res) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    axios.get(`http://localhost:3000/getUser/${user.email}`).then((res) => {
+      console.log(res.data);
+      setUser(res.data);
+    }).then(() => {
+
+      
+      if (id) {
+        axios.get(`http://localhost:3000/getWebinar/${id}`).then((res) => {
         console.log(res.data);
         setWebinar(res.data.webinar);
         setMentor(res.data.mentor);
       });
     }
+  })
   }, [id]);
 
   if (!webinar) {
@@ -96,36 +98,41 @@ function Detailedwebinar() {
     },
   ];
 
-  const handleUnregister = async () => {
-    await axios
-      .post("http://localhost:3000/unregister-for-webinar", {
-        mail: user.email,
-        webinarId: id,
-      })
-      .then((res) => {
-        console.log(res.data);
-        setWebinar((prev) => ({
-          ...prev,
+  {/* /* --------------------------changed------------------------------- */}
+
+  const handleUnregister = async() => {
+    await axios.post("http://localhost:3000/unregister-for-webinar", {
+      mail: user.email,
+      webinarId: id
+    }).then((res)=> {
+      console.log(res.data)
+      setWebinar((prev) => ({
+        ...prev,
           participants: webinar.participants.filter((obj) => obj !== user._id),
         }));
       });
     console.log(webinar);
   };
 
-  const handleRegister = () => {
-    axios
+  {/* /* --------------------------changed------------------------------- */}
+
+  const handleRegister = async() => {
+    if(webinar.isPaid){
+      setRegisterModal(true)
+    }else{
+      await axios
       .post("http://localhost:3000/register-for-webinar", {
         mail: user.email,
-        webinarId: id,
+        webinarId: webinar._id,
       })
       .then((res) => {
         console.log(res.data);
-        // Updatse the webinar state to reflect the new participant
         setWebinar((prevWebinar) => ({
           ...prevWebinar,
           participants: [...prevWebinar.participants, user._id],
         }));
       });
+    }
   };
 
   return (
@@ -240,29 +247,34 @@ function Detailedwebinar() {
           </div>
           <div className="w-full md:w-2/6 mt-7 ">
             <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3">
-              <div className="text-sm font-semibold text-green-500">
+              {/* /* --------------------------changed------------------------------- */}
+              {
+                webinar.status !== "Past" && 
+                <div className="text-sm font-semibold text-green-500">
                 Register for FREE Live Webinar
               </div>
+              }
               <div className="flex items-center text-lg">
                 <SlCalender />
                 <div className="ml-2">
                   <div className=" font-semibold">
+                    {/* /* --------------------------changed------------------------------- */}
                     {months[new Date(webinar.startTime).getMonth()]}{" "}
                     {new Date(webinar.startTime).getDate()} ,
-                    {new Date(webinar.startTime).getFullYear()}(
+                    {new Date(webinar.startTime).getFullYear()}{" | "}
                     {
                       new Date(webinar.startTime)
-                        .toLocaleString("en-US", {
-                          timeZoneName: "short",
-                        })
-                        .split(" ")
-                        .pop() // Safely get the timezone part
+                        .toLocaleString().substring(11)// Safely get the timezone part
                     }
-                    )
                   </div>
                 </div>
               </div>
               <div>
+                {/* /* --------------------------changed------------------------------- */}
+                {webinar.status === "Past" ? 
+                <div className="text-lg font-semibold">
+                  Webinar has already ended!
+                </div> : 
                 <div>
                   {webinar.participants.includes(user._id) ? (
                     webinar.status === "Live" ? (
@@ -297,9 +309,12 @@ function Detailedwebinar() {
                     </button>
                   )}
                 </div>
+                }
+                {/* /* --------------------------changed------------------------------- */}
               </div>
-              <hr className="my-4" />
-              <div className="flex justify-between">
+              {webinar.status !== "Past" && <>
+                <hr className="my-4" />
+                <div className="flex justify-between">
                 <div></div>
                 <div className="flex items-center space-x-2 text-orange-400">
                   <GiSandsOfTime
@@ -307,10 +322,10 @@ function Detailedwebinar() {
                       animation: "spin 2s linear infinite",
                     }}
                     className=""
-                  />
+                    />
                   <span>Only Few Seats Left</span>
                 </div>
-              </div>
+              </div></>}
             </div>
 
             <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3">
@@ -337,13 +352,15 @@ function Detailedwebinar() {
                 ))}
               </div>
               <hr className="my-4" />
-              <div className="flex space-x-3 items-center">
+              {/* /* --------------------------changed------------------------------- */}
+              {
+                webinar.isPaid && 
+                <div className="flex space-x-3 items-center">
                 <div className="flex items-center space-x-2">
-                  <div className="text-lg font-bold">₹{webinar.price}</div>{" "}
-                  <span className="text-sm text-gray-500">per month</span>
+                Price of Webinar : <span className="text-lg font-bold"> ₹{webinar.price} /-</span>
                 </div>
-                <div></div>
               </div>
+              }
               <div>
                 <button className="text-black border border-gray-300 p-3 rounded-lg w-full">
                   View Profile
@@ -392,6 +409,24 @@ function Detailedwebinar() {
           </div>
         </div>
       </div>
+      {/* /* --------------------------changed------------------------------- */}
+      {
+        <Modal isOpen={registerModal} onClose={() => setRegisterModal(false)}>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="font-semibold text-2xl mb-2">
+              This is a paid webinar.
+            </h1>
+            <p className="text-center text-lg mb-1">
+              You have to pay ₹{webinar.price}/- <br />
+            </p>
+            <button className="px-6 py-2 mt-1 rounded-lg border-2 border-green-500 bg-green-100 text-green-600"
+            onClick={() => 
+               window.location.href = `http://localhost:3000/pay/webinar?webinarId=${webinar._id}&mail=${user.email}`
+            }
+            >Pay Now</button>
+          </div>
+        </Modal>
+      }
     </div>
   );
 }
