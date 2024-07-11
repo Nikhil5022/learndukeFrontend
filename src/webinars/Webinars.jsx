@@ -160,7 +160,7 @@ function Webinars() {
             ) : (
               <div
                 className="flex-col flex items-center
-            justify-center text-lg p-4"
+            justify-center text-center text-lg p-4"
               >
                 <img src={notFound} className="max-w-40" />
                 There are currently no live webinars!
@@ -206,7 +206,7 @@ function Webinars() {
             ) : (
               <div
                 className="flex-col flex items-center
-            justify-center text-lg p-4"
+            justify-center text-center text-lg p-4"
               >
                 <img src={notFound} className="max-w-40" />
                 There are currently no upcoming webinars!
@@ -248,7 +248,7 @@ function Webinars() {
             ) : (
               <div
                 className="flex-col flex items-center
-            justify-center text-lg p-4"
+            justify-center text-center text-lg p-4"
               >
                 <img src={notFound} className="max-w-40" />
                 No Past webinars found!
@@ -258,12 +258,12 @@ function Webinars() {
           <div className="flex justify-end">
             {showPastLoadmore && (
               <button
-                className="bg-gray-600 text-white rounded-lg p-1 my-2 text-sm"
+                className="text-gray-500 rounded-lg p-2 my-2 text-sm w-full"
                 onClick={() => {
                   setPastPageNumber(pastPageNumber + 1);
                 }}
               >
-                Load More
+                Load More...
               </button>
             )}
           </div>
@@ -308,7 +308,7 @@ function Webinars() {
           ) : (
             <div
               className="flex-col flex items-center
-          justify-center text-lg p-4"
+          justify-center text-center text-lg p-4"
             >
               <img src={notFound} className="max-w-40" />
               No Upcoming Webinars!

@@ -31,11 +31,13 @@ function Detailedwebinar() {
 
   {/* /* --------------------------changed------------------------------- */}
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`).then((res) => {
+    const loginUser = JSON.parse(localStorage.getItem("user"));
+  
+    loginUser && axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`).then((res) => {
       console.log(res.data);
       setUser(res.data);
-    }).then(() => {
+    })
+    // .then(() => {
 
       
       if (id) {
@@ -45,7 +47,7 @@ function Detailedwebinar() {
         setMentor(res.data.mentor);
       });
     }
-  })
+  // })
   }, [id]);
 
   if (!webinar) {
@@ -101,7 +103,8 @@ function Detailedwebinar() {
   {/* /* --------------------------changed------------------------------- */}
 
   const handleUnregister = async() => {
-    await axios.post(`${import.meta.env.VITE_SERVER_URL}/unregister-for-webinar`, {
+
+   user && await axios.post(`${import.meta.env.VITE_SERVER_URL}/unregister-for-webinar`, {
       mail: user.email,
       webinarId: id
     }).then((res)=> {
@@ -117,9 +120,9 @@ function Detailedwebinar() {
   {/* /* --------------------------changed------------------------------- */}
 
   const handleRegister = async() => {
-    if(webinar.isPaid){
+    if(webinar.isPaid && user){
       setRegisterModal(true)
-    }else{
+    }else if(user){
       await axios
       .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
         mail: user.email,
@@ -304,6 +307,7 @@ function Detailedwebinar() {
                     <button
                       className="bg-black text-white p-3 rounded-lg w-full"
                       onClick={handleRegister}
+                      disabled={!user}
                     >
                       Register Now
                     </button>
@@ -387,6 +391,7 @@ function Detailedwebinar() {
                   <input
                     type="text"
                     value={window.location.href}
+                    readOnly
                     className="w-full border border-gray-300 p-2 rounded-lg"
                     contentEditable={false}
                   />
@@ -411,7 +416,7 @@ function Detailedwebinar() {
       </div>
       {/* /* --------------------------changed------------------------------- */}
       {
-        <Modal isOpen={registerModal} onClose={() => setRegisterModal(false)}>
+        user &&  <Modal isOpen={registerModal} onClose={() => setRegisterModal(false)}>
           <div className="flex flex-col items-center justify-center">
             <h1 className="font-semibold text-2xl mb-2">
               This is a paid webinar.
