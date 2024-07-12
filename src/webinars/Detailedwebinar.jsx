@@ -51,7 +51,7 @@ function Detailedwebinar() {
       }
      
     loginUser && getUserData()
-    user && getWebinar();
+    getWebinar();
   }, [id]);
 
   if (!webinar) {
