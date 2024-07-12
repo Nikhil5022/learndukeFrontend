@@ -143,10 +143,7 @@ function Webinars() {
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Live Webinars
               </h1>
-              <p className="px-4 my-2 ml-2   ">
-                Level up your career with live and exclusive webinars from top
-                mentors.
-              </p>
+             
             </div>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
@@ -162,7 +159,6 @@ function Webinars() {
                 className="flex-col flex items-center
             justify-center text-center text-lg p-4"
               >
-                <img src={notFound} className="max-w-40" />
                 There are currently no live webinars!
               </div>
             )}
@@ -189,10 +185,7 @@ function Webinars() {
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Upcoming Webinars
               </h1>
-              <p className="px-4 my-2 -ml-1">
-                Level up your career with live and exclusive webinars from top
-                mentors.
-              </p>
+             
             </div>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
@@ -208,7 +201,6 @@ function Webinars() {
                 className="flex-col flex items-center
             justify-center text-center text-lg p-4"
               >
-                <img src={notFound} className="max-w-40" />
                 There are currently no upcoming webinars!
               </div>
             )}
@@ -233,10 +225,7 @@ function Webinars() {
           <h1 className="text-3xl mt-4 ml-5 px-4 font-semibold">
             Past Webinars
           </h1>
-          <p className="px-4 my-2 ml-5">
-            Level up your career with live and exclusive webinars from top
-            mentors.
-          </p>
+         
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
             {/* live webinar cards */}
             {pastLoading ? (
@@ -250,7 +239,6 @@ function Webinars() {
                 className="flex-col flex items-center
             justify-center text-center text-lg p-4"
               >
-                <img src={notFound} className="max-w-40" />
                 No Past webinars found!
               </div>
             )}
@@ -310,7 +298,6 @@ function Webinars() {
               className="flex-col flex items-center
           justify-center text-center text-lg p-4"
             >
-              <img src={notFound} className="max-w-40" />
               No Upcoming Webinars!
             </div>
           )}
