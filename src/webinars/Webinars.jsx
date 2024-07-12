@@ -9,7 +9,7 @@ import axios from "axios";
 import { MdPayment } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import Loader from "../assets/Loader.gif";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaWhatsapp } from "react-icons/fa";
 function Webinars() {
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -465,8 +465,9 @@ function WebinarCard({ webinar }) {
               >
                 Register for Webinar
               </button>
-              <button className="p-3 mt-3 border-orange-500 border-2 bg-orange-500 text-white rounded-xl md:w-3/5 lg:w-48">
-                Book a Free Trial
+              <button className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center">
+                <FaWhatsapp className="w-5 h-5 mr-2" />
+                <span>Talk to Mentor</span>
               </button>
             </>
           )}
