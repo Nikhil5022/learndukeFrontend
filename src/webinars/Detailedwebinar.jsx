@@ -183,7 +183,7 @@ function Detailedwebinar() {
                   <div key={index} className="mb-7">
                     <div className="font-semibold">{topic.name}</div>
                     <ul className="list-disc pl-5 text-gray-300 mt-3">
-                      {topic.description.map((desc, i) => (
+                      {topic.descriptions.map((desc, i) => (
                         <li
                           key={i}
                           style={{ color: "#3B4152" }}
