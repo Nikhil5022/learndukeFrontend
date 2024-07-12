@@ -279,7 +279,7 @@ function Detailedwebinar() {
                   Webinar has already ended!
                 </div> : 
                 <div>
-                  {webinar.participants.includes(user._id) ? (
+                  {user && webinar.participants.includes(user._id) ? (
                     webinar.status === "Live" ? (
                       <button
                         className="bg-blue-400 text-white p-3 rounded-lg w-full"
