@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import sample from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
 import "./Webinar.css";
@@ -23,18 +23,42 @@ function Webinars() {
   const [liveLoading, setLiveLoading] = useState(true);
   const [pastLoading, setPastLoading] = useState(true);
   const [upLoading, setUpLoading] = useState(true);
-
   const [livePageNumber, setLivePageNumber] = useState(1);
-
   const [showLiveLoadmore, setShowLiveLoadmore] = useState(true);
-
   const [upcomingPageNumber, setUpcomingPageNumber] = useState(1);
-
   const [showUpcomingLoadmore, setShowUpcomingLoadmore] = useState(true);
-
   const [showPastLoadmore, setShowPastLoadmore] = useState(true);
-
   const [pastPageNumber, setPastPageNumber] = useState(1);
+
+  const showLiveWebinarFirst = useRef(null);
+  const showPastWebinarFirst = useRef(null);
+
+
+  useEffect(() => {
+    if ( showLiveWebinarFirst.current) {
+      const offset = 100;
+      const elementPosition = showLiveWebinarFirst.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [liveWebinars]);
+
+  useEffect(() => {
+    if ( showPastWebinarFirst.current) {
+      const offset = 100;
+      const elementPosition = showPastWebinarFirst.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [pastWebinars]);
 
   let user = JSON.parse(localStorage.getItem("user"));
 
@@ -86,7 +110,7 @@ function Webinars() {
       const res = await axios.get(
         `${
           import.meta.env.VITE_SERVER_URL
-        }/live-webinars?page=${livePageNumber}`
+        }/live-webinars?page=${livePageNumber}&limit=2`
       );
       console.log(res.data);
       setLiveWebinars((prev) => {
@@ -143,25 +167,33 @@ function Webinars() {
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Live Webinars
               </h1>
-             
             </div>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
-            {/* live webinar cards */}
-            {liveLoading ? (
-              <DataFetchLoading />
-            ) : liveWebinars && liveWebinars.length > 0 ? (
-              liveWebinars.map((webinar, index) => (
-                <WebinarCard key={index} webinar={webinar} />
-              ))
-            ) : (
-              <div
-                className="flex-col flex items-center
+            {
+              liveWebinars && liveWebinars.length > 0 ? (
+                liveWebinars.map((webinar, index) => (
+                  <div>
+                    {index == liveWebinars.length - 2 ? (
+                      <div>
+                        <div ref={showLiveWebinarFirst}>
+                          <WebinarCard key={index} webinar={webinar} />
+                        </div>
+                      </div>
+                    ) : (
+                      <WebinarCard key={index} webinar={webinar} />
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="flex-col flex items-center
             justify-center text-center text-lg p-4"
-              >
-                There are currently no live webinars!
-              </div>
-            )}
+                >
+                  There are currently no live webinars!
+                </div>
+              )
+            }
           </div>
           <div className="flex justify-center">
             {showLiveLoadmore && !liveLoading && (
@@ -185,25 +217,24 @@ function Webinars() {
               <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
                 Upcoming Webinars
               </h1>
-             
             </div>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
             {/* live webinar cards */}
-            {!upcomingWebinars ? (
-              <DataFetchLoading />
-            ) : upcomingWebinars && upcomingWebinars.length > 0 ? (
-              upcomingWebinars.map((webinar, index) => (
-                <WebinarCard key={index} webinar={webinar} />
-              ))
-            ) : (
-              <div
-                className="flex-col flex items-center
+            {
+              upcomingWebinars && upcomingWebinars.length > 0 ? (
+                upcomingWebinars.map((webinar, index) => (
+                  <WebinarCard key={index} webinar={webinar} />
+                ))
+              ) : (
+                <div
+                  className="flex-col flex items-center
             justify-center text-center text-lg p-4"
-              >
-                There are currently no upcoming webinars!
-              </div>
-            )}
+                >
+                  There are currently no upcoming webinars!
+                </div>
+              )
+            }
           </div>
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
@@ -225,23 +256,32 @@ function Webinars() {
           <h1 className="text-3xl mt-4 ml-5 px-4 font-semibold">
             Past Webinars
           </h1>
-         
+
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
-            {/* live webinar cards */}
-            {pastLoading ? (
-              <DataFetchLoading />
-            ) : pastWebinars && pastWebinars.length > 0 ? (
-              pastWebinars.map((webinar, index) => (
-                <WebinarCard key={index} webinar={webinar} />
-              ))
-            ) : (
-              <div
-                className="flex-col flex items-center
+            {
+              pastWebinars && pastWebinars.length > 0 ? (
+                pastWebinars.map((webinar, index) => (
+                  <div>
+                    {index == pastWebinars.length - 2 ? (
+                      <div>
+                        <div ref={showPastWebinarFirst}>
+                          <WebinarCard key={index} webinar={webinar} />
+                        </div>
+                      </div>
+                    ) : (
+                      <WebinarCard key={index} webinar={webinar} />
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="flex-col flex items-center
             justify-center text-center text-lg p-4"
-              >
-                No Past webinars found!
-              </div>
-            )}
+                >
+                  No Past webinars found!
+                </div>
+              )
+            }
           </div>
           <div className="flex justify-center">
             {showPastLoadmore && !pastLoading && (
@@ -267,40 +307,43 @@ function Webinars() {
           <h1 className="text-xl my-2 font-semibold text-center">
             Mentors with upcoming webinars
           </h1>
-          {upLoading ? (
-            <DataFetchLoading />
-          ) : upcomingWebinars && upcomingWebinars.length > 0 ? (
-            upcomingWebinars.map((webinar, index) => (
-              <div
-                key={index}
-                className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between"
-              >
-                <div className="flex flex-col w-9/12">
-                  <h1 className="font-semibold p-1">{webinar.title}</h1>
-                  <div className="flex items-center p-1">
-                    <img
-                      src={webinar.creator.photo}
-                      className="max-w-8 rounded-full mr-3"
-                    />
-                    <p>{webinar.creator.name}</p>
-                  </div>
-                </div>
-                <button
-                  className="rounded-xl text-blue-500 px-2"
-                  onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+          {
+            // upLoading ? (
+            //   <DataFetchLoading />
+            // ) :
+            upcomingWebinars && upcomingWebinars.length > 0 ? (
+              upcomingWebinars.map((webinar, index) => (
+                <div
+                  key={index}
+                  className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between"
                 >
-                  See details {">"}
-                </button>
-              </div>
-            ))
-          ) : (
-            <div
-              className="flex-col flex items-center
+                  <div className="flex flex-col w-9/12">
+                    <h1 className="font-semibold p-1">{webinar.title}</h1>
+                    <div className="flex items-center p-1">
+                      <img
+                        src={webinar.creator.photo}
+                        className="max-w-8 rounded-full mr-3"
+                      />
+                      <p>{webinar.creator.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    className="rounded-xl text-blue-500 px-2"
+                    onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+                  >
+                    See details {">"}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div
+                className="flex-col flex items-center
           justify-center text-center text-lg p-4"
-            >
-              No Upcoming Webinars!
-            </div>
-          )}
+              >
+                No Upcoming Webinars!
+              </div>
+            )
+          }
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
               <button
@@ -418,7 +461,7 @@ function Webinars() {
   );
 }
 
-function WebinarCard({ webinar }) {
+const WebinarCard = React.memo(({ webinar }) => {
   const navigate = useNavigate();
 
   const calculate = (date) => {
@@ -426,6 +469,14 @@ function WebinarCard({ webinar }) {
     return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
   };
 
+  const handleWhatsapp = () => {
+    console.log(webinar.creator)
+    axios.get(`http://localhost:3000/getWhatsappNumber/${webinar.creator.id}`).then((res) => {
+      console.log(res.data)
+      window.open(`https://wa.me/${res.data}`)
+    })
+
+  }
   return (
     <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col md:flex-row lg:w-10/12 xl:w-11/12">
       <div className="flex items-center justify-center px-1 w-full md:w-6/12 lg:max-w-96">
@@ -465,7 +516,10 @@ function WebinarCard({ webinar }) {
               >
                 Register for Webinar
               </button>
-              <button className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center">
+              <button className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center"
+                onClick={handleWhatsapp
+                }
+              >
                 <FaWhatsapp className="w-5 h-5 mr-2" />
                 <span>Talk to Mentor</span>
               </button>
@@ -475,7 +529,7 @@ function WebinarCard({ webinar }) {
       </div>
     </div>
   );
-}
+});
 
 function DataFetchLoading() {
   return (

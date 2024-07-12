@@ -47,8 +47,8 @@ function CreateWebinar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await axios.post(
-      "http://localhost:3000/create-webinar",
-      // `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
+      // "http://localhost:3000/create-webinar",
+      `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
       {
         mail: user.email,
         webinar,
