@@ -47,8 +47,8 @@ function CreateWebinar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await axios.post(
-      "http://localhost:3000/create-webinar",
-      // `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
+      // "http://localhost:3000/create-webinar",
+      `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
       {
         mail: user.email,
         webinar,
@@ -395,7 +395,7 @@ function CreateWebinar() {
             </button>
           </div>
 
-          <div className="flex items-center  text-center px-4 my-2">
+          <div className="flex items-start sm:items-center flex-col sm:flex-row text-center px-4 my-2">
             <div className="flex items-center justify-center">
               <input
                 value={webinar.isPaid}
@@ -418,7 +418,7 @@ function CreateWebinar() {
               </label>
             </div>
             {webinar.isPaid && (
-              <div className="flex items-center mx-5">
+              <div className="flex items-center sm:mx-5">
                 <label htmlFor="price" className="text-gray-800 font-semibold ">
                   Price
                 </label>

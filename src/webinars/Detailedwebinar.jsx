@@ -35,26 +35,23 @@ function Detailedwebinar() {
   }
   useEffect(() => {
     const loginUser = JSON.parse(localStorage.getItem("user"));
+      async function getUserData() {
+        if(loginUser){
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`)
+          setUser(response.data)
+        }
+      }
 
-    loginUser &&
-      axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`)
-        .then((res) => {
-          console.log(res.data);
-          setUser(res.data);
-        });
-    // .then(() => {
-
-    if (id) {
-      axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`)
-        .then((res) => {
-          console.log(res.data);
-          setWebinar(res.data.webinar);
-          setMentor(res.data.mentor);
-        });
-    }
-    // })
+      async function getWebinar() {
+        if(id && loginUser){
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`)
+          setWebinar(response.data.webinar)
+          setMentor(response.data.mentor)
+        }
+      }
+     
+    loginUser && getUserData()
+    user && getWebinar();
   }, [id]);
 
   if (!webinar) {
@@ -135,16 +132,16 @@ function Detailedwebinar() {
   }
 
   const handleRegister = async () => {
-    if (webinar.isPaid && user) {
+    const u = JSON.parse(localStorage.getItem("user"))
+    if (webinar.isPaid && u) {
       setRegisterModal(true);
-    } else if (user) {
+    } else if (u) {
       await axios
         .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
-          mail: user.email,
+          mail: u.email,
           webinarId: webinar._id,
         })
         .then((res) => {
-          console.log(res.data);
           setWebinar((prevWebinar) => ({
             ...prevWebinar,
             participants: [...prevWebinar.participants, user._id],
