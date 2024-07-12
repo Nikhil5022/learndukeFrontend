@@ -138,17 +138,17 @@ export default function Body() {
 
     const timeoutId = setTimeout(() => {
       const fetchJobs = async () => {
-        setLoading(true);
+        firstTimeFetch && setLoading(true);
         try {
-          if (
-            searchTitle === "" &&
-            searchLocation === "" &&
-            selectedFilter === "All" &&
-            selectedDomains.length === 0 &&
-            selectedEducations.length === 0
-          ) {
-            setNewTutorialJobs([]);
-          }
+          // if (
+          //   searchTitle === "" &&
+          //   searchLocation === "" &&
+          //   selectedFilter === "All" &&
+          //   selectedDomains.length === 0 &&
+          //   selectedEducations.length === 0
+          // ) {
+          //   // setNewTutorialJobs([]);
+          // }
           const response = await axios.get(
             `${import.meta.env.VITE_SERVER_URL}/getReviewedJobs`,
             {

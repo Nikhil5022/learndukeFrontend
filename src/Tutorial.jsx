@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-export default function Tutorial({
+
+const Tutorial = React.memo(({
   imageLink,
   userName,
   title,
@@ -28,7 +29,7 @@ export default function Tutorial({
   responsibilities,
   tags,
   id,
-}) {
+}) => {
   const navigate = useNavigate();
   const borderColor = "#4D4C5C";
   const [user, setUser] = useState(null);
@@ -212,4 +213,5 @@ export default function Tutorial({
       )}
     </div>
   );
-}
+})
+export default Tutorial
