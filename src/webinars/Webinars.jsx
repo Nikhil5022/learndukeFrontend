@@ -471,7 +471,7 @@ const WebinarCard = React.memo(({ webinar }) => {
 
   const handleWhatsapp = () => {
     console.log(webinar.creator)
-    axios.get(`http://localhost:3000/getWhatsappNumber/${webinar.creator.id}`).then((res) => {
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/getWhatsappNumber/${webinar.creator.id}`).then((res) => {
       console.log(res.data)
       window.open(`https://wa.me/${res.data}`)
     })
