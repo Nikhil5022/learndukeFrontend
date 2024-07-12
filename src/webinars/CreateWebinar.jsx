@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import { MdDelete } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
 import { ImCross } from "react-icons/im";
+import Loader from "../Loader";
 
 function CreateWebinar() {
   const initialWebinarState = {
@@ -36,6 +37,8 @@ function CreateWebinar() {
   });
   const navigate = useNavigate();
   const [successModal, setSuccessModal] = useState(false);
+  const [submitModal, setSubmitModal] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -46,6 +49,11 @@ function CreateWebinar() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitModal(true);
+  };
+
+  const handleModalSubmit = async () => {
+    setLoading(true)
     const res = await axios.post(
       // "http://localhost:3000/create-webinar",
       `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
@@ -54,19 +62,13 @@ function CreateWebinar() {
         webinar,
       }
     );
-
     console.log(res.data);
     setWebinar(initialWebinarState);
     if (res.status === 200) {
-      // need to open the res.data link
-
-      window.open(res.data, "_blank");
-      // setSuccessModal(true)
+      setLoading(false);
+      window.location.href = res.data
     }
-    // else{
-    //   setFailureModal(true)
-    // }
-  };
+  }
 
   const handleTopicChange = (index, value) => {
     const newTopics = webinar.topics.map((topic, i) =>
@@ -114,7 +116,11 @@ function CreateWebinar() {
     "Exclusive Discount on all our 1:1 mentorship programs",
   ];
 
-  return (
+  return loading ? 
+  <div className="h-96 flex items-center justify-center">
+  <Loader /> 
+  </div>
+  : (
     <div className="w-full p-4">
       <div className="flex justify-end ">
         <button onClick={() => {
@@ -486,6 +492,38 @@ function CreateWebinar() {
           </div>
         </Modal>
       )}
+      {
+        submitModal && (
+          <Modal
+            isOpen={submitModal}
+            onClose={() => setSubmitModal(false)}
+          >
+            <div className="flex flex-col items-center justify-center text-lg text-center">
+              <h1 className="border-b border-black font-semibold text-lg mb-3" >NOTE</h1>
+              <h1 className="text-lg text-center p-1">
+                You need to login via google to generate meet link and 
+                add event to your calender. 
+                </h1>
+              <div>
+                <button
+                  className="p-2 border-orange-500 rounded-xl shadow-md border-2 m-3"
+                  onClick={() => 
+                    setSubmitModal(false)
+                  }
+                >
+                  Cancel
+                </button>
+                <button
+                  className="p-2 shadow-md border-2 border-orange-500 bg-orange-500 text-white rounded-xl m-3"
+                  onClick={handleModalSubmit}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )
+      }
     </div>
   );
 }
