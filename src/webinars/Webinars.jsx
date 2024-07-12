@@ -434,12 +434,12 @@ function Webinars() {
                 });
               }}
             >
-              <MdPayment className="w-5 h-5 mr-2" />
+              <MdPayment className="w-5 h-5 mr-2 mt-2 sm:mt-0" />
               Pay to Activate
             </button>
           </div>
         </Modal>
-      )}
+      )} 
       {mentorData && (
         <div
           className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
