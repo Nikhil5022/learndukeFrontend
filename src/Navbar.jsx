@@ -69,7 +69,7 @@ export default function Navbar() {
             setIsPremium(response.data.isPremium);
           });
         setUser({ email, name, accessToken });
-        navigate("/teachingjobs");
+        navigate("/jobs");
       } else {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -137,7 +137,7 @@ export default function Navbar() {
           <div
             className="cursor-pointer hover:underline"
             onClick={() => {
-              navigate("/teachingjobs");
+              navigate("/jobs");
             }}
           >
             Explore Jobs
@@ -244,7 +244,7 @@ export default function Navbar() {
                   <div
                     className="text-base font-semibold mb-4 cursor-pointer p-1"
                     onClick={() => {
-                      navigate("/teachingjobs");
+                      navigate("/jobs");
                       setShowMenu(false);
                     }}
                   >
@@ -323,7 +323,7 @@ export default function Navbar() {
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
                       onClick={() => {
-                        navigate("/teachingjobs")
+                        navigate("/jobs")
                         setShowMenu(false)}
                       }
                     >

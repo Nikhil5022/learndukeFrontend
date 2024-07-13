@@ -24,7 +24,7 @@ export default function Footer() {
             <div className="text-xl font-semibold my-5">Resources</div>
             <div className="font-normal hover:underline my-3"
               onClick={() => {
-                navigator("/teachingjobs");
+                navigator("/jobs");
               }}
             >
               Find Your Remote and offline Job
