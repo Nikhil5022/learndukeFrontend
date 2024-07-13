@@ -11,7 +11,7 @@ import { GiSandsOfTime } from "react-icons/gi";
 import { TiTick } from "react-icons/ti";
 import { IoMdUndo } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 import Modal from "../Modal";
 
 function Detailedwebinar() {
@@ -35,23 +35,27 @@ function Detailedwebinar() {
   }
   useEffect(() => {
     const loginUser = JSON.parse(localStorage.getItem("user"));
-      async function getUserData() {
-        if(loginUser){
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`)
-          setUser(response.data)
-        }
+    async function getUserData() {
+      if (loginUser) {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`
+        );
+        setUser(response.data);
       }
+    }
 
-      async function getWebinar() {
-        if(id && loginUser){
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`)
-          setWebinar(response.data.webinar)
-          setMentor(response.data.mentor)
-        }
+    async function getWebinar() {
+      if (id && loginUser) {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`
+        );
+        setWebinar(response.data.webinar);
+        setMentor(response.data.mentor);
       }
-     
-    loginUser && getUserData()
-    getWebinar()
+    }
+
+    loginUser && getUserData();
+    getWebinar();
   }, [id]);
 
   if (!webinar) {
@@ -132,7 +136,7 @@ function Detailedwebinar() {
   }
 
   const handleRegister = async () => {
-    const u = JSON.parse(localStorage.getItem("user"))
+    const u = JSON.parse(localStorage.getItem("user"));
     if (webinar.isPaid && u) {
       setRegisterModal(true);
     } else if (u) {
@@ -427,13 +431,25 @@ function Detailedwebinar() {
 
               <div>
                 <div className="text-white bg-blue-500 p-2 text-center rounded-t-xl font-semibold">
-                  Book a Free Trial
+                  Connect with Mentor directly
                 </div>
                 <div className="text-center text-sm border border-blue-500 p-2 rounded-b-xl bg-blue-100">
-                  <span>
-                    Next available:{" "}
-                    <span className="text-green-500">Tomorrow</span>
-                  </span>
+                  <div>
+                    <button
+                      onClick={() => {
+                        window.open(
+                          // call
+                          `tel:${mentor.phoneNumber}`,
+                          "_blank"
+                        );
+                      }}
+                      className="flex justify-center items-center space-x-2 w-full rounded-lg"
+                    >
+                      {" "}
+                      <FaPhoneAlt className="text-md mt-0.5" />
+                      <span>Call</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
