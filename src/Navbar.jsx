@@ -156,7 +156,7 @@ export default function Navbar() {
               navigate("/webinars");
             }}
           >
-            Webinars
+            Webinars 
           </div> */}
           <div
             className="cursor-pointer hover:underline w-fit p-1 relative"
