@@ -153,7 +153,7 @@ const Tutorial = React.memo(({
             )}
           </div>
         </div>
-        <div className="flex space-x-3 md:space-x-8">
+        <div className="flex space-x-3 md:space-x-8 mt-3 md:mt-0">
           <button
             onClick={handleCallNow}
             className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
