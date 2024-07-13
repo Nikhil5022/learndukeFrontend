@@ -174,7 +174,7 @@ export default function Subscription() {
       className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500"
       style={{ height: "70vh" }}
     >
-      Please login to view subscription plans.
+      Please login with google to view subscription plans.
     </div>
   );
 }

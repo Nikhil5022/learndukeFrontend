@@ -201,7 +201,7 @@ const Tutorial = React.memo(({
               onClick={handleGoogleLogin}
             >
               <FcGoogle className="text-xl mr-2 mt-0.5" />
-              <div>Login</div>
+              <div>Login with Google</div>
             </button>
           </div>
         </Modal>

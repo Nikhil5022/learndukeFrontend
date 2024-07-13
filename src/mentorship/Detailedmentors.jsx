@@ -440,13 +440,13 @@ function Detailedmentors() {
             </div>
             {
               <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                <div className="flex flex-col items-center justify-center text-lg">Please login to connect with mentor
+                <div className="flex flex-col items-center justify-center text-lg">Please login with google to connect with mentor
                 <button
             className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
             onClick={handleGoogleLogin}
           >
             <FcGoogle className=" text-xl mr-2 mt-0.5" />
-            <div>Login</div>
+            <div>Login with google</div>
           </button>
                 </div>
               </Modal>
