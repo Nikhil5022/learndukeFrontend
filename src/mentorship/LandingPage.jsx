@@ -292,7 +292,7 @@ fetchData();
             onClick={handleGoogleLogin}
           >
             <FcGoogle className=" text-xl mr-2 mt-0.5" />
-            <div>Login</div>
+            <div>Login with google</div>
           </button>
             </div>
           </div>
