@@ -65,9 +65,10 @@ function CreateWebinar() {
     console.log(res.data);
     setWebinar(initialWebinarState);
     if (res.status === 200) {
-      setLoading(false);
+      
       window.location.href = res.data
     }
+    setLoading(false);
   }
 
   const handleTopicChange = (index, value) => {
