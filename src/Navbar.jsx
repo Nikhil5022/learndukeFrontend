@@ -27,19 +27,18 @@ export default function Navbar() {
     if (storedUser) {
       const userdata = JSON.parse(storedUser);
       axios
-        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/${userdata.email}`)
+        .get(
+          `${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/${userdata.email}`
+        )
         .then((response) => {
-          if(response.data===""){
+          if (response.data === "") {
             localStorage.removeItem("user");
             setUser(null);
             window.location.reload();
-            
           }
           setPhoto(response.data.profilephoto.url);
         });
     }
-
-    
   }, []);
 
   useEffect(() => {
@@ -96,7 +95,9 @@ export default function Navbar() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_SERVER_DEPLOY_URL}/auth/google`;
+    window.location.href = `${
+      import.meta.env.VITE_SERVER_DEPLOY_URL
+    }/auth/google`;
   };
 
   const handleLogout = () => {
@@ -220,121 +221,122 @@ export default function Navbar() {
           <div className="absolute top-0 w-full left-0  rounded-lg h-dvh backdrop-blur-sm z-10 flex flex-col lg:hidden animate-slide-left">
             <div
               ref={clickoutside}
-              className="relative bg-white w-4/6 sm:w-3/6 md:max-w-80 h-full p-5"
+              className="relative bg-white w-4/6 sm:w-3/6 md:max-w-80 h-full overflow-y-scroll p-5"
               style={{
                 boxShadow: "10px 0 50px 30px rgba(0,0,0,0.1)",
               }}
             >
               {user ? (
-                <div className="h-10/12">
-                  <div
-                    className="flex items-center mb-4 cursor-pointer"
-                    onClick={() => {
-                      navigate("/userpage");
-                      setShowMenu(false);
-                    }}
-                  >
-                    <img
-                      src={photo}
-                      alt="User"
-                      className="w-8 h-8 rounded-full mr-2"
-                    />
-                    <div className="font-semibold">{user.name}</div>
-                  </div>
-                  <div
-                    className="text-base font-semibold mb-4 cursor-pointer p-1"
-                    onClick={() => {
-                      navigate("/jobs");
-                      setShowMenu(false);
-                    }}
-                  >
-                    Explore Jobs
-                  </div>
-                  <div
-                    className="text-base font-semibold  mb-4 cursor-pointer p-1"
-                    onClick={() => {
-                      navigate("/mentorship");
-                      setShowMenu(false);
-                    }}
-                  >
-                    Mentorship
-                  </div>
-                  {/* <div
+                <div className="h-full flex flex-col justify-between ">
+                  <div className="">
+                    <div
+                      className="flex items-center mb-4 cursor-pointer"
+                      onClick={() => {
+                        navigate("/userpage");
+                        setShowMenu(false);
+                      }}
+                    >
+                      <img
+                        src={photo}
+                        alt="User"
+                        className="w-8 h-8 rounded-full mr-2"
+                      />
+                      <div className="font-semibold">{user.name}</div>
+                    </div>
+                    <div
+                      className="text-base font-semibold mb-4 cursor-pointer p-1"
+                      onClick={() => {
+                        navigate("/jobs");
+                        setShowMenu(false);
+                      }}
+                    >
+                      Explore Jobs
+                    </div>
+                    <div
+                      className="text-base font-semibold  mb-4 cursor-pointer p-1"
+                      onClick={() => {
+                        navigate("/mentorship");
+                        setShowMenu(false);
+                      }}
+                    >
+                      Mentorship
+                    </div>
+                    {/* <div
                     className="text-base font-semibold  mb-4 cursor-pointer p-1"
                     onClick={() => {
                       navigate("/webinars");
                       setShowMenu(false);
                     }}
-                  >
-                  Webinars
-                  </div> */}
-                  <div
-                    className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
-                    onClick={() => {
-                      isPremium
-                        ? window.open("https://tally.so/r/wgAK0M", "blank")
-                        : setShowModal(true);
-                      setShowMenu(false);
-                    }}
-                  >
-                    1:1 Mentorship
-                    <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
-                      PRO
-                    </span>
-                  </div>
-                  <div
-                    className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative "
-                    onClick={() => {
-                      setShowMenu(false);
-                      isPremium
-                        ? window.open("https://tally.so/r/mOPO5k", "blank")
-                        : setShowModal(true);
-                    }}
-                  >
-                    Mock Interview
-                    <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
-                      PRO
-                    </span>
-                  </div>
-                  <div
-                    className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
-                    onClick={() => {
-                      isPremium
-                        ? window.open("https://tally.so/r/wAJ1Lo", "blank")
-                        : setShowModal(true);
-                      setShowMenu(false);
-                    }}
-                  >
-                    Resume Building
-                    <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
-                      PRO
-                    </span>
+                    >
+                    Webinars
+                    </div> */}
+                    <div
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
+                      onClick={() => {
+                        isPremium
+                          ? window.open("https://tally.so/r/wgAK0M", "blank")
+                          : setShowModal(true);
+                        setShowMenu(false);
+                      }}
+                    >
+                      1:1 Mentorship
+                      <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
+                        PRO
+                      </span>
+                    </div>
+                    <div
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative "
+                      onClick={() => {
+                        setShowMenu(false);
+                        isPremium
+                          ? window.open("https://tally.so/r/mOPO5k", "blank")
+                          : setShowModal(true);
+                      }}
+                    >
+                      Mock Interview
+                      <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
+                        PRO
+                      </span>
+                    </div>
+                    <div
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
+                      onClick={() => {
+                        isPremium
+                          ? window.open("https://tally.so/r/wAJ1Lo", "blank")
+                          : setShowModal(true);
+                        setShowMenu(false);
+                      }}
+                    >
+                      Resume Building
+                      <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
+                        PRO
+                      </span>
+                    </div>
                   </div>
                   <button
-                    className="py-2 mx-auto  bottom-5 left-4 w-full rounded-lg font-semibold bg-orange-500 text-white"
+                    className="py-2 rounded-lg font-semibold bg-orange-500 text-white"
                     onClick={handleLogout}
                   >
                     Logout
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col justify-between h-full">
                   <div className="h-10/12 ">
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
                       onClick={() => {
-                        navigate("/jobs")
-                        setShowMenu(false)}
-                      }
+                        navigate("/jobs");
+                        setShowMenu(false);
+                      }}
                     >
                       Explore Jobs
                     </div>
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
-                      onClick={() =>
-                        {
-                          setShowMenu(false)
-                        navigate("/mentorship")
+                      onClick={() => {
+                        setShowMenu(false);
+                        navigate("/mentorship");
                       }}
                     >
                       Mentorship
