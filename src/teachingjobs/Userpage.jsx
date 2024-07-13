@@ -72,7 +72,7 @@ export default function UserPage() {
   useEffect(() => {
     if (user && user.email) {
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/${user.email}`)
         .then((response) => {
           if (response.data === "") {
             localStorage.removeItem("user");
@@ -84,7 +84,7 @@ export default function UserPage() {
           setIsPremium(response.data.isPremium);
           setSelectedDomains(response.data.jobAllerts);
           axios
-            .get(`${import.meta.env.VITE_SERVER_URL}/getJobs/${user.email}`)
+            .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getJobs/${user.email}`)
 
             .then((jobsResponse) => {
               setJobs(jobsResponse.data);
@@ -98,7 +98,7 @@ export default function UserPage() {
 
       axios
         .get(
-          `${import.meta.env.VITE_SERVER_URL}/getSubscriptions/${user.email}`
+          `${import.meta.env.VITE_SERVER_DEPLOY_URL}/getSubscriptions/${user.email}`
         )
         .then((response) => {
           setActiveSubscriptions(response.data);
@@ -110,7 +110,7 @@ export default function UserPage() {
 
   const handleDelete = (jobId) => {
     axios
-      .delete(`${import.meta.env.VITE_SERVER_URL}/deleteJob/${jobId}`)
+      .delete(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/deleteJob/${jobId}`)
       .then((response) => {
         setJobs(jobs.filter((job) => job._id !== jobId));
       })
@@ -138,7 +138,7 @@ export default function UserPage() {
     });
 
     axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/jobAlerts/${user.email}`, {
+      .post(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/jobAlerts/${user.email}`, {
         jobAlerts: uniqueJobAlerts,
       })
       .then((response) => {
@@ -208,7 +208,7 @@ export default function UserPage() {
       return;
     }
     axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/editUserData/${user.email}`, {
+      .post(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/editUserData/${user.email}`, {
         userData,
         imageChange,
       })

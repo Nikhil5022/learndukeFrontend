@@ -35,7 +35,7 @@ export default function Detailedjob() {
    async function isPremiumCheck() {
     if (user) {
       await axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/premiumCheck/${user.email}`)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/premiumCheck/${user.email}`)
         .then((response) => {
           setIsPremium(response.data);
           setIsLogin(true);
@@ -54,7 +54,7 @@ export default function Detailedjob() {
     const jobId = window.location.pathname.split("/").pop();
 
     axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/getJobById/${jobId}`)
+      .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getJobById/${jobId}`)
       .then((response) => {
         if (response.status === 200) {
           setPhoto(response.data.imageLink);
@@ -69,7 +69,7 @@ export default function Detailedjob() {
       });
 
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getSimilarJobs/${jobId}`)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getSimilarJobs/${jobId}`)
         .then((response) => {
           setSimilarJobs(response.data);
           // Check if there are similar jobs
@@ -114,7 +114,7 @@ export default function Detailedjob() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
+    window.location.href = `${import.meta.env.VITE_SERVER_DEPLOY_URL}/auth/google`;
   };
 
   const splitTextIntoBullets = (text) => {

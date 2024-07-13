@@ -72,7 +72,7 @@ export default function Subscription() {
   useEffect(() => {
     if (user) {
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/${user.email}`)
         .then((response) => {
           setUserData(response.data);
         });
@@ -87,7 +87,7 @@ export default function Subscription() {
   const handlePayment =  (name) => {
     const isMentor=false;
     if(userData){
-      window.location.href = `${import.meta.env.VITE_SERVER_URL}/pay/${name}/${userData.email}/${isMentor}`;
+      window.location.href = `${import.meta.env.VITE_SERVER_DEPLOY_URL}/pay/${name}/${userData.email}/${isMentor}`;
       
     }
 };

@@ -58,7 +58,7 @@ export default function Teachingjobs() {
 
     if (user) {
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/` + user.email)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/` + user.email)
         .then((res) => {
 
           if(res.data === ""){

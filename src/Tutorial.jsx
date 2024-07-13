@@ -45,7 +45,7 @@ const Tutorial = React.memo(({
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${userData.email}`)
+        .get(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/getUser/${userData.email}`)
         .then((userResponse) => {
           setUser(userResponse.data);
           setIsPremium(userResponse.data.isPremium);
@@ -86,7 +86,7 @@ const Tutorial = React.memo(({
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
+    window.location.href = `${import.meta.env.VITE_SERVER_DEPLOY_URL}/auth/google`;
   };
 
   const handleJobClick = () => {

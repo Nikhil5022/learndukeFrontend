@@ -18,7 +18,7 @@ export default function ResponsiveComponent() {
 
     
     
-    const { data } = await axios.post(`${import.meta.env.VITE_SERVER_URL}/checkout`, {
+    const { data } = await axios.post(`${import.meta.env.VITE_SERVER_DEPLOY_URL}/checkout`, {
       amount: 999,
     });
 
@@ -30,7 +30,7 @@ export default function ResponsiveComponent() {
       description: "Tutorial of RazorPay",
       image: image,
       order_id: data.order.id,
-      callback_url: `${import.meta.env.VITE_SERVER_URL}/verify/payment/${user.email}`,
+      callback_url: `${import.meta.env.VITE_SERVER_DEPLOY_URL}/verify/payment/${user.email}`,
       prefill: {
         name: user.name ? user.name : "Sample User",
         email: user.email ? user.email : "Sample@gmail.com",
