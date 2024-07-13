@@ -5,14 +5,14 @@ import {
   FaWhatsapp,
   FaMapMarkerAlt,
   FaBriefcase,
-
 } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-export default function Tutorial({
+
+const Tutorial = React.memo(({
   imageLink,
   userName,
   title,
@@ -28,7 +28,7 @@ export default function Tutorial({
   responsibilities,
   tags,
   id,
-}) {
+}) => {
   const navigate = useNavigate();
   const borderColor = "#4D4C5C";
   const [user, setUser] = useState(null);
@@ -45,9 +45,8 @@ export default function Tutorial({
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${userData.email}`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${userData.email}`)
         .then((userResponse) => {
-          
           setUser(userResponse.data);
           setIsPremium(userResponse.data.isPremium);
         })
@@ -87,7 +86,7 @@ export default function Tutorial({
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   const handleJobClick = () => {
@@ -102,9 +101,9 @@ export default function Tutorial({
   return (
     <div>
       <div
-        className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard `}
+        className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard min-h-72 flex flex-col justify-between`}
       >
-        <div onClick={handleJobClick}>
+        <div onClick={handleJobClick} className="flex-grow">
           <div className="flex items-center mb-1">
             <img
               src={
@@ -129,9 +128,9 @@ export default function Tutorial({
               <div>{description}</div>
             )}
           </div>
-          <div className="flex flex-wrap mt-1 space-x-1 sm:space-x-3">
+          <div className="flex flex-wrap space-x-1 sm:space-x-3">
             <div
-              className={`border-2 border-${borderColor}  rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
+              className={`border-2 border-${borderColor} rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
             >
               <FaWallet className="w-4 h-4 mr-1 text-gray-400" />
               <span>
@@ -139,24 +138,22 @@ export default function Tutorial({
               </span>
             </div>
             <div
-              className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold items-center mt-3  rounded-lg flex text-center`}
+              className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold items-center mt-3 rounded-lg flex text-center`}
             >
               <FaBriefcase className="w-4 h-4 mr-2 text-gray-400" />
               {jobType}
             </div>
-            <div className="">
-              {jobType !== "Remote" && (
-                <div
-                  className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold mt-3  rounded-lg flex items-center flex-wrap`}
-                >
-                  <FaMapMarkerAlt className="w-4 h-4 mr-2 text-gray-400" />
-                  {location}
-                </div>
-              )}
-            </div>
+            {jobType !== "Remote" && (
+              <div
+                className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold mt-3 rounded-lg flex items-center flex-wrap`}
+              >
+                <FaMapMarkerAlt className="w-4 h-4 mr-2 text-gray-400" />
+                {location}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex mt-4 space-x-3 md:space-x-8">
+        <div className="flex space-x-3 md:space-x-8 mt-3 md:mt-0">
           <button
             onClick={handleCallNow}
             className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
@@ -188,8 +185,7 @@ export default function Tutorial({
                   window.location.href = "/subscription";
                 }}
               >
-                <MdOutlineWorkspacePremium className=" text-xl" />
-
+                <MdOutlineWorkspacePremium className="text-xl" />
                 <div> Upgrade to Premium</div>
               </button>
             )}
@@ -201,15 +197,17 @@ export default function Tutorial({
           <div className="flex flex-col justify-center items-center">
             <p>You need to login to connect with the user.</p>
             <button
-            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
-            onClick={handleGoogleLogin}
-          >
-            <FcGoogle className=" text-xl mr-2 mt-0.5" />
-            <div>Login</div>
-          </button>
+              className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+              onClick={handleGoogleLogin}
+            >
+              <FcGoogle className="text-xl mr-2 mt-0.5" />
+              <div>Login with Google</div>
+            </button>
           </div>
         </Modal>
       )}
     </div>
   );
-}
+});
+
+export default Tutorial;

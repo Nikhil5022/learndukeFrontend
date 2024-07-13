@@ -81,7 +81,7 @@ function LandingPage() {
   setUser(u)
   if (u && u.email) {
     await axios
-      .get("https://learndukeserver.vercel.app/isAlreadyMentor/" + u.email)
+      .get(`${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/` + u.email)
       .then((res) => {
         if (res.data.success === true) {
           setIsAlreadyMentor(true);
@@ -97,7 +97,7 @@ fetchData();
 }, []);
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://learndukeserver.vercel.app/auth/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   }
   return (
     <div className="relative flex items-center justify-center flex-col  py-2">
@@ -285,7 +285,7 @@ fetchData();
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <div className="text-xl flex flex-col space-y-3 items-center justify-center">
-            <div>Please login to become a mentor</div>
+            <div>Please login with google to become a mentor</div>
             <div>
             <button
             className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"

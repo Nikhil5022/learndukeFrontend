@@ -58,7 +58,7 @@ export default function Teachingjobs() {
 
     if (user) {
       axios
-        .get("https://learndukeserver.vercel.app/getUser/" + user.email)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/` + user.email)
         .then((res) => {
 
           if(res.data === ""){
@@ -69,7 +69,7 @@ export default function Teachingjobs() {
 
           setUserData(res.data);
           if (res.data.isPremium) {
-            navigate("/teachingJobs");
+            navigate("/jobs");
           }
         });
     }
@@ -113,7 +113,7 @@ export default function Teachingjobs() {
               <button
                 className="w-full border border-blue-500 py-4 text-blue-500 hover:border-2 hover-scale-up"
                 data-aos="slide-left"
-                onClick={() => navigate("/teachingjobs")}
+                onClick={() => navigate("/jobs")}
               >
                 Explore Jobs
               </button>
@@ -238,7 +238,7 @@ export default function Teachingjobs() {
               className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                navigate("/teachingjobs");
+                navigate("/jobs");
               }}
             >
               Find jobs now
@@ -327,7 +327,7 @@ export default function Teachingjobs() {
               className="bg-blue-500 text-white p-2 px-4 hover:scale-105"
               data-aos="fade-up"
               onClick={() => {
-                navigate("/teachingjobs");
+                navigate("/jobs");
               }}
             >
               Find jobs now

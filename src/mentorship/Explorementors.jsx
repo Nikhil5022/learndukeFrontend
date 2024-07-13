@@ -191,13 +191,10 @@ const subDomainOptions = [
 ];
 
 function Explorementors() {
-  const navigation = useNavigate();
-  const [mentors, setMentors] = useState([]);
   const [originalMentors, setOriginalMentors] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("All Domains");
   const [selectedSubDomains, setSelectedSubDomains] = useState([]);
   const [showSubDomains, setShowSubDomains] = useState(null);
-  const cardRefs = useRef([]);
   const subDomainDropdownRef = useRef(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [left, setLeft] = useState(0);
@@ -207,7 +204,6 @@ function Explorementors() {
   const [totalPages, setTotalPages] = useState(0);
   const [isFirstDomainClick, setIsFirstDomainClick] = useState(true);
   const [isFirstSearchClick, setIsFirstSearchClick] = useState(true);
-  const [isFirstSubDomainClick, setIsFirstSubDomainClick] = useState(true);
 
   useEffect(() => {
     // fetchJobs();
@@ -222,7 +218,7 @@ function Explorementors() {
 
   const fetchMentors = async () => {
     const response = await axios.get(
-      "https://learndukeserver.vercel.app/getMentor?page=" + page + "&limit=12"
+      `${import.meta.env.VITE_SERVER_URL}/getMentor?page=` + page + "&limit=12" 
     );
     setOriginalMentors((prevMentors) => [
       ...prevMentors,
@@ -290,15 +286,13 @@ function Explorementors() {
 
   useEffect(() => {
     const fetchFilteredMentors = async () => {
-
       if (isFirstDomainClick) {
         setPage(1);
         setIsFirstDomainClick(false);
       }
 
-
       const response = await axios.get(
-        "https://learndukeserver.vercel.app/getMentor?page=" +
+        `${import.meta.env.VITE_SERVER_URL}/getMentor?page=` +
           page +
           "&limit=12" +
           "&domain=" +
@@ -306,7 +300,6 @@ function Explorementors() {
           "&subDomain=" +
           selectedSubDomains
       );
-
       if (page === 1) {
         setFilteredMentors(response.data.mentors);
       } else {
@@ -350,7 +343,7 @@ function Explorementors() {
 
 
     const response = await axios.get(
-      `https://learndukeserver.vercel.app/getMentor?page=${page}&limit=12&search=${searchValue}`
+      `${import.meta.env.VITE_SERVER_URL}/getMentor?page=${page}&limit=12&search=${searchValue}`
     );
     if (page === 1) {
       setFilteredMentors(response.data.mentors);
@@ -367,31 +360,6 @@ function Explorementors() {
   const handleOnchange = (e) => {
     const searchValue = e.target.value.toLowerCase();
     setSearchTerm(searchValue);
-  };
-
-  const calculateHowManySkillsToShow = (skills, index) => {
-    const cardWidth = cardRefs.current[index]?.clientWidth || 0;
-    let remainingWidth = cardWidth;
-    const skillsToShow = [];
-
-    skills.forEach((skill) => {
-      const skillWidth = skill.length * 8; 
-      if (skillWidth < remainingWidth) {
-        skillsToShow.push(skill);
-        remainingWidth -= skillWidth + 8;
-      }
-    });
-
-    if(skills.length > skillsToShow.length) {
-
-      if(remainingWidth < 0) {
-        skillsToShow.pop();
-      }
-
-      
-      skillsToShow.push("...");
-    }
-    return skillsToShow;
   };
 
   return (
@@ -522,86 +490,19 @@ function Explorementors() {
             </div>
           )}
         </div>
-
-        <InfiniteScroll
-          dataLength={filteredMentors.length}
-          next={() => setPage((prevPage) => prevPage + 1)}
-          hasMore={page < totalPages}
-          loader={<Loader />}
-        >
+        <div>
+            <InfiniteScroll
+              dataLength={filteredMentors.length}
+              next={() => setPage((prevPage) => prevPage + 1)}
+              hasMore={page < totalPages}
+              loader={<Loader />}
+            >
           <div className="grid grid-cols-2 sm:grid-cols-3  xl:grid-cols-4 gap-5 md:gap-3 lg:gap-6 overflow-hidden md:p-3">
-            {filteredMentors.map((mentor, index) => (
-              <div
-                key={index}
-                className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col jobcard"
-                ref={(el) => (cardRefs.current[index] = el)}
-                onClick={() => {
-                  navigation(`/detailedmentor/${mentor._id}`);
-                }}
-              >
-                <div className="relative w-full" style={{ paddingTop: "100%" }}>
-                  <img
-                    src={mentor.profilePhoto.url || user2}
-                    alt="profile photo"
-                    className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
-                  />
-                  <div className="absolute inset-0"></div>
-                </div>
-                <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
-                  <div className="flex justify-between items-center">
-                    <div
-                      className="text-base font-semibold whitespace-nowrap"
-                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                    >
-                      {mentor.name}
-                    </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
-                      {mentor.experience} YOE
-                    </div>
-                    <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
-                      {mentor.experience} Y
-                    </div>
-                  </div>
-                  <div className="text-gray-500 text-sm whitespace-nowrap">
-                    Hourly Fees : ₹{mentor.hourlyFees}
-                  </div>
-                  <div
-                    className="flex"
-                    style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                  >
-                    <MdSchool className="mr-1" />
-                    <div
-                      className="flex"
-                      style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                    >
-                      <div
-                        className="flex w-full"
-                        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                      >
-                        {calculateHowManySkillsToShow(mentor.skills, index)
-                          .map((skill, skillIndex) => (
-                            <div
-                              key={skillIndex}
-                              className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
-                                skillIndex !== 0 && "ml-1"
-                              }`}
-                            >
-                              {skill}
-                              {skillIndex <
-                                calculateHowManySkillsToShow(
-                                  mentor.skills,
-                                  index
-                                ).length -
-                                  1 && <span className="text-gray-400">,</span>}
-                            </div>
-                          ))
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {filteredMentors.length > 0 && (filteredMentors.map((mentor, index) => (
+              <MentorCard mentor={mentor} key={index} index={index} />
+            )))}
+            </div>
+            </InfiniteScroll>
             {filteredMentors.length === 0 && onLoad === true && (
               <div className="text-center w-full col-span-full">
                 <div className="flex justify-center p-3">
@@ -613,7 +514,6 @@ function Explorementors() {
               </div>
             )}
           </div>
-        </InfiniteScroll>
       </div>
       {onLoad === false && (
         <div className="flex justify-center">
@@ -623,5 +523,107 @@ function Explorementors() {
     </div>
   );
 }
+
+const MentorCard = React.memo(({ mentor,index }) => {
+
+  const cardRefs = useRef([])
+  const navigation = useNavigate()
+
+  const calculateHowManySkillsToShow = (skills, index) => {
+
+    console.log("Fired" + index)
+    const cardWidth = (cardRefs.current[index]?.clientWidth || 150);
+    console.log(cardWidth)
+    let remainingWidth = cardWidth;
+    const skillsToShow = [];
+
+    skills.forEach((skill) => {
+      const skillWidth = skill.length * 8;
+      if (skillWidth < remainingWidth) {
+        skillsToShow.push(skill);
+        remainingWidth -= skillWidth + 8;
+      }
+    });
+
+    if (skills.length > skillsToShow.length) {
+      if (remainingWidth < 0) {
+        skillsToShow.pop();
+      }
+
+      skillsToShow.push("...");
+    }
+    return skillsToShow;
+  };
+
+
+  return (
+  <div
+    className="md:border border-gray-300 rounded-lg bg-white transition-shadow duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col jobcard"
+    ref={(el) => (cardRefs.current[index] = el)}
+    onClick={() => {
+      navigation(`/detailedmentor/${mentor._id}`);
+    }}
+  >
+    <div className="relative w-full" style={{ paddingTop: "100%" }}>
+      <img
+        src={mentor.profilePhoto.url || user2}
+        alt="profile photo"
+        className="absolute top-0 left-0 w-full h-full object-cover rounded-t-lg"
+      />
+      <div className="absolute inset-0"></div>
+    </div>
+    <div className="p-1 md:p-3 flex-grow space-y-1.5 mt-1">
+      <div className="flex justify-between items-center">
+        <div
+          className="text-base font-semibold whitespace-nowrap"
+          style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+        >
+          {mentor.name}
+        </div>
+        <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap hidden md:flex">
+          {mentor.experience} YOE
+        </div>
+        <div className="text-gray-600 bg-gray-200 px-1 rounded-md whitespace-nowrap md:hidden">
+          {mentor.experience} Y
+        </div>
+      </div>
+      <div className="text-gray-500 text-sm whitespace-nowrap">
+        Hourly Fees : ₹{mentor.hourlyFees}
+      </div>
+      <div
+        className="flex"
+        style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+      >
+        <MdSchool className="mr-1" />
+        <div
+          className="flex"
+          style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+        >
+          <div
+            className="flex w-full"
+            style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+          >
+            {calculateHowManySkillsToShow(mentor.skills, index).map(
+              (skill, skillIndex) => (
+                <div
+                  key={skillIndex}
+                  className={`rounded-md whitespace-nowrap text-gray-600 text-xs ${
+                    skillIndex !== 0 && "ml-1"
+                  }`}
+                >
+                  {skill}
+                  {skillIndex <
+                    calculateHowManySkillsToShow(mentor.skills, index).length -
+                      1 && <span className="text-gray-400">,</span>}
+                </div>
+              )
+            )}
+          </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  );
+});
 
 export default Explorementors;

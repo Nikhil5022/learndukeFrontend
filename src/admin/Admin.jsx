@@ -53,7 +53,7 @@ export default function Admin() {
   useEffect(() => {
     if (isLogged) {
       axios
-        .get("https://learndukeserver.vercel.app/getUsers")
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUsers`)
         .then((response) => {
           setUsers(response.data);
         })
@@ -62,7 +62,7 @@ export default function Admin() {
         });
 
       axios
-        .get("https://learndukeserver.vercel.app/getJobs") // Fetching job data
+        .get(`${import.meta.env.VITE_SERVER_URL}/getJobs`) // Fetching job data
         .then((response) => {
           setJobs(response.data);
         })
@@ -80,7 +80,7 @@ export default function Admin() {
       const updatedIsPremium = !user.isPremium;
 
       await axios
-        .post(`https://learndukeserver.vercel.app/updateUser/${user.email}`, {
+        .post(`${import.meta.env.VITE_SERVER_URL}/updateUser/${user.email}`, {
           isPremium: updatedIsPremium,
         })
         .then((response) => {
@@ -108,7 +108,7 @@ export default function Admin() {
   const handleLogin = async (event) => {
     event.preventDefault()
     axios
-      .post("https://learndukeserver.vercel.app/login", { email, password })
+      .post(`${import.meta.env.VITE_SERVER_URL}/login`, { email, password })
       .then((response) => {
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
@@ -161,7 +161,7 @@ export default function Admin() {
 
     try {
       const response = await axios.post(
-        `https://learndukeserver.vercel.app/approveJob/${selectedJob._id}` // Use template literal for clarity
+        `${import.meta.env.VITE_SERVER_URL}/approveJob/${selectedJob._id}` // Use template literal for clarity
       );
 
       emailjs
@@ -200,7 +200,7 @@ export default function Admin() {
   const handleReject = () => {
     // Logic for rejecting the job
     axios
-      .post("https://learndukeserver.vercel.app/rejectJob/" + selectedJob._id)
+      .post(`${import.meta.env.VITE_SERVER_URL}/rejectJob/` + selectedJob._id)
       .then((response) => {
 
         setJobs((prevJobs) =>
@@ -622,7 +622,7 @@ export default function Admin() {
                               onClick={() =>
                                 axios
                                   .post(
-                                    `https://learndukeserver.vercel.app/undoReview/${job._id}`
+                                    `${import.meta.env.VITE_SERVER_URL}/undoReview/${job._id}`
                                   )
                                   .then((response) => {
                                    
@@ -653,7 +653,7 @@ export default function Admin() {
                               onClick={() =>
                                 axios
                                   .post(
-                                    `https://learndukeserver.vercel.app/undoReject/${job._id}`
+                                    `${import.meta.env.VITE_SERVER_URL}/undoReject/${job._id}`
                                   )
                                   .then((response) => {
                                    
@@ -845,7 +845,7 @@ export default function Admin() {
               onClick={() => {
                 axios
                   .delete(
-                    `https://learndukeserver.vercel.app/deleteJob/${selectedJob._id}`
+                    `${import.meta.env.VITE_SERVER_URL}/deleteJob/${selectedJob._id}`
                   )
                   .then((response) => {
                     setJobs((prevJobs) =>

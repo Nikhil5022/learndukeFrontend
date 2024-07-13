@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Loader";
-import poster from "../assets/poster.webp";
 import { MdLiveTv } from "react-icons/md";
 import { MdEmergencyRecording } from "react-icons/md";
 import { IoDocumentSharp } from "react-icons/io5";
@@ -10,7 +9,10 @@ import { BsFillTagsFill } from "react-icons/bs";
 import { SlCalender } from "react-icons/sl";
 import { GiSandsOfTime } from "react-icons/gi";
 import { TiTick } from "react-icons/ti";
+import { IoMdUndo } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
+import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import Modal from "../Modal";
 
 function Detailedwebinar() {
   const { id } = useParams();
@@ -18,14 +20,7 @@ function Detailedwebinar() {
   const [mentor, setMentor] = useState(null);
   const [copy, setCopy] = useState(false);
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    axios.get(`http://localhost:3000/getUser/${user.email}`).then((res) => {
-      console.log(res.data);
-      setUser(res.data);
-    });
-  }, []);
+  const [registerModal, setRegisterModal] = useState(false);
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -35,26 +30,33 @@ function Detailedwebinar() {
     }, 2000);
   };
 
+  {
+    /* /* --------------------------changed------------------------------- */
+  }
   useEffect(() => {
-    if (id) {
-      axios.get(`http://localhost:3000/getWebinar/${id}`).then((res) => {
-        console.log(res.data);
-        setWebinar(res.data.webinar);
-        setMentor(res.data.mentor);
-      });
+    const loginUser = JSON.parse(localStorage.getItem("user"));
+    async function getUserData() {
+      if (loginUser) {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/getUser/${loginUser.email}`
+        );
+        setUser(response.data);
+      }
     }
-  }, [id]);
 
-  const handleRegister = () => {
-   
-    axios.post("http://localhost:3000/register-for-webinar", {
-      mail: user.email,
-      webinarId: id,
-    }).then((res) => {
-      console.log(res.data);
+    async function getWebinar() {
+      if (id && loginUser) {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`
+        );
+        setWebinar(response.data.webinar);
+        setMentor(response.data.mentor);
+      }
     }
-    );
-  };
+
+    loginUser && getUserData();
+    getWebinar();
+  }, [id]);
 
   if (!webinar) {
     return (
@@ -106,6 +108,52 @@ function Detailedwebinar() {
     },
   ];
 
+  {
+    /* /* --------------------------changed------------------------------- */
+  }
+
+  const handleUnregister = async () => {
+    user &&
+      (await axios
+        .post(`${import.meta.env.VITE_SERVER_URL}/unregister-for-webinar`, {
+          mail: user.email,
+          webinarId: id,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setWebinar((prev) => ({
+            ...prev,
+            participants: webinar.participants.filter(
+              (obj) => obj !== user._id
+            ),
+          }));
+        }));
+    console.log(webinar);
+  };
+
+  {
+    /* /* --------------------------changed------------------------------- */
+  }
+
+  const handleRegister = async () => {
+    const u = JSON.parse(localStorage.getItem("user"));
+    if (webinar.isPaid && u) {
+      setRegisterModal(true);
+    } else if (u) {
+      await axios
+        .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
+          mail: u.email,
+          webinarId: webinar._id,
+        })
+        .then((res) => {
+          setWebinar((prevWebinar) => ({
+            ...prevWebinar,
+            participants: [...prevWebinar.participants, user._id],
+          }));
+        });
+    }
+  };
+
   return (
     <div className="flex justify-center" style={{ backgroundColor: "#fafafa" }}>
       <div className="w-full lg:w-10/12 pt-5 md:pt-10 p-2">
@@ -117,26 +165,42 @@ function Detailedwebinar() {
             >
               {webinar.title}
             </div>
-            <div className="border border-gray-300 p-6 rounded-xl bg-white">
-              <img src={poster} alt="webinar" className="w-full h-auto" />
+            <div className="border border-gray-300 p-4 rounded-xl bg-white">
+              <img
+                src={webinar.photo.url}
+                alt="webinar"
+                className="w-full h-auto rounded-lg"
+              />
               <hr className="my-4" />
-              <div className="flex justify-between">
-                <div className="flex items-center space-x-5">
+              <div className="flex md:items-center md:justify-between flex-col sm:flex-row">
+                <div className="flex items-center space-x-3 w-full sm:w-9/12">
                   <img
                     src={mentor.profilePhoto.url}
                     alt=""
                     className="h-14 rounded-full"
                   />
-                  <div className="flex space-x-2">
-                    <div>{mentor.name}</div>
-                    <div className="text-sm border border-blue-400 text-blue-400 px-2 rounded-xl">
-                      Mentor
+                  <div className="flex flex-col items-start">
+                    <div className="flex space-x-2 items-center">
+                      <div className="text-lg font-semibold">{mentor.name}</div>
+                      <div className="text-xs border border-blue-400 text-blue-400 px-1 mt-1 rounded-2xl">
+                        Mentor
+                      </div>
                     </div>
+                    <div>Experience: {mentor.experience}</div>
                   </div>
                 </div>
-                <div>
-                  <button className="bg-black text-white p-3 rounded-lg">
-                    Book a FREE 1:1 Trial Session
+                <div className="flex sm:items-center">
+                  <button
+                    className="bg-green-200 text-green-700 border border-green-600 p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3 whitespace-nowrap flex justify-center items-center space-x-2"
+                    onClick={() => {
+                      window.open(
+                        `https://wa.me/${mentor.whatsappNumber}`,
+                        "_blank"
+                      );
+                    }}
+                  >
+                    <FaWhatsapp className="text-2xl" />
+                    <span>Connect with Mentor</span>
                   </button>
                 </div>
               </div>
@@ -151,7 +215,7 @@ function Detailedwebinar() {
                   <div key={index} className="mb-7">
                     <div className="font-semibold">{topic.name}</div>
                     <ul className="list-disc pl-5 text-gray-300 mt-3">
-                      {topic.description.map((desc, i) => (
+                      {topic.descriptions.map((desc, i) => (
                         <li
                           key={i}
                           style={{ color: "#3B4152" }}
@@ -164,23 +228,35 @@ function Detailedwebinar() {
                   </div>
                 ))}
               <hr className="my-4" />
-              <div className="flex justify-between mt-5">
-                <div className="flex items-center space-x-5">
+              <div className="flex md:items-center md:justify-between flex-col sm:flex-row">
+                <div className="flex items-center space-x-3 w-full sm:w-9/12 ">
                   <img
                     src={mentor.profilePhoto.url}
                     alt=""
                     className="h-14 rounded-full"
                   />
-                  <div className="flex space-x-2">
-                    <div>{mentor.name}</div>
-                    <div className="text-sm border border-blue-400 text-blue-400 px-2 rounded-xl">
-                      Mentor
+                  <div className="flex flex-col items-start">
+                    <div className="flex space-x-2 items-center">
+                      <div className="text-lg font-semibold">{mentor.name}</div>
+                      <div className="text-xs border border-blue-400 text-blue-400 px-1 mt-1 rounded-2xl">
+                        Mentor
+                      </div>
                     </div>
+                    <div>Experience: {mentor.experience}</div>
                   </div>
                 </div>
-                <div>
-                  <button className="bg-black text-white p-3 rounded-lg">
-                    Book a FREE 1:1 Trial Session
+                <div className="flex sm:items-center">
+                  <button
+                    className="bg-green-200 text-green-700 border border-green-600 p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3 whitespace-nowrap flex justify-center items-center space-x-2"
+                    onClick={() => {
+                      window.open(
+                        `https://wa.me/${mentor.whatsappNumber}`,
+                        "_blank"
+                      );
+                    }}
+                  >
+                    <FaWhatsapp className="text-2xl" />
+                    <span>Connect with Mentor</span>
                   </button>
                 </div>
               </div>
@@ -218,95 +294,134 @@ function Detailedwebinar() {
           </div>
           <div className="w-full md:w-2/6 mt-7 ">
             <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3">
-              <div className="text-sm font-semibold text-green-500">
-                Register for FREE Live Webinar
-              </div>
+              {/* /* --------------------------changed------------------------------- */}
+              {webinar.status !== "Past" && (
+                <div className="text-sm font-semibold text-green-500">
+                  Register for FREE Live Webinar
+                </div>
+              )}
               <div className="flex items-center text-lg">
                 <SlCalender />
                 <div className="ml-2">
                   <div className=" font-semibold">
+                    {/* /* --------------------------changed------------------------------- */}
                     {months[new Date(webinar.startTime).getMonth()]}{" "}
                     {new Date(webinar.startTime).getDate()} ,
-                    {new Date(webinar.startTime).getFullYear()}(
+                    {new Date(webinar.startTime).getFullYear()}
+                    {" | "}
                     {
-                      new Date(webinar.startTime)
-                        .toLocaleString("en-US", {
-                          timeZoneName: "short",
-                        })
-                        .split(" ")
-                        .pop() // Safely get the timezone part
+                      new Date(webinar.startTime).toLocaleString().substring(11) // Safely get the timezone part
                     }
-                    )
                   </div>
                 </div>
               </div>
               <div>
-                {/* <button className="bg-black text-white p-3 rounded-lg w-full"
-                  onClick={handleRegister}
-                >
-                  Register Now
-                </button> */}
-                {/* i already registered  */}
-               {webinar.participants.includes(user._id) ? (
-                  <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full">
-                    Registered
-                  </button>
+                {/* /* --------------------------changed------------------------------- */}
+                {webinar.status === "Past" ? (
+                  <div className="text-lg font-semibold">
+                    Webinar has already ended!
+                  </div>
                 ) : (
-                  <button
-                    className="bg-black text-white p-3 rounded-lg w-full"
-                    onClick={handleRegister}
-                  >
-                    Register Now
-                  </button>
-                )
-               }
-
+                  <div>
+                    {user && webinar.participants.includes(user._id) ? (
+                      webinar.status === "Live" ? (
+                        <button
+                          className="bg-blue-400 text-white p-3 rounded-lg w-full"
+                          onClick={() =>
+                            window.open(webinar.liveLink, "_blank")
+                          }
+                        >
+                          Join Webinar
+                        </button>
+                      ) : (
+                        <div className="flex md:flex-col flex-row">
+                          <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-10/12 md:w-full mx-1 md:my-2 md:mx-0">
+                            Registered
+                          </button>
+                          <button
+                            className="bg-red-200 text-red-700 border border-red-700 cursor-pointer py-3 rounded-lg w-2/12 md:w-full text-center flex items-center justify-center"
+                            onClick={handleUnregister}
+                          >
+                            Undo
+                            <span className="mx-1">
+                              <IoMdUndo />
+                            </span>
+                          </button>
+                        </div>
+                      )
+                    ) : (
+                      <button
+                        className="bg-black text-white p-3 rounded-lg w-full"
+                        onClick={handleRegister}
+                        disabled={!user}
+                      >
+                        Register Now
+                      </button>
+                    )}
+                  </div>
+                )}
+                {/* /* --------------------------changed------------------------------- */}
               </div>
-              <hr className="my-4" />
-              <div className="flex justify-between">
-                <div></div>
-                <div className="flex items-center space-x-2 text-orange-400">
-                  <GiSandsOfTime
-                    style={{
-                      animation: "spin 2s linear infinite",
-                    }}
-                    className=""
-                  />
-                  <span>Only Few Seats Left</span>
-                </div>
-              </div>
+              {webinar.status !== "Past" && (
+                <>
+                  <hr className="my-4" />
+                  <div className="flex justify-between">
+                    <div></div>
+                    <div className="flex items-center space-x-2 text-orange-400">
+                      <GiSandsOfTime
+                        style={{
+                          animation: "spin 2s linear infinite",
+                        }}
+                        className=""
+                      />
+                      <span>Only Few Seats Left</span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="bg-white p-5 m-5 rounded-lg border border-gray-300 flex flex-col space-y-3">
-              <div className="flex space-x-3">
-                <img
-                  src={mentor.profilePhoto.url}
-                  className="w-24 rounded-lg"
-                  alt=""
-                />
-                <div>{mentor.name}</div>
-              </div>
-              <div className="text-sm leading-tight text-gray-400">
-                "{mentor.description}"
+            <div className="bg-white p-3 m-5 rounded-lg border border-gray-300 flex flex-col space-y-2 ">
+              <div className="flex  items-center justify-between flex-col sm:flex-row md:flex-col">
+                <div className="flex flex-col space-x-2 w-10/12 sm:w-5/12 md:w-full items-center text-center justify-center">
+                  <img
+                    src={mentor.profilePhoto.url}
+                    className="rounded-lg w-64 sm:w-36 md:w-64 my-2"
+                    alt=""
+                  />
+                  <div className="text-xl md:text-2xl font-semibold  text-center">
+                    {mentor.name}
+                  </div>
+                </div>
+                <div className="text-sm font-semibold text-justify md:leading-tight md:tracking-tight text-gray-400 w-full sm:w-7/12  md:w-full  md:p-3">
+                  "{mentor.description}"
+                </div>
               </div>
               <hr className="my-4" />
               <div className="flex flex-wrap">
                 {mentor.skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="bg-gray-200 text-gray-500 px-2 py-1 rounded-lg m-1"
+                    className="bg-gray-200 text-gray-500 px-3 mx-1 py-1 rounded-lg m-1"
                   >
                     {skill}
                   </div>
                 ))}
               </div>
               <hr className="my-4" />
-              <div className="flex space-x-3 items-center">
-                <div className="flex items-center space-x-2">
-                  <div className="text-lg font-bold">₹{webinar.price}</div>{" "}
-                  <span className="text-sm text-gray-500">per month</span>
-                </div>
-                <div></div>
+              {/* /* --------------------------changed------------------------------- */}
+              <div className="my-2">
+                {webinar.isPaid && (
+                  <div className="flex space-x-3 items-center">
+                    <div className="flex items-center space-x-2">
+                      Price of Webinar :{" "}
+                      <span className="text-lg font-bold">
+                        {" "}
+                        ₹{webinar.price} /-
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <button className="text-black border border-gray-300 p-3 rounded-lg w-full">
@@ -316,13 +431,25 @@ function Detailedwebinar() {
 
               <div>
                 <div className="text-white bg-blue-500 p-2 text-center rounded-t-xl font-semibold">
-                  Book a Free Trial
+                  Connect with Mentor directly
                 </div>
                 <div className="text-center text-sm border border-blue-500 p-2 rounded-b-xl bg-blue-100">
-                  <span>
-                    Next available:{" "}
-                    <span className="text-green-500">Tomorrow</span>
-                  </span>
+                  <div>
+                    <button
+                      onClick={() => {
+                        window.open(
+                          // call
+                          `tel:${mentor.phoneNumber}`,
+                          "_blank"
+                        );
+                      }}
+                      className="flex justify-center items-center space-x-2 w-full rounded-lg"
+                    >
+                      {" "}
+                      <FaPhoneAlt className="text-md mt-0.5" />
+                      <span>Call</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -334,6 +461,7 @@ function Detailedwebinar() {
                   <input
                     type="text"
                     value={window.location.href}
+                    readOnly
                     className="w-full border border-gray-300 p-2 rounded-lg"
                     contentEditable={false}
                   />
@@ -355,9 +483,30 @@ function Detailedwebinar() {
             </div>
           </div>
         </div>
-       
       </div>
-   
+      {/* /* --------------------------changed------------------------------- */}
+      {user && (
+        <Modal isOpen={registerModal} onClose={() => setRegisterModal(false)}>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="font-semibold text-2xl mb-2">
+              This is a paid webinar.
+            </h1>
+            <p className="text-center text-lg mb-1">
+              You have to pay ₹{webinar.price}/- <br />
+            </p>
+            <button
+              className="px-6 py-2 mt-1 rounded-lg border-2 border-green-500 bg-green-100 text-green-600"
+              onClick={() =>
+                (window.location.href = `${
+                  import.meta.env.VITE_SERVER_URL
+                }/pay/webinar?webinarId=${webinar._id}&mail=${user.email}`)
+              }
+            >
+              Pay Now
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

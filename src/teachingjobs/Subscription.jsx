@@ -72,7 +72,7 @@ export default function Subscription() {
   useEffect(() => {
     if (user) {
       axios
-        .get(`https://learndukeserver.vercel.app/getUser/${user.email}`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
         .then((response) => {
           setUserData(response.data);
         });
@@ -87,7 +87,7 @@ export default function Subscription() {
   const handlePayment =  (name) => {
     const isMentor=false;
     if(userData){
-      window.location.href = `https://learndukeserver.vercel.app/pay/${name}/${userData.email}/${isMentor}`;
+      window.location.href = `${import.meta.env.VITE_SERVER_URL}/pay/${name}/${userData.email}/${isMentor}`;
       
     }
 };
@@ -174,7 +174,7 @@ export default function Subscription() {
       className="flex items-center justify-center text-2xl mx-4 text-center px-4 font-semibold text-gray-500"
       style={{ height: "70vh" }}
     >
-      Please login to view subscription plans.
+      Please login with google to view subscription plans.
     </div>
   );
 }

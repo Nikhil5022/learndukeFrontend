@@ -145,7 +145,7 @@ export default function CreateJob() {
   };
 
   const handleReturnToJobs = () => {
-    navigate("/teachingJobs");
+    navigate("/jobs");
   };
 
   const [formData, setFormData] = useState({
@@ -394,7 +394,7 @@ export default function CreateJob() {
       const cleanedTags = formData.tags.filter((tag) => tag.trim() !== "");
       const jobData = { ...formData, tags: cleanedTags, email: email };
       await axios
-        .post("https://learndukeserver.vercel.app/addJob", jobData)
+        .post(`${import.meta.env.VITE_SERVER_URL}/addJob`, jobData)
         .then((res) => {
           console.log("Job created successfully:", res.data);
         });
@@ -951,7 +951,7 @@ export default function CreateJob() {
       <div className="flex justify-end p-4">
         <button
           onClick={() => {
-            navigate("/teachingJobs");
+            navigate("/jobs");
           }}
           className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
         >
