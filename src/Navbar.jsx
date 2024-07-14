@@ -7,6 +7,13 @@ import Modal from "./Modal";
 import axios from "axios";
 import "./navbar.css";
 import Logo from "./assets/logo2.jpg";
+import { FaInternetExplorer } from "react-icons/fa";
+import { MdRepeatOne } from "react-icons/md";
+import { SiCodementor } from "react-icons/si";
+import { MdOutlineInterpreterMode } from "react-icons/md";
+import { FaBuilding } from "react-icons/fa";
+
+
 export default function Navbar() {
   const location = useLocation();
   if (location.pathname === "/createjob") {
@@ -244,22 +251,25 @@ export default function Navbar() {
                       <div className="font-semibold">{user.name}</div>
                     </div>
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer p-1"
+                      className="text-base font-semibold mb-4 cursor-pointer p-1 flex items-center space-x-2"
                       onClick={() => {
                         navigate("/jobs");
                         setShowMenu(false);
                       }}
                     >
-                      Explore Jobs
+                     <FaInternetExplorer />
+                     <span>Explore Jobs</span>
                     </div>
                     <div
-                      className="text-base font-semibold  mb-4 cursor-pointer p-1"
+                      className="text-base font-semibold  mb-4 cursor-pointer p-1 flex items-center space-x-2"
                       onClick={() => {
                         navigate("/mentorship");
                         setShowMenu(false);
                       }}
                     >
-                      Mentorship
+                      <SiCodementor />
+
+                    <span>  Mentorship</span>
                     </div>
                     {/* <div
                     className="text-base font-semibold  mb-4 cursor-pointer p-1"
@@ -271,7 +281,7 @@ export default function Navbar() {
                     Webinars
                     </div> */}
                     <div
-                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         isPremium
                           ? window.open("https://tally.so/r/wgAK0M", "blank")
@@ -279,13 +289,15 @@ export default function Navbar() {
                         setShowMenu(false);
                       }}
                     >
-                      1:1 Mentorship
+                      <MdRepeatOne className="text-xl"/>
+
+                     <span> 1:1 Mentorship</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
                     </div>
                     <div
-                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative "
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         setShowMenu(false);
                         isPremium
@@ -293,13 +305,15 @@ export default function Navbar() {
                           : setShowModal(true);
                       }}
                     >
-                      Mock Interview
+                      <MdOutlineInterpreterMode className="text-xl" />
+
+                      <span>Mock Interview</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
                     </div>
                     <div
-                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
+                      className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         isPremium
                           ? window.open("https://tally.so/r/wAJ1Lo", "blank")
@@ -307,7 +321,8 @@ export default function Navbar() {
                         setShowMenu(false);
                       }}
                     >
-                      Resume Building
+                      <FaBuilding className="text-xl" />
+                      <span>Resume Building</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
@@ -324,22 +339,24 @@ export default function Navbar() {
                 <div className="flex flex-col justify-between h-full">
                   <div className="h-10/12 ">
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer p-1"
+                      className="text-base font-semibold mb-4 cursor-pointer p-1 flex items-center space-x-2"
                       onClick={() => {
                         navigate("/jobs");
                         setShowMenu(false);
                       }}
                     >
-                      Explore Jobs
+                      <FaInternetExplorer />
+                     <span> Explore Jobs</span>
                     </div>
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer p-1"
+                      className="text-base font-semibold mb-4 cursor-pointer p-1 flex items-center space-x-2"
                       onClick={() => {
                         setShowMenu(false);
                         navigate("/mentorship");
                       }}
                     >
-                      Mentorship
+                      <SiCodementor />
+                      <span>Mentorship</span>
                     </div>
                     {/* <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
@@ -352,7 +369,7 @@ export default function Navbar() {
                       Webinars
                     </div> */}
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative"
+                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         isPremium
                           ? window.open("https://tally.so/r/wgAK0M", "blank")
@@ -360,13 +377,14 @@ export default function Navbar() {
                         setShowMenu(false);
                       }}
                     >
-                      1:1 Mentorship
+                      <MdRepeatOne className="text-xl" />
+                      <span>1:1 Mentorship</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
                     </div>
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative"
+                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         isPremium
                           ? window.open("https://tally.so/r/mOPO5k", "blank")
@@ -374,13 +392,14 @@ export default function Navbar() {
                         setShowMenu(false);
                       }}
                     >
-                      Mock Interview
+                      <MdOutlineInterpreterMode className="text-xl" />
+                      <span>Mock Interview</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
                     </div>
                     <div
-                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative"
+                      className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative flex items-center space-x-2"
                       onClick={() => {
                         isPremium
                           ? window.open("https://tally.so/r/wAJ1Lo", "blank")
@@ -388,7 +407,8 @@ export default function Navbar() {
                         setShowMenu(false);
                       }}
                     >
-                      Resume Building
+                      <FaBuilding className="text-xl" />
+                      <span>Resume Building</span>
                       <span className="absolute top-0 -right-6 text-xs text-orange-500 glow-animation">
                         PRO
                       </span>
