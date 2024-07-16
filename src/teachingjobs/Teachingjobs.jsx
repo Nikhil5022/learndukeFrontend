@@ -149,16 +149,13 @@ export default function Teachingjobs() {
               data-aos-anchor-placement="center-center"
             >
               <div className="text-xl font-bold leading-relaxed tracking-wide mb-3">
-                We see every job before you do 👁️
+              Partnerships with multiple organisations and institute
               </div>
               <div
                 className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
-                Our specialty is finding job opportunities from multiple sources
-                in real time, before they're visible to everyone else. This
-                gives you the advantage to apply for these jobs before anyone
-                else does.
+                Our dedicated team posts daily job opportunities and signs multiple MOUs with organisations, efficiently connecting talent with top employers.
               </div>
             </div>
             <div
@@ -210,9 +207,8 @@ export default function Teachingjobs() {
                 className="leading-relaxed tracking-wide font-normal"
                 style={{ color: "#404040" }}
               >
-                Our dedicated and helpful customer support team is always at
-                your service. For any assistance, feel free to reach out to us
-                via Instagram, Facebook, or Email.
+               Our dedicated and helpful expert team is always at your service. You can book a mentorship session anytime by clicking on "One-to-One Mentorship".
+
               </div>
             </div>
           </div>
