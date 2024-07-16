@@ -79,7 +79,7 @@ function App() {
       {showNav && <Navbar />}
       <Routes>
         <Route path="/" element={<Teachingjobs />} />
-        <Route path="/teachingJobs" element={<Body />} />
+        <Route path="/jobs" element={<Body />} />
         <Route path="/mentorship" element={<LandingPage />} />
         <Route path="/findteachingjobs" element={<Findteachingjobs />} />
         <Route path="/contactus" element={<Contactus />} />

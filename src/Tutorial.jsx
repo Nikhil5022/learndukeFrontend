@@ -5,7 +5,6 @@ import {
   FaWhatsapp,
   FaMapMarkerAlt,
   FaBriefcase,
-
 } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +47,6 @@ const Tutorial = React.memo(({
       axios
         .get(`${import.meta.env.VITE_SERVER_URL}/getUser/${userData.email}`)
         .then((userResponse) => {
-          
           setUser(userResponse.data);
           setIsPremium(userResponse.data.isPremium);
         })
@@ -103,9 +101,9 @@ const Tutorial = React.memo(({
   return (
     <div>
       <div
-        className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard `}
+        className={`rounded-xl border-2 border-slate-300 mt-5 p-5 border-${borderColor} cursor-pointer jobcard min-h-72 flex flex-col justify-between`}
       >
-        <div onClick={handleJobClick}>
+        <div onClick={handleJobClick} className="flex-grow">
           <div className="flex items-center mb-1">
             <img
               src={
@@ -130,9 +128,9 @@ const Tutorial = React.memo(({
               <div>{description}</div>
             )}
           </div>
-          <div className="flex flex-wrap mt-1 space-x-1 sm:space-x-3">
+          <div className="flex flex-wrap space-x-1 sm:space-x-3">
             <div
-              className={`border-2 border-${borderColor}  rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
+              className={`border-2 border-${borderColor} rounded-lg bg-gray-100 px-2 text-gray-500 font-semibold mt-3 flex items-center`}
             >
               <FaWallet className="w-4 h-4 mr-1 text-gray-400" />
               <span>
@@ -140,24 +138,22 @@ const Tutorial = React.memo(({
               </span>
             </div>
             <div
-              className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold items-center mt-3  rounded-lg flex text-center`}
+              className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold items-center mt-3 rounded-lg flex text-center`}
             >
               <FaBriefcase className="w-4 h-4 mr-2 text-gray-400" />
               {jobType}
             </div>
-            <div className="">
-              {jobType !== "Remote" && (
-                <div
-                  className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold mt-3  rounded-lg flex items-center flex-wrap`}
-                >
-                  <FaMapMarkerAlt className="w-4 h-4 mr-2 text-gray-400" />
-                  {location}
-                </div>
-              )}
-            </div>
+            {jobType !== "Remote" && (
+              <div
+                className={`border-2 border-${borderColor} bg-gray-100 text-gray-500 px-2 font-semibold mt-3 rounded-lg flex items-center flex-wrap`}
+              >
+                <FaMapMarkerAlt className="w-4 h-4 mr-2 text-gray-400" />
+                {location}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex mt-4 space-x-3 md:space-x-8">
+        <div className="flex space-x-3 md:space-x-8 mt-3 md:mt-0">
           <button
             onClick={handleCallNow}
             className="bg-orange-400 text-white px-2 py-1 rounded-3xl text-center"
@@ -189,8 +185,7 @@ const Tutorial = React.memo(({
                   window.location.href = "/subscription";
                 }}
               >
-                <MdOutlineWorkspacePremium className=" text-xl" />
-
+                <MdOutlineWorkspacePremium className="text-xl" />
                 <div> Upgrade to Premium</div>
               </button>
             )}
@@ -202,16 +197,17 @@ const Tutorial = React.memo(({
           <div className="flex flex-col justify-center items-center">
             <p>You need to login to connect with the user.</p>
             <button
-            className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
-            onClick={handleGoogleLogin}
-          >
-            <FcGoogle className=" text-xl mr-2 mt-0.5" />
-            <div>Login</div>
-          </button>
+              className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+              onClick={handleGoogleLogin}
+            >
+              <FcGoogle className="text-xl mr-2 mt-0.5" />
+              <div>Login with Google</div>
+            </button>
           </div>
         </Modal>
       )}
     </div>
   );
-})
-export default Tutorial
+});
+
+export default Tutorial;

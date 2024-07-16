@@ -69,7 +69,7 @@ export default function Navbar() {
             setIsPremium(response.data.isPremium);
           });
         setUser({ email, name, accessToken });
-        navigate("/teachingjobs");
+        navigate("/jobs");
       } else {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -137,7 +137,7 @@ export default function Navbar() {
           <div
             className="cursor-pointer hover:underline"
             onClick={() => {
-              navigate("/teachingjobs");
+              navigate("/jobs");
             }}
           >
             Explore Jobs
@@ -150,14 +150,14 @@ export default function Navbar() {
           >
             Mentorship
           </div>
-          <div
+          {/* <div
             className="cursor-pointer p-1 hover:underline"
             onClick={() => {
               navigate("/webinars");
             }}
           >
             Webinars
-          </div>
+          </div> */}
           <div
             className="cursor-pointer hover:underline w-fit p-1 relative"
             onClick={() =>
@@ -244,7 +244,7 @@ export default function Navbar() {
                   <div
                     className="text-base font-semibold mb-4 cursor-pointer p-1"
                     onClick={() => {
-                      navigate("/teachingjobs");
+                      navigate("/jobs");
                       setShowMenu(false);
                     }}
                   >
@@ -259,7 +259,7 @@ export default function Navbar() {
                   >
                     Mentorship
                   </div>
-                  <div
+                  {/* <div
                     className="text-base font-semibold  mb-4 cursor-pointer p-1"
                     onClick={() => {
                       navigate("/webinars");
@@ -267,7 +267,7 @@ export default function Navbar() {
                     }}
                   >
                   Webinars
-                  </div>
+                  </div> */}
                   <div
                     className="text-base font-semibold  mb-4 cursor-pointer w-fit p-1 relative"
                     onClick={() => {
@@ -323,7 +323,7 @@ export default function Navbar() {
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
                       onClick={() => {
-                        navigate("/teachingjobs")
+                        navigate("/jobs")
                         setShowMenu(false)}
                       }
                     >
@@ -339,7 +339,7 @@ export default function Navbar() {
                     >
                       Mentorship
                     </div>
-                    <div
+                    {/* <div
                       className="text-base font-semibold mb-4 cursor-pointer p-1"
                       onClick={() =>
                         {
@@ -348,7 +348,7 @@ export default function Navbar() {
                       }}
                     >
                       Webinars
-                    </div>
+                    </div> */}
                     <div
                       className="text-base font-semibold mb-4 cursor-pointer w-fit p-1 relative"
                       onClick={() => {

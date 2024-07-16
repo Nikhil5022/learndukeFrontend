@@ -20,7 +20,7 @@ const PaymentSuccess = () => {
       <p className="text-xl p-1 text-center">You now have access to selected plan.</p>
       <div className="flex m-5">
 
-      <Link to={"/teachingjobs"}>
+      <Link to={"/jobs"}>
       <button className="border-2 m-3 p-4 rounded-xl border-orange-500">Go to Jobs</button>
       </Link>
       <Link to={"/explorementors"}>
