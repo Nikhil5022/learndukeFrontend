@@ -53,8 +53,10 @@ function CreateWebinar() {
   };
 
   const handleModalSubmit = async () => {
-    setLoading(true)
-    const res = await axios.post(
+    try{
+
+      setLoading(true)
+      const res = await axios.post(
       // "http://localhost:3000/create-webinar",
       `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
       {
@@ -65,8 +67,12 @@ function CreateWebinar() {
     console.log(res.data);
     setWebinar(initialWebinarState);
     if (res.status === 200) {
-      setLoading(false);
       window.location.href = res.data
+    }
+    }catch(e){
+      console.log(e);
+    }finally{
+      setLoading(false);
     }
   }
 
