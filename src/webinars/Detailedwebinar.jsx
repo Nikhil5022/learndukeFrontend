@@ -31,6 +31,7 @@ function Detailedwebinar() {
         console.log(res.data);
       });
   }, []);
+  const [registerLoader, setRegisterLoader] = useState(false)
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -146,6 +147,7 @@ function Detailedwebinar() {
   }
 
   const handleRegister = async () => {
+    setRegisterLoader(true);
     const u = JSON.parse(localStorage.getItem("user"));
     if (webinar.isPaid && u) {
       setRegisterModal(true);
@@ -161,6 +163,7 @@ function Detailedwebinar() {
             participants: [...prevWebinar.participants, user._id],
           }));
         });
+      setRegisterLoader(false)
     }
   };
 
@@ -344,12 +347,12 @@ function Detailedwebinar() {
                           Join Webinar
                         </button>
                       ) : (
-                        <div className="flex md:flex-col flex-row">
-                          <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-10/12 md:w-full mx-1 md:my-2 md:mx-0">
+                        <div className="flex md:flex-col flex-col  sm:flex-row items-center justify-evenly">
+                          <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full sm:w-1/2 md:w-full my-2 sm:mx-1 md:my-2 md:mx-0">
                             Registered
                           </button>
                           <button
-                            className="bg-red-200 text-red-700 border border-red-700 cursor-pointer py-3 rounded-lg w-2/12 md:w-full text-center flex items-center justify-center"
+                            className="bg-red-200 text-red-700 border border-red-700 cursor-pointer p-3 rounded-lg w-full sm:w-1/2 md:w-full text-center flex items-center justify-center"
                             onClick={handleUnregister}
                           >
                             Undo
@@ -361,11 +364,11 @@ function Detailedwebinar() {
                       )
                     ) : (
                       <button
-                        className="bg-black text-white p-3 rounded-lg w-full"
+                        className="bg-black text-white p-3 rounded-lg w-full flex items-center justify-center"
                         onClick={handleRegister}
-                        disabled={!user}
+                        disabled={!user || registerLoader}
                       >
-                        Register Now
+                      {registerLoader ? <div className="w-8 h-8 rounded-full animate-spin border-t-2 border-b-2"></div> : "Register Now"}
                       </button>
                     )}
                   </div>
