@@ -6,7 +6,6 @@ import { MdDelete } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
 import { ImCross } from "react-icons/im";
 import Loader from "../Loader";
-// import webinarJpg from "./webinar.jpg"
 
 function CreateWebinar() {
   const initialWebinarState = {
