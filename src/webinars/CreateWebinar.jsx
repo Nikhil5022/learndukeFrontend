@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
 import { ImCross } from "react-icons/im";
 import Loader from "../Loader";
+// import webinarJpg from "./webinar.jpg"
 
 function CreateWebinar() {
   const initialWebinarState = {
@@ -34,11 +35,13 @@ function CreateWebinar() {
     },
     additionalBenefits: [],
     topics: [{ name: "", descriptions: [""] }],
+    photo : "",
   });
   const navigate = useNavigate();
   const [successModal, setSuccessModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [image,setImage] = useState("")
 
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -47,28 +50,92 @@ function CreateWebinar() {
     }
   }, []);
 
+  function generateRandomDarkColor() {
+    // Generate random values between 0 and 100 for R, G, B to ensure a dark shade
+    let r = Math.floor(Math.random() * 100);
+    let g = Math.floor(Math.random() * 100);
+    let b = Math.floor(Math.random() * 100);
+    // Return the color in the format required for fillStyle
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+  
+    for(let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+    ctx.fillText(line, x, y);
+  }
+
+  async function createCanvasImage() {
+    const canvas =  document.createElement("canvas")
+    canvas.width = 854;
+    canvas.height = 480;
+
+    const ctx = canvas.getContext("2d");
+    
+    let dark =  generateRandomDarkColor();
+
+    ctx.fillStyle = dark;
+    ctx.fillRect(0, 0, 854, 480);
+    
+    ctx.fillStyle = "white"
+    
+    ctx.font = "30px cursive";
+    ctx.fillText("SurelyWork | Webinar", 30, 50);
+    
+    ctx.font = "60px cursive";
+    // ctx.fillText(title, 30, 200, 800);
+    await wrapText(ctx, webinar.title, 30, 180, 800, 80)
+    
+    ctx.font = "30px cursive";
+    ctx.fillText(new Date(webinar.startTime).toLocaleDateString(), 35, 410);
+    ctx.fillText(user.name, 450, 410);
+
+    const imageData = canvas.toDataURL()
+    setImage(imageData)
+    console.log(image)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    await createCanvasImage()
     setSubmitModal(true);
   };
 
   const handleModalSubmit = async () => {
     setLoading(true)
-    const res = await axios.post(
+    try{
+      const res = await axios.post(
       // "http://localhost:3000/create-webinar",
       `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
       {
         mail: user.email,
         webinar,
+        image
       }
     );
     console.log(res.data);
     setWebinar(initialWebinarState);
     if (res.status === 200) {
-      
       window.location.href = res.data
     }
-    setLoading(false);
+    }catch(e){
+      console.log(e);
+    }finally{
+      setLoading(false);
+    }
   }
 
   const handleTopicChange = (index, value) => {

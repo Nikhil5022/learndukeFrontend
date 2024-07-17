@@ -173,7 +173,7 @@ function Webinars() {
             {
               liveWebinars && liveWebinars.length > 0 ? (
                 liveWebinars.map((webinar, index) => (
-                  <div>
+                  <div key={index}>
                     {index == liveWebinars.length - 2 ? (
                       <div>
                         <div ref={showLiveWebinarFirst}>
@@ -261,7 +261,7 @@ function Webinars() {
             {
               pastWebinars && pastWebinars.length > 0 ? (
                 pastWebinars.map((webinar, index) => (
-                  <div>
+                  <div key={index}>
                     {index == pastWebinars.length - 2 ? (
                       <div>
                         <div ref={showPastWebinarFirst}>
