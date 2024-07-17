@@ -164,7 +164,7 @@ function Webinars() {
         <div className="w-full">
           <div className="flex flex-col sm:flex-row justify-center w-full ">
             <div className="w-full">
-              <h1 className="text-3xl mt-4 ml-2 md:px-4 font-semibold">
+              <h1 className="text-3xl mt-4 ml-4 md:px-4 font-semibold">
                 Live Webinars
               </h1>
             </div>
@@ -298,15 +298,17 @@ function Webinars() {
         </div>
       </div>
       <div
-        className="top-28 h-fit z-0 border-none w-2/6 p-3 sticky hidden xl:flex"
+        className="top-28 h-fit z-0 border-none w-2/6 p-3 sticky hidden xl:flex my-10"
         style={{
-          maxHeight: "80vh",
+          maxHeight: "60vh",
         }}
       >
         <div className="w-full p-2">
           <h1 className="text-xl my-2 font-semibold text-center">
             Mentors with upcoming webinars
           </h1>
+          <div className="overflow-y-scroll h-full section">
+
           {
             // upLoading ? (
             //   <DataFetchLoading />
@@ -330,20 +332,21 @@ function Webinars() {
                   <button
                     className="rounded-xl text-blue-500 px-2"
                     onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
-                  >
+                    >
                     See details {">"}
                   </button>
                 </div>
               ))
             ) : (
               <div
-                className="flex-col flex items-center
-          justify-center text-center text-lg p-4"
+              className="flex-col flex items-center
+              justify-center text-center text-lg p-4"
               >
                 No Upcoming Webinars!
               </div>
             )
           }
+          </div>
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
               <button
