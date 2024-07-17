@@ -22,6 +22,7 @@ function Detailedwebinar() {
   const [user, setUser] = useState(null);
   const [registerModal, setRegisterModal] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [showConsent, setShowConsent] = useState(false)
 
   useEffect(() => {
     axios
@@ -31,7 +32,7 @@ function Detailedwebinar() {
         console.log(res.data);
       });
   }, []);
-  const [registerLoader, setRegisterLoader] = useState(false)
+  const [registerLoader, setRegisterLoader] = useState(false);
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -131,7 +132,6 @@ function Detailedwebinar() {
           webinarId: id,
         })
         .then((res) => {
-          console.log(res.data);
           setWebinar((prev) => ({
             ...prev,
             participants: webinar.participants.filter(
@@ -139,7 +139,6 @@ function Detailedwebinar() {
             ),
           }));
         }));
-    console.log(webinar);
   };
 
   {
@@ -163,7 +162,7 @@ function Detailedwebinar() {
             participants: [...prevWebinar.participants, user._id],
           }));
         });
-      setRegisterLoader(false)
+      setRegisterLoader(false);
     }
   };
 
@@ -329,14 +328,15 @@ function Detailedwebinar() {
                 </div>
               </div>
               <div>
-                {/* /* --------------------------changed------------------------------- */}
                 {webinar.status === "Past" ? (
                   <div className="text-lg font-semibold">
                     Webinar has already ended!
                   </div>
                 ) : (
                   <div>
-                    {user && webinar.participants.includes(user._id) ? (
+                    {user &&
+                    (webinar.participants.includes(user._id) ||
+                      webinar.creator.id == mentor._id) ? (
                       webinar.status === "Live" ? (
                         <button
                           className="bg-blue-400 text-white p-3 rounded-lg w-full"
@@ -351,15 +351,20 @@ function Detailedwebinar() {
                           <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full sm:w-1/2 md:w-full my-2 sm:mx-1 md:my-2 md:mx-0">
                             Registered
                           </button>
-                          <button
-                            className="bg-red-200 text-red-700 border border-red-700 cursor-pointer p-3 rounded-lg w-full sm:w-1/2 md:w-full text-center flex items-center justify-center"
-                            onClick={handleUnregister}
-                          >
-                            Undo
-                            <span className="mx-1">
-                              <IoMdUndo />
-                            </span>
-                          </button>
+                          {user.email != mentor.email && (
+                            <button
+                              className="bg-red-200 text-red-700 border border-red-700 cursor-pointer p-3 rounded-lg w-full sm:w-1/2 md:w-full text-center flex items-center justify-center"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                setShowConsent(true)
+                              }}
+                            >
+                              Undo
+                              <span className="mx-1">
+                                <IoMdUndo />
+                              </span>
+                            </button>
+                          )}
                         </div>
                       )
                     ) : (
@@ -368,19 +373,21 @@ function Detailedwebinar() {
                         onClick={handleRegister}
                         disabled={!user || registerLoader}
                       >
-                      {registerLoader ? <div className="w-8 h-8 rounded-full animate-spin border-t-2 border-b-2"></div> : "Register Now"}
+                        {registerLoader ? (
+                          <div className="w-8 h-8 rounded-full animate-spin border-t-2 border-b-2"></div>
+                        ) : (
+                          "Register Now"
+                        )}
                       </button>
                     )}
                   </div>
                 )}
-                {/* /* --------------------------changed------------------------------- */}
               </div>
               {webinar.status !== "Past" && (
                 <>
                   <hr className="my-4" />
                   <div className="flex justify-between">
-                    <div className="relative flex h-7 w-7"
-                    >
+                    <div className="relative flex h-7 w-7">
                       {participants.map((participant, index) => (
                         <img
                           key={index}
@@ -535,6 +542,28 @@ function Detailedwebinar() {
           </div>
         </Modal>
       )}
+      {
+        <Modal onClose={() => setShowConsent(false)} isOpen={showConsent}>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-xl my-2 font-semibold text-red-600">THIS WILL CANCEL YOUR REGISTRATION.</h1>
+            <p className="text-lg">Are you sure want to undo ?</p>
+            <div className="flex flex-col md:flex-row space-x-3 items-center justify-center mt-2">
+            <button
+              className="px-5 py-2 bg-green-100 text-green-500 border-green-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1"
+              onClick={() => setShowConsent(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-5 py-2 bg-red-100 text-red-500 border-red-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1"
+              onClick={handleUnregister}
+            >
+              Continue
+            </button>
+          </div>
+          </div>
+        </Modal>
+      }
     </div>
   );
 }
