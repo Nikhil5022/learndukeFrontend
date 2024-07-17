@@ -25,7 +25,7 @@ function Detailedwebinar() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/getParticipants/${id}`)
+      .get(`${import.meta.env.VITE_SERVER_URL}/getWebinarParticipants/${id}`)
       .then((res) => {
         setParticipants(res.data);
         console.log(res.data);
