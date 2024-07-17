@@ -147,11 +147,11 @@ function Detailedwebinar() {
   }
 
   const handleRegister = async () => {
-    setRegisterLoader(true);
     const u = JSON.parse(localStorage.getItem("user"));
     if (webinar.isPaid && u) {
       setRegisterModal(true);
     } else if (u) {
+      setRegisterLoader(true);
       await axios
         .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
           mail: u.email,
