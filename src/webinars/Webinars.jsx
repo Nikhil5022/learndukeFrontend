@@ -33,29 +33,30 @@ function Webinars() {
   const showLiveWebinarFirst = useRef(null);
   const showPastWebinarFirst = useRef(null);
 
-
   useEffect(() => {
-    if ( showLiveWebinarFirst.current) {
+    if (showLiveWebinarFirst.current) {
       const offset = 100;
-      const elementPosition = showLiveWebinarFirst.current.getBoundingClientRect().top;
+      const elementPosition =
+        showLiveWebinarFirst.current.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   }, [liveWebinars]);
 
   useEffect(() => {
-    if ( showPastWebinarFirst.current) {
+    if (showPastWebinarFirst.current) {
       const offset = 100;
-      const elementPosition = showPastWebinarFirst.current.getBoundingClientRect().top;
+      const elementPosition =
+        showPastWebinarFirst.current.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   }, [pastWebinars]);
@@ -170,30 +171,28 @@ function Webinars() {
             </div>
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
-            {
-              liveWebinars && liveWebinars.length > 0 ? (
-                liveWebinars.map((webinar, index) => (
-                  <div key={index}>
-                    {index == liveWebinars.length - 2 ? (
-                      <div>
-                        <div ref={showLiveWebinarFirst}>
-                          <WebinarCard key={index} webinar={webinar} />
-                        </div>
+            {liveWebinars && liveWebinars.length > 0 ? (
+              liveWebinars.map((webinar, index) => (
+                <div key={index}>
+                  {index == liveWebinars.length - 2 ? (
+                    <div>
+                      <div ref={showLiveWebinarFirst}>
+                        <WebinarCard key={index} webinar={webinar} />
                       </div>
-                    ) : (
-                      <WebinarCard key={index} webinar={webinar} />
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div
-                  className="flex-col flex items-center
-            justify-center text-center text-lg p-4"
-                >
-                  There are currently no live webinars!
+                    </div>
+                  ) : (
+                    <WebinarCard key={index} webinar={webinar} />
+                  )}
                 </div>
-              )
-            }
+              ))
+            ) : (
+              <div
+                className="flex-col flex items-center
+            justify-center text-center text-lg p-4"
+              >
+                There are currently no live webinars!
+              </div>
+            )}
           </div>
           <div className="flex justify-center">
             {showLiveLoadmore && !liveLoading && (
@@ -221,20 +220,18 @@ function Webinars() {
           </div>
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
             {/* live webinar cards */}
-            {
-              upcomingWebinars && upcomingWebinars.length > 0 ? (
-                upcomingWebinars.map((webinar, index) => (
-                  <WebinarCard key={index} webinar={webinar} />
-                ))
-              ) : (
-                <div
-                  className="flex-col flex items-center
+            {upcomingWebinars && upcomingWebinars.length > 0 ? (
+              upcomingWebinars.map((webinar, index) => (
+                <WebinarCard key={index} webinar={webinar} />
+              ))
+            ) : (
+              <div
+                className="flex-col flex items-center
             justify-center text-center text-lg p-4"
-                >
-                  There are currently no upcoming webinars!
-                </div>
-              )
-            }
+              >
+                There are currently no upcoming webinars!
+              </div>
+            )}
           </div>
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
@@ -258,30 +255,28 @@ function Webinars() {
           </h1>
 
           <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
-            {
-              pastWebinars && pastWebinars.length > 0 ? (
-                pastWebinars.map((webinar, index) => (
-                  <div key={index}>
-                    {index == pastWebinars.length - 2 ? (
-                      <div>
-                        <div ref={showPastWebinarFirst}>
-                          <WebinarCard key={index} webinar={webinar} />
-                        </div>
+            {pastWebinars && pastWebinars.length > 0 ? (
+              pastWebinars.map((webinar, index) => (
+                <div key={index}>
+                  {index == pastWebinars.length - 2 ? (
+                    <div>
+                      <div ref={showPastWebinarFirst}>
+                        <WebinarCard key={index} webinar={webinar} />
                       </div>
-                    ) : (
-                      <WebinarCard key={index} webinar={webinar} />
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div
-                  className="flex-col flex items-center
-            justify-center text-center text-lg p-4"
-                >
-                  No Past webinars found!
+                    </div>
+                  ) : (
+                    <WebinarCard key={index} webinar={webinar} />
+                  )}
                 </div>
-              )
-            }
+              ))
+            ) : (
+              <div
+                className="flex-col flex items-center
+            justify-center text-center text-lg p-4"
+              >
+                No Past webinars found!
+              </div>
+            )}
           </div>
           <div className="flex justify-center">
             {showPastLoadmore && !pastLoading && (
@@ -307,45 +302,46 @@ function Webinars() {
           <h1 className="text-xl my-2 font-semibold text-center">
             Mentors with upcoming webinars
           </h1>
-          <div className="overflow-y-scroll h-full section">
-
-          {
-            // upLoading ? (
-            //   <DataFetchLoading />
-            // ) :
-            upcomingWebinars && upcomingWebinars.length > 0 ? (
-              upcomingWebinars.map((webinar, index) => (
-                <div
-                  key={index}
-                  className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between"
-                >
-                  <div className="flex flex-col w-9/12">
-                    <h1 className="font-semibold p-1">{webinar.title}</h1>
-                    <div className="flex items-center p-1">
-                      <img
-                        src={webinar.creator.photo}
-                        className="max-w-8 rounded-full mr-3"
-                      />
-                      <p>{webinar.creator.name}</p>
+          <div className="overflow-y-scroll h-fit section">
+            {
+              // upLoading ? (
+              //   <DataFetchLoading />
+              // ) :
+              upcomingWebinars && upcomingWebinars.length > 0 ? (
+                upcomingWebinars.map((webinar, index) => (
+                  <div
+                    key={index}
+                    className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between "
+                  >
+                    <div className="flex flex-col w-9/12">
+                      <h1 className="font-semibold p-1">{webinar.title}</h1>
+                      <div className="flex items-center p-1">
+                        <img
+                          src={webinar.creator.photo}
+                          className="max-w-8 rounded-full mr-3"
+                        />
+                        <p>{webinar.creator.name}</p>
+                      </div>
                     </div>
-                  </div>
-                  <button
-                    className="rounded-xl text-blue-500 px-2"
-                    onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
+                    <button
+                      className="rounded-xl text-blue-500 px-2 whitespace-nowrap"
+                      onClick={() =>
+                        navigate(`/detailedWebinar/${webinar._id}`)
+                      }
                     >
-                    See details {">"}
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div
-              className="flex-col flex items-center
+                      See details {">"}
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="flex-col flex items-center
               justify-center text-center text-lg p-4"
-              >
-                No Upcoming Webinars!
-              </div>
-            )
-          }
+                >
+                  No Upcoming Webinars!
+                </div>
+              )
+            }
           </div>
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
@@ -442,7 +438,7 @@ function Webinars() {
             </button>
           </div>
         </Modal>
-      )} 
+      )}
       {mentorData && (
         <div
           className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
@@ -473,13 +469,18 @@ const WebinarCard = React.memo(({ webinar }) => {
   };
 
   const handleWhatsapp = () => {
-    console.log(webinar.creator)
-    axios.get(`${import.meta.env.VITE_SERVER_URL}/getWhatsappNumber/${webinar.creator.id}`).then((res) => {
-      console.log(res.data)
-      window.open(`https://wa.me/${res.data}`)
-    })
-
-  }
+    console.log(webinar.creator);
+    axios
+      .get(
+        `${import.meta.env.VITE_SERVER_URL}/getWhatsappNumber/${
+          webinar.creator.id
+        }`
+      )
+      .then((res) => {
+        console.log(res.data);
+        window.open(`https://wa.me/${res.data}`);
+      });
+  };
   return (
     <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col md:flex-row lg:w-10/12 xl:w-11/12">
       <div className="flex items-center justify-center px-1 w-full md:w-6/12 lg:max-w-96">
@@ -519,9 +520,9 @@ const WebinarCard = React.memo(({ webinar }) => {
               >
                 Register for Webinar
               </button>
-              <button className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center"
-                onClick={handleWhatsapp
-                }
+              <button
+                className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center"
+                onClick={handleWhatsapp}
               >
                 <FaWhatsapp className="w-5 h-5 mr-2" />
                 <span>Talk to Mentor</span>

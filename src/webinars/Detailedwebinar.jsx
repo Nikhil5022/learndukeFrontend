@@ -21,6 +21,16 @@ function Detailedwebinar() {
   const [copy, setCopy] = useState(false);
   const [user, setUser] = useState(null);
   const [registerModal, setRegisterModal] = useState(false);
+  const [participants, setParticipants] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_SERVER_URL}/getParticipants/${id}`)
+      .then((res) => {
+        setParticipants(res.data);
+        console.log(res.data);
+      });
+  }, []);
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -366,7 +376,22 @@ function Detailedwebinar() {
                 <>
                   <hr className="my-4" />
                   <div className="flex justify-between">
-                    <div></div>
+                    <div className="relative flex h-7 w-7"
+                    >
+                      {participants.map((participant, index) => (
+                        <img
+                          key={index}
+                          src={participant.profilephoto.url}
+                          alt=""
+                          className="absolute h-7 w-7 rounded-full"
+                          style={{
+                            left: `${index * 50}%`,
+                            zIndex: participants.length + index,
+                          }}
+                        />
+                      ))}
+                    </div>
+
                     <div className="flex items-center space-x-2 text-orange-400">
                       <GiSandsOfTime
                         style={{
