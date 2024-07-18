@@ -24,7 +24,7 @@ function Detailedwebinar() {
   const [registerModal, setRegisterModal] = useState(false);
   const [participants, setParticipants] = useState([]);
   const [showConsent, setShowConsent] = useState(false)
-  const [loginModal, setLoginModal] = useState(true);
+  const [loginModal, setLoginModal] = useState(false);
 
   useEffect(() => {
     axios
