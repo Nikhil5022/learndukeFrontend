@@ -50,7 +50,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const paths = ["/mentorship", "/explorementors", "/become-a-mentor", "/mentor/payment", "/webinars", "/create-webinar" ]
+    const paths = ["/mentorship", "/explorementors", "/become-a-mentor", "/mentor/payment", "/webinars", "/create-webinar", "/userpage" ]
     if(location.pathname.includes("/detailedmentor") || location.pathname.includes("/detailedWebinar") ||
     paths.includes(location.pathname)) {
       setShowCreateJob(false)
