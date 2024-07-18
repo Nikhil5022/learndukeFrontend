@@ -137,7 +137,7 @@ function Detailedwebinar() {
           setWebinar((prev) => ({
             ...prev,
             participants: webinar.participants.filter(
-              (obj) => obj !== user._id
+              (obj) => obj !== user?._id
             ),
           }));
         }));
@@ -336,7 +336,7 @@ function Detailedwebinar() {
                   </div>
                 ) : (
                   <div>
-                    {user && webinar.participants.includes(user._id) && 
+                    {user && webinar.participants.includes(user?._id) && 
                       webinar.status === "Live" ? (
                         <button
                           className="bg-blue-400 text-white p-3 rounded-lg w-full"
@@ -346,7 +346,7 @@ function Detailedwebinar() {
                         >
                           Join Webinar
                         </button>
-                      ) : webinar.status == "Upcoming" &&  webinar.participants.includes(user._id) ? (
+                      ) : user && webinar.status == "Upcoming" &&  webinar.participants.includes(user?._id) ? (
                         <div className="flex md:flex-col flex-col  sm:flex-row items-center justify-evenly">
                           <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full sm:w-1/2 md:w-full my-2 sm:mx-1 md:my-2 md:mx-0">
                             Registered
