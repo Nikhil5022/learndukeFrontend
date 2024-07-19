@@ -6,6 +6,8 @@ import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Loader from "../Loader";
+import { FaArrowCircleRight } from "react-icons/fa";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 export default function UserPage() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -31,6 +33,10 @@ export default function UserPage() {
   const [profileUpdate, setProfileUpdate] = useState(false);
   const [IsValidPhoneNumber, setIsValidPhoneNumber] = useState(false);
   const [isValidWhatsappNumber, setIsValidWhatsappNumber] = useState(false);
+  const [myWebinars, setMyWebinars] = useState([]);
+  const [joinedWebinars, setJoinedWebinars] = useState([]);
+  const [mywebinarpageno, setMyWebinarPageNo] = useState(1);
+  const [joinedWebinarsPageNo, setJoinedWebinarsPageNo] = useState(1);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -66,7 +72,7 @@ export default function UserPage() {
   ];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -83,6 +89,7 @@ export default function UserPage() {
           setJobAlerts(response.data.jobAllerts);
           setIsPremium(response.data.isPremium);
           setSelectedDomains(response.data.jobAllerts);
+
           axios
             .get(`${import.meta.env.VITE_SERVER_URL}/getJobs/${user.email}`)
 
@@ -103,10 +110,25 @@ export default function UserPage() {
         .then((response) => {
           setActiveSubscriptions(response.data);
         });
+
+      axios
+        .get(
+          `http://localhost:3000/get-my-webinars/${user.email}?page=${mywebinarpageno}&limit=3`
+        )
+        .then((response) => {
+          setMyWebinars(response.data.webinars);
+          console.log(response.data);
+        });
+
+      axios
+        .get(`http://localhost:3000/my-registered-webinars/${user.email}?page=${joinedWebinarsPageNo}&limit=3`)
+        .then((response) => {
+          setJoinedWebinars(response.data.webinars);
+        });
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [myWebinars.length, mywebinarpageno, joinedWebinars.length, joinedWebinarsPageNo]);
 
   const handleDelete = (jobId) => {
     axios
@@ -615,61 +637,70 @@ export default function UserPage() {
             <div className="mt-10">
               <h1 className="text-2xl font-bold">Active Subscriptions</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
-                {activeSubscriptions.map((subscription) => subscription && (
-                  <div
-                    key={subscription._id}
-                    className="rounded-xl border-2 border-slate-300 p-5"
-                    style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
-                  >
-                    <div>
-                      <div className="flex flex-col mb-4">
-                        <div className="flex justify-between items-center">
-                          <div className="ml-2 text-lg font-semibold">
-                            {subscription.plan}
+                {activeSubscriptions.map(
+                  (subscription) =>
+                    subscription && (
+                      <div
+                        key={subscription._id}
+                        className="rounded-xl border-2 border-slate-300 p-5"
+                        style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                      >
+                        <div>
+                          <div className="flex flex-col mb-4">
+                            <div className="flex justify-between items-center">
+                              <div className="ml-2 text-lg font-semibold">
+                                {subscription.plan}
+                              </div>
+                              {isSubscriptionActive(
+                                subscription.expirationDate
+                              ) ? (
+                                <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
+                                  Active
+                                </div>
+                              ) : (
+                                <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
+                                  Expired
+                                </div>
+                              )}
+                            </div>
+                            <div className="mt-3 text-gray-700">
+                              <span className="font-semibold">Start Date</span>:{" "}
+                              {formatDate(subscription.paymentDate)}
+                            </div>
+                            <div className="mt-3 text-gray-700">
+                              <span className="font-semibold">End Date</span>:{" "}
+                              {formatDate(subscription.expirationDate)}
+                            </div>
+                            <div className="flex flex-wrap mt-3 space-x-2">
+                              <div className="flex items-center mt-3">
+                                <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
+                                <span>₹{subscription.amount}</span>
+                              </div>
+                              {isSubscriptionActive(
+                                subscription.expirationDate
+                              ) ? (
+                                <div className="mt-3">
+                                  Days Left:{" "}
+                                  {calculateDaysLeft(
+                                    subscription.expirationDate
+                                  )}
+                                </div>
+                              ) : (
+                                <button
+                                  className="mt-3 px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
+                                  onClick={() =>
+                                    renewSubscription(subscription.plan)
+                                  }
+                                >
+                                  Renew Subscription
+                                </button>
+                              )}
+                            </div>
                           </div>
-                          {isSubscriptionActive(subscription.expirationDate) ? (
-                            <div className="bg-green-200 text-green-800 px-2 py-1 rounded-md">
-                              Active
-                            </div>
-                          ) : (
-                            <div className="bg-red-200 text-red-800 px-2 py-1 rounded-md">
-                              Expired
-                            </div>
-                          )}
-                        </div>
-                        <div className="mt-3 text-gray-700">
-                          <span className="font-semibold">Start Date</span>:{" "}
-                          {formatDate(subscription.paymentDate)}
-                        </div>
-                        <div className="mt-3 text-gray-700">
-                          <span className="font-semibold">End Date</span>:{" "}
-                          {formatDate(subscription.expirationDate)}
-                        </div>
-                        <div className="flex flex-wrap mt-3 space-x-2">
-                          <div className="flex items-center mt-3">
-                            <FaWallet className="w-6 h-6 mr-2 text-orange-400" />
-                            <span>₹{subscription.amount}</span>
-                          </div>
-                          {isSubscriptionActive(subscription.expirationDate) ? (
-                            <div className="mt-3">
-                              Days Left:{" "}
-                              {calculateDaysLeft(subscription.expirationDate)}
-                            </div>
-                          ) : (
-                            <button
-                              className="mt-3 px-4 py-2 bg-black text-white font-semibold rounded hover:bg-gray-800 transition duration-200"
-                              onClick={() =>
-                                renewSubscription(subscription.plan)
-                              }
-                            >
-                              Renew Subscription
-                            </button>
-                          )}
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    )
+                )}
               </div>
             </div>
           )}
@@ -767,7 +798,179 @@ export default function UserPage() {
             </div>
           )}
         </div>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold mt-10 mb-5">Your Webinars</h1>
+          <div className="flex items-center space-x-3">
+            {mywebinarpageno > 1 && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleLeft className="text-2xl text-gray-500"
+                  onClick={() => setMyWebinarPageNo(mywebinarpageno - 1)}
+                />
+              </div>
+            )}
+            {myWebinars.length === 3 && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleRight
+                  className="text-2xl text-gray-500"
+                  onClick={() => setMyWebinarPageNo(mywebinarpageno + 1)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="container mx-auto p-4">
+          {myWebinars.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {myWebinars.map((webinar) => (
+                <div
+                  key={webinar._id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                >
+                  <img
+                    src={webinar.photo.url}
+                    alt={webinar.title}
+                    className="w-full  object-cover"
+                  />
+                  <div className="p-4">
+                    <h2 className="text-xl font-bold mb-2">{webinar.title}</h2>
+                    {/* <p className="text-gray-600 mb-2">{webinar.description}</p> */}
+                    {/* only 3 lines of description and ... */}
+                    <p className="text-gray-600 mb-2">
+                      {webinar.description.slice(0, 100) + "...."}
+                    </p>
+
+                    <div className="flex justify-between">
+                      {webinar.status === "upcoming" && (
+                        <button className="bg-green-300 text-green-600 px-2 rounded-lg py-1">
+                          Edit
+                        </button>
+                      )}
+                      {webinar.status === "Live" && (
+                        <button
+                          className="bg-blue-300 text-blue-600 px-2 rounded-lg py-1"
+                          onClick={() => {
+                            navigator(`/detailedWebinar/${webinar._id}`);
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                      <button
+                        className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
+                        onClick={() => {
+                          axios
+                            .delete(`http://localhost:3000/delete-webinar`, {
+                              data: { id: webinar._id, mail: user.email },
+                            })
+                            .then((response) => {
+                              setMyWebinars(
+                                myWebinars.filter(
+                                  (web) => web._id !== webinar._id
+                                )
+                              );
+                            });
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No webinars available.</p>
+          )}
+        </div>
+
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold mt-10 mb-5">Joined Webinars</h1>
+          <div className="flex items-center space-x-3">
+            {joinedWebinarsPageNo > 1 && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleLeft
+                  className="text-2xl text-gray-500"
+                  onClick={() => setJoinedWebinarsPageNo(joinedWebinarsPageNo - 1)}
+                />
+              </div>
+            )}
+            {joinedWebinars.length === 3 && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleRight
+                  className="text-2xl text-gray-500"
+                  onClick={() => setJoinedWebinarsPageNo(joinedWebinarsPageNo + 1)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="container mx-auto p-4">
+          {joinedWebinars.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {joinedWebinars.map((webinar) => (
+                <div
+                  key={webinar._id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                >
+                  <img
+                    src={webinar.photo.url}
+                    alt={webinar.title}
+                    className="w-full  object-cover"
+                  />
+                  <div className="p-4">
+                    <h2 className="text-xl font-bold mb-2">{webinar.title}</h2>
+                    {/* <p className="text-gray-600 mb-2">{webinar.description}</p> */}
+                    {/* only 3 lines of description and ... */}
+                    <p className="text-gray-600 mb-2">
+                      {webinar.description.slice(0, 100) + "...."}
+                    </p>
+
+                    <div className="flex justify-between">
+                      {webinar.status === "upcoming" && (
+                        <button className="bg-green-300 text-green-600 px-2 rounded-lg py-1">
+                          Edit
+                        </button>
+                      )}
+                      {webinar.status === "Live" && (
+                        <button
+                          className="bg-blue-300 text-blue-600 px-2 rounded-lg py-1"
+                          onClick={() => {
+                            navigator(`/detailedWebinar/${webinar._id}`);
+                          }}
+                        >
+                          View
+                        </button>
+                      )}
+                      <button
+                        className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
+                        onClick={() => {
+                          axios
+                            .delete(`http://localhost:3000/delete-webinar`, {
+                              data: { id: webinar._id, mail: user.email },
+                            })
+                            .then((response) => {
+                              setJoinedWebinars(
+                                joinedWebinars.filter(
+                                  (web) => web._id !== webinar._id
+                                )
+                              );
+                            });
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No webinars available.</p>
+          )}
+        </div>
       </div>
+
       {confirmModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">

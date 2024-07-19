@@ -195,7 +195,7 @@ function Detailedwebinar() {
                   <div className="flex flex-col items-start">
                     <div className="flex space-x-2 items-center">
                       <div className="text-lg font-semibold">{mentor.name}</div>
-                      <div className="text-xs border border-blue-400 text-blue-400 px-1 mt-1 rounded-2xl">
+                      <div className="text-xs border border-blue-400 text-blue-400 px-1 rounded-2xl">
                         Mentor
                       </div>
                     </div>
@@ -251,7 +251,7 @@ function Detailedwebinar() {
                   <div className="flex flex-col items-start">
                     <div className="flex space-x-2 items-center">
                       <div className="text-lg font-semibold">{mentor.name}</div>
-                      <div className="text-xs border border-blue-400 text-blue-400 px-1 mt-1 rounded-2xl">
+                      <div className="text-xs border border-blue-400 text-blue-400 px-1 rounded-2xl">
                         Mentor
                       </div>
                     </div>
