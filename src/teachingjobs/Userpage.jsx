@@ -128,7 +128,7 @@ export default function UserPage() {
     } else {
       setLoading(false);
     }
-  }, [myWebinars.length, mywebinarpageno, joinedWebinars.length, joinedWebinarsPageNo]);
+  }, [myWebinars?.length, mywebinarpageno, joinedWebinars?.length, joinedWebinarsPageNo]);
 
   const handleDelete = (jobId) => {
     axios
