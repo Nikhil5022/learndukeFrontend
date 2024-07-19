@@ -37,6 +37,8 @@ export default function UserPage() {
   const [joinedWebinars, setJoinedWebinars] = useState([]);
   const [mywebinarpageno, setMyWebinarPageNo] = useState(1);
   const [joinedWebinarsPageNo, setJoinedWebinarsPageNo] = useState(1);
+  const [totalmywebinarpages, setTotalMyWebinarPages] = useState(0);
+  const [totaljoinedwebinarpages, setTotalJoinedWebinarPages] = useState(0);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -117,6 +119,7 @@ export default function UserPage() {
         )
         .then((response) => {
           setMyWebinars(response.data.webinars);
+          setTotalMyWebinarPages(response.data.totalPages);
           console.log(response.data);
         });
 
@@ -124,6 +127,7 @@ export default function UserPage() {
         .get(`${import.meta.env.VITE_SERVER_URL}/my-registered-webinars/${user.email}?page=${joinedWebinarsPageNo}&limit=3`)
         .then((response) => {
           setJoinedWebinars(response.data.webinars);
+          setTotalJoinedWebinarPages(response.data.totalPages);
         });
     } else {
       setLoading(false);
@@ -808,7 +812,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {myWebinars?.length === 3 && (
+            {mywebinarpageno!==totalmywebinarpages && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -894,7 +898,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {joinedWebinars?.length === 3 && (
+            {joinedWebinarsPageNo!==totaljoinedwebinarpages && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
