@@ -96,7 +96,7 @@ function CreateWebinar() {
     
     ctx.font = "60px cursive";
     // ctx.fillText(title, 30, 200, 800);
-    await wrapText(ctx, webinar.title, 30, 180, 800, 80)
+    await wrapText(ctx, webinar.title, 30, 180, 820, 80)
     
     ctx.font = "30px cursive";
     ctx.fillText(new Date(webinar.startTime).toLocaleDateString(), 35, 410);

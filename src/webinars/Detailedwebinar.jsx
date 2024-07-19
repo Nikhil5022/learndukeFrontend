@@ -13,6 +13,7 @@ import { IoMdUndo } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 import Modal from "../Modal";
+import { FcGoogle } from "react-icons/fc";
 
 function Detailedwebinar() {
   const { id } = useParams();
@@ -22,6 +23,8 @@ function Detailedwebinar() {
   const [user, setUser] = useState(null);
   const [registerModal, setRegisterModal] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [showConsent, setShowConsent] = useState(false)
+  const [loginModal, setLoginModal] = useState(false);
 
   useEffect(() => {
     axios
@@ -31,7 +34,7 @@ function Detailedwebinar() {
         console.log(res.data);
       });
   }, []);
-  const [registerLoader, setRegisterLoader] = useState(false)
+  const [registerLoader, setRegisterLoader] = useState(false);
 
   const handleClickcopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -56,7 +59,7 @@ function Detailedwebinar() {
     }
 
     async function getWebinar() {
-      if (id && loginUser) {
+      if (id) {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/getWebinar/${id}`
         );
@@ -131,15 +134,13 @@ function Detailedwebinar() {
           webinarId: id,
         })
         .then((res) => {
-          console.log(res.data);
           setWebinar((prev) => ({
             ...prev,
             participants: webinar.participants.filter(
-              (obj) => obj !== user._id
+              (obj) => obj !== user?._id
             ),
           }));
         }));
-    console.log(webinar);
   };
 
   {
@@ -147,11 +148,11 @@ function Detailedwebinar() {
   }
 
   const handleRegister = async () => {
-    setRegisterLoader(true);
     const u = JSON.parse(localStorage.getItem("user"));
     if (webinar.isPaid && u) {
       setRegisterModal(true);
     } else if (u) {
+      setRegisterLoader(true);
       await axios
         .post(`${import.meta.env.VITE_SERVER_URL}/register-for-webinar`, {
           mail: u.email,
@@ -163,7 +164,7 @@ function Detailedwebinar() {
             participants: [...prevWebinar.participants, user._id],
           }));
         });
-      setRegisterLoader(false)
+      setRegisterLoader(false);
     }
   };
 
@@ -206,10 +207,10 @@ function Detailedwebinar() {
                   <button
                     className="bg-green-200 text-green-700 border border-green-600 p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3 whitespace-nowrap flex justify-center items-center space-x-2"
                     onClick={() => {
-                      window.open(
+                      user ? window.open(
                         `https://wa.me/${mentor.whatsappNumber}`,
                         "_blank"
-                      );
+                      ): setLoginModal(true)
                     }}
                   >
                     <FaWhatsapp className="text-2xl" />
@@ -262,10 +263,10 @@ function Detailedwebinar() {
                   <button
                     className="bg-green-200 text-green-700 border border-green-600 p-3 rounded-lg my-3 sm:m-3 w-full sm:ml-3 whitespace-nowrap flex justify-center items-center space-x-2"
                     onClick={() => {
-                      window.open(
+                      user ? window.open(
                         `https://wa.me/${mentor.whatsappNumber}`,
                         "_blank"
-                      );
+                      ): setLoginModal(true)
                     }}
                   >
                     <FaWhatsapp className="text-2xl" />
@@ -329,14 +330,13 @@ function Detailedwebinar() {
                 </div>
               </div>
               <div>
-                {/* /* --------------------------changed------------------------------- */}
                 {webinar.status === "Past" ? (
                   <div className="text-lg font-semibold">
                     Webinar has already ended!
                   </div>
                 ) : (
                   <div>
-                    {user && webinar.participants.includes(user._id) ? (
+                    {user && webinar.participants.includes(user?._id) && 
                       webinar.status === "Live" ? (
                         <button
                           className="bg-blue-400 text-white p-3 rounded-lg w-full"
@@ -346,41 +346,47 @@ function Detailedwebinar() {
                         >
                           Join Webinar
                         </button>
-                      ) : (
+                      ) : user && webinar.status == "Upcoming" &&  webinar.participants.includes(user?._id) ? (
                         <div className="flex md:flex-col flex-col  sm:flex-row items-center justify-evenly">
                           <button className="bg-green-200 text-green-600 border border-green-600 cursor-default p-3 rounded-lg w-full sm:w-1/2 md:w-full my-2 sm:mx-1 md:my-2 md:mx-0">
                             Registered
                           </button>
-                          <button
-                            className="bg-red-200 text-red-700 border border-red-700 cursor-pointer p-3 rounded-lg w-full sm:w-1/2 md:w-full text-center flex items-center justify-center"
-                            onClick={handleUnregister}
-                          >
-                            Undo
-                            <span className="mx-1">
-                              <IoMdUndo />
-                            </span>
-                          </button>
+                          {user.email != mentor.email && (
+                            <button
+                              className="bg-red-200 text-red-700 border border-red-700 cursor-pointer p-3 rounded-lg w-full sm:w-1/2 md:w-full text-center flex items-center justify-center"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                setShowConsent(true)
+                              }}
+                            >
+                              Undo
+                              <span className="mx-1">
+                                <IoMdUndo />
+                              </span>
+                            </button>
+                          )}
                         </div>
                       )
-                    ) : (
+                     : (
                       <button
                         className="bg-black text-white p-3 rounded-lg w-full flex items-center justify-center"
-                        onClick={handleRegister}
-                        disabled={!user || registerLoader}
+                        onClick={() => user ? handleRegister() : setLoginModal(true)}
                       >
-                      {registerLoader ? <div className="w-8 h-8 rounded-full animate-spin border-t-2 border-b-2"></div> : "Register Now"}
+                        {registerLoader ? (
+                          <div className="w-8 h-8 rounded-full animate-spin border-t-2 border-b-2"></div>
+                        ) : (
+                          "Register Now"
+                        )}
                       </button>
                     )}
                   </div>
                 )}
-                {/* /* --------------------------changed------------------------------- */}
               </div>
               {webinar.status !== "Past" && (
                 <>
                   <hr className="my-4" />
                   <div className="flex justify-between">
-                    <div className="relative flex h-7 w-7"
-                    >
+                    <div className="relative flex h-7 w-7">
                       {participants.map((participant, index) => (
                         <img
                           key={index}
@@ -465,11 +471,11 @@ function Detailedwebinar() {
                   <div>
                     <button
                       onClick={() => {
-                        window.open(
+                        user ? window.open(
                           // call
                           `tel:${mentor.phoneNumber}`,
                           "_blank"
-                        );
+                        ) : setLoginModal(true)
                       }}
                       className="flex justify-center items-center space-x-2 w-full rounded-lg"
                     >
@@ -531,6 +537,42 @@ function Detailedwebinar() {
               }
             >
               Pay Now
+            </button>
+          </div>
+        </Modal>
+      )}
+      {
+        <Modal onClose={() => setShowConsent(false)} isOpen={showConsent}>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-xl my-2 font-semibold text-red-600">THIS WILL CANCEL YOUR REGISTRATION.</h1>
+            <p className="text-lg">Are you sure want to undo ?</p>
+            <div className="flex flex-col md:flex-row space-x-3 items-center justify-center mt-2">
+            <button
+              className="px-5 py-2 bg-green-100 text-green-500 border-green-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1"
+              onClick={() => setShowConsent(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-5 py-2 bg-red-100 text-red-500 border-red-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1"
+              onClick={handleUnregister}
+            >
+              Continue
+            </button>
+          </div>
+          </div>
+        </Modal>
+      }
+      {loginModal && (
+        <Modal isOpen={loginModal} onClose={() => setLoginModal(false)}>
+          <div className="flex flex-col justify-center items-center">
+            <p className="text-lg font-semibold">You need to login first!</p>
+            <button
+              className="bg-black hover:text-black hover:bg-white text-white px-5 py-2 rounded-2xl flex items-center transform hover:scale-105 duration-300 m-2"
+              onClick={() => window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`}
+            >
+              <FcGoogle className="text-xl mr-2 mt-0.5" />
+              <div>Login</div>
             </button>
           </div>
         </Modal>
