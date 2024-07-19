@@ -808,7 +808,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {myWebinars.length === 3 && (
+            {myWebinars?.length === 3 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -819,7 +819,7 @@ export default function UserPage() {
           </div>
         </div>
         <div className="container mx-auto p-4">
-          {myWebinars.length > 0 ? (
+          {myWebinars?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {myWebinars.map((webinar) => (
                 <div
@@ -894,7 +894,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {joinedWebinars.length === 3 && (
+            {joinedWebinars?.length === 3 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -906,7 +906,7 @@ export default function UserPage() {
         </div>
         
         <div className="container mx-auto p-4">
-          {joinedWebinars.length > 0 ? (
+          {joinedWebinars?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {joinedWebinars.map((webinar) => (
                 <div
