@@ -34,13 +34,15 @@ function CreateWebinar() {
     },
     additionalBenefits: [],
     topics: [{ name: "", descriptions: [""] }],
-    photo : "",
+    photo: "",
   });
   const navigate = useNavigate();
   const [successModal, setSuccessModal] = useState(false);
-  const [submitModal, setSubmitModal] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [image,setImage] = useState("")
+  const [submitModal, setSubmitModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState("");
+  const [additionalBenefitsError, setAdditionalBenefitsError] = useState(false);
+  const [topicsError, setTopicsError] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -59,83 +61,97 @@ function CreateWebinar() {
   }
 
   function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-  
-    for(let n = 0; n < words.length; n++) {
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        let testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-            ctx.fillText(line, x, y);
-            line = words[n] + ' ';
-            y += lineHeight;
-        } else {
-            line = testLine;
-        }
+    const words = text.split(" ");
+    let line = "";
+
+    for (let n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + " ";
+      let metrics = ctx.measureText(testLine);
+      let testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        ctx.fillText(line, x, y);
+        line = words[n] + " ";
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
     }
     ctx.fillText(line, x, y);
   }
 
   async function createCanvasImage() {
-    const canvas =  document.createElement("canvas")
+    const canvas = document.createElement("canvas");
     canvas.width = 854;
     canvas.height = 480;
 
     const ctx = canvas.getContext("2d");
-    
-    let dark =  generateRandomDarkColor();
+
+    let dark = generateRandomDarkColor();
 
     ctx.fillStyle = dark;
     ctx.fillRect(0, 0, 854, 480);
-    
-    ctx.fillStyle = "white"
-    
+
+    ctx.fillStyle = "white";
+
     ctx.font = "30px cursive";
     ctx.fillText("SurelyWork | Webinar", 30, 50);
-    
+
     ctx.font = "60px cursive";
     // ctx.fillText(title, 30, 200, 800);
-    await wrapText(ctx, webinar.title, 30, 180, 820, 80)
-    
+    await wrapText(ctx, webinar.title, 30, 180, 820, 80);
+
     ctx.font = "30px cursive";
     ctx.fillText(new Date(webinar.startTime).toLocaleDateString(), 35, 410);
     ctx.fillText(user.name, 450, 410);
 
-    const imageData = canvas.toDataURL()
-    setImage(imageData)
-    console.log(image)
+    const imageData = canvas.toDataURL();
+    setImage(imageData);
+    console.log(image);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createCanvasImage()
+    if (!Array.isArray(webinar.additionalBenefits) || webinar.additionalBenefits.length === 0) {
+      setAdditionalBenefitsError(true);
+      return;
+    } 
+    else{
+      setAdditionalBenefitsError(false);
+    }
+    if (webinar.topics.length === 0) {
+      setTopicsError(true);
+      return;
+    }
+    else{
+      setTopicsError(false);
+    }
+    await createCanvasImage();
     setSubmitModal(true);
   };
 
   const handleModalSubmit = async () => {
-    setLoading(true)
-    try{
+    setLoading(true);
+    try {
       const res = await axios.post(
-      // "http://localhost:3000/create-webinar",
-      `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
-      {
-        mail: user.email,
-        webinar,
-        image
+        // "http://localhost:3000/create-webinar",
+        `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
+        {
+          mail: user.email,
+          webinar,
+          image,
+        }
+      );
+      console.log(res.data);
+      setWebinar(initialWebinarState);
+      if (res.status === 200) {
+        window.location.href = res.data;
       }
-    );
-    console.log(res.data);
-    setWebinar(initialWebinarState);
-    if (res.status === 200) {
-      window.location.href = res.data
-    }
-    }catch(e){
+    } catch (e) {
       console.log(e);
-    }finally{
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleTopicChange = (index, value) => {
     const newTopics = webinar.topics.map((topic, i) =>
@@ -183,16 +199,18 @@ function CreateWebinar() {
     "Exclusive Discount on all our 1:1 mentorship programs",
   ];
 
-  return loading ? 
-  <div className="h-96 flex items-center justify-center">
-  <Loader /> 
-  </div>
-  : (
+  return loading ? (
+    <div className="h-96 flex items-center justify-center">
+      <Loader />
+    </div>
+  ) : (
     <div className="w-full p-4">
       <div className="flex justify-end ">
-        <button onClick={() => {
-          navigate(-1);
-        }}>
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
           <ImCross className="text-xl" />
         </button>
       </div>
@@ -208,21 +226,32 @@ function CreateWebinar() {
             <label htmlFor="title" className="text-gray-800 font-semibold">
               Title
             </label>
-            <input
-              value={webinar.title}
-              onChange={(e) =>
-                setWebinar((prevState) => ({
-                  ...prevState,
-                  title: e.target.value,
-                }))
-              }
-              type="text"
-              name="title"
-              id="title"
-              className="border-b-2 border-slate-500 p-1 outline-none font-normal"
-              placeholder="Enter the title of webinar"
-              required
-            />
+            <div className="flex items-center">
+              <input
+                value={webinar.title}
+                onChange={(e) =>
+                  setWebinar((prevState) => ({
+                    ...prevState,
+                    title: e.target.value,
+                  }))
+                }
+                type="text"
+                name="title"
+                id="title"
+                className="border-b-2 border-slate-500 p-1 outline-none font-normal w-full"
+                placeholder="Enter the title of webinar"
+                required
+              />
+              {/* remaining characters */}
+              <div className="text-gray-500 text-sm">
+                {60-webinar.title.length}
+                </div>
+            </div>
+            {webinar.title.length > 60 && (
+              <p className="text-red-500">
+                Title should be less than 60 characters
+              </p>
+            )}
           </div>
           <div className="flex flex-col px-4 my-2">
             <label
@@ -358,6 +387,9 @@ function CreateWebinar() {
               ))}
             </div>
           </div>
+          {additionalBenefitsError && (
+            <p className="text-red-500">Select atleast one additional benefit</p>
+          )}
           <div className="text-gray-800 mr-5 font-semibold py-2 px-4">
             Topics
           </div>
@@ -467,6 +499,9 @@ function CreateWebinar() {
               <IoMdAddCircle className="mr-2" /> Topic
             </button>
           </div>
+          {topicsError && (
+            <p className="text-red-500">Add atleast one topic</p>
+          )}
 
           <div className="flex items-start sm:items-center flex-col sm:flex-row text-center px-4 my-2">
             <div className="flex items-center justify-center">
@@ -559,38 +594,33 @@ function CreateWebinar() {
           </div>
         </Modal>
       )}
-      {
-        submitModal && (
-          <Modal
-            isOpen={submitModal}
-            onClose={() => setSubmitModal(false)}
-          >
-            <div className="flex flex-col items-center justify-center text-lg text-center">
-              <h1 className="border-b border-black font-semibold text-lg mb-3" >NOTE</h1>
-              <h1 className="text-lg text-center p-1">
-                You need to login via google to generate meet link and 
-                add event to your calender. 
-                </h1>
-              <div>
-                <button
-                  className="p-2 border-orange-500 rounded-xl shadow-md border-2 m-3"
-                  onClick={() => 
-                    setSubmitModal(false)
-                  }
-                >
-                  Cancel
-                </button>
-                <button
-                  className="p-2 shadow-md border-2 border-orange-500 bg-orange-500 text-white rounded-xl m-3"
-                  onClick={handleModalSubmit}
-                >
-                  Continue
-                </button>
-              </div>
+      {submitModal && (
+        <Modal isOpen={submitModal} onClose={() => setSubmitModal(false)}>
+          <div className="flex flex-col items-center justify-center text-lg text-center">
+            <h1 className="border-b border-black font-semibold text-lg mb-3">
+              NOTE
+            </h1>
+            <h1 className="text-lg text-center p-1">
+              You need to login via google to generate meet link and add event
+              to your calender.
+            </h1>
+            <div>
+              <button
+                className="p-2 border-orange-500 rounded-xl shadow-md border-2 m-3"
+                onClick={() => setSubmitModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="p-2 shadow-md border-2 border-orange-500 bg-orange-500 text-white rounded-xl m-3"
+                onClick={handleModalSubmit}
+              >
+                Continue
+              </button>
             </div>
-          </Modal>
-        )
-      }
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

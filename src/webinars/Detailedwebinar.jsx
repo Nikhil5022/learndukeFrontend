@@ -219,7 +219,7 @@ function Detailedwebinar() {
                 </div>
               </div>
             </div>
-            <div className="border border-gray-300 p-6 rounded-xl bg-white mt-10">
+            <div className="border border-gray-300 p-6 rounded-xl bg-white mt-10 ">
               <div className="text-xl font-bold">About the Webinar</div>
               <hr className="my-4" />
               <div className="py-5">{webinar.description}</div>
