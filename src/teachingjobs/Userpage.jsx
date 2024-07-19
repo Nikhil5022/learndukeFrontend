@@ -113,7 +113,7 @@ export default function UserPage() {
 
       axios
         .get(
-          `http://localhost:3000/get-my-webinars/${user.email}?page=${mywebinarpageno}&limit=3`
+          `${import.meta.env.VITE_SERVER_URL}/get-my-webinars/${user.email}?page=${mywebinarpageno}&limit=3`
         )
         .then((response) => {
           setMyWebinars(response.data.webinars);
@@ -121,7 +121,7 @@ export default function UserPage() {
         });
 
       axios
-        .get(`http://localhost:3000/my-registered-webinars/${user.email}?page=${joinedWebinarsPageNo}&limit=3`)
+        .get(`${import.meta.env.VITE_SERVER_URL}/my-registered-webinars/${user.email}?page=${joinedWebinarsPageNo}&limit=3`)
         .then((response) => {
           setJoinedWebinars(response.data.webinars);
         });
@@ -859,7 +859,7 @@ export default function UserPage() {
                         className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
                         onClick={() => {
                           axios
-                            .delete(`http://localhost:3000/delete-webinar`, {
+                            .delete(`${import.meta.env.VITE_SERVER_URL}/delete-webinar`, {
                               data: { id: webinar._id, mail: user.email },
                             })
                             .then((response) => {
@@ -946,7 +946,7 @@ export default function UserPage() {
                         className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
                         onClick={() => {
                           axios
-                            .delete(`http://localhost:3000/delete-webinar`, {
+                            .delete(`${import.meta.env.VITE_SERVER_URL}/delete-webinar`, {
                               data: { id: webinar._id, mail: user.email },
                             })
                             .then((response) => {
