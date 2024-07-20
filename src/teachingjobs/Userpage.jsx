@@ -738,7 +738,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {jobspages !== totaljobpages && (
+            {jobspages < totaljobpages && totaljobpages>0 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -850,7 +850,7 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {mywebinarpageno !== totalmywebinarpages && (
+            {mywebinarpageno < totalmywebinarpages && totalmywebinarpages>0 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -863,14 +863,14 @@ export default function UserPage() {
         <div className="container mx-auto p-4">
           {myWebinars?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {myWebinars.map((webinar) => (
+              {myWebinars.map((webinar) => webinar && (
                 <div
                   key={webinar._id}
                   className="bg-white rounded-lg shadow-md overflow-hidden"
                 >
                   <img
-                    src={webinar.photo.url}
-                    alt={webinar.title}
+                    src={webinar?.photo?.url}
+                    alt={webinar?.title}
                     className="w-full  object-cover"
                   />
                   <div className="p-4">
@@ -943,11 +943,11 @@ export default function UserPage() {
                 />
               </div>
             )}
-            {joinedWebinarsPageNo !== totaljoinedwebinarpages && (
+            {joinedWebinarsPageNo < totaljoinedwebinarpages && totaljoinedwebinarpages>0 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
-                  onClick={() =>
+                  onClick={() => 
                     setJoinedWebinarsPageNo(joinedWebinarsPageNo + 1)
                   }
                 />
