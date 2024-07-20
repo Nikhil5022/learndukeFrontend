@@ -29,9 +29,11 @@ function Webinars() {
   const [showUpcomingLoadmore, setShowUpcomingLoadmore] = useState(true);
   const [showPastLoadmore, setShowPastLoadmore] = useState(true);
   const [pastPageNumber, setPastPageNumber] = useState(1);
+  const [limitExceeded, setLimitExceeded] = useState(false);
 
   const showLiveWebinarFirst = useRef(null);
   const showPastWebinarFirst = useRef(null);
+  const [userData, setUserData] = useState(null); 
 
   useEffect(() => {
     if (showLiveWebinarFirst.current) {
@@ -75,6 +77,15 @@ function Webinars() {
     }
     isMentor();
   }, []);
+  useEffect(() => {
+    async function getUser(){
+      if(user){
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
+        setUserData(res.data)
+      }
+    }
+    getUser()
+    }, [])
 
   const handleGoogleLogin = () => {
     window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
@@ -439,18 +450,41 @@ function Webinars() {
           </div>
         </Modal>
       )}
+      {
+        limitExceeded && (
+          <Modal isOpen={limitExceeded} onClose={() => setLimitExceeded(false)}>
+            <div className="flex flex-col justify-center space-y-4 items-center text-center">
+              <p className="font-semibold text-lg">You have exceeded the monthly limit <br/> of webinars you can create!</p>
+              <div className="flex">
+                <button className="px-10 py-1 bg-gradient-to-l from-yellow-500 to-orange-500 rounded-sm text-white whitespace-nowrap flex items-center justify-center space-x-1 mr-3 text-lg" onClick={()=> setLimitExceeded(false)}>Close</button>
+              <button  className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-sm text-white whitespace-nowrap flex items-center justify-center space-x-1 text-lg"
+              onClick={() => {
+                navigate("/mentor/payment", {
+                  state: { mentorData, newData: false, modified: false },
+                });
+              }}>Upgrade Plan</button>
+              </div>
+            </div>
+          </Modal>
+      )}
       {mentorData && (
         <div
           className="fixed bottom-4 right-4 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
-          onClick={() =>
+          onClick={() => {
+
+            let limit = 0;  
+            if(mentorData){
+              limit = webinarLimits(mentorData);
+            }
             user
-              ? mentorData
-                ? mentorData.isPremium
-                  ? navigate("/create-webinar")
-                  : setShowPremiumModal(true)
-                : setShowMentorModal(true)
-              : setShowLoginModal(true)
+            ? mentorData
+            ? mentorData.isPremium
+            ? userData?.webinarLimit <= limit ? navigate("/create-webinar") : setLimitExceeded(true)
+            : setShowPremiumModal(true)
+            : setShowMentorModal(true)
+            : setShowLoginModal(true)
           }
+        }
           disabled={disabled}
         >
           <FaPlus className="text-xl" />
@@ -534,6 +568,20 @@ const WebinarCard = React.memo(({ webinar }) => {
     </div>
   );
 });
+
+function webinarLimits(mentor) {
+  let limit = 0; 
+  mentor.plans.forEach(plan => {
+    if (plan && plan == 'Premium' || plan == 'Lifetime') {
+      limit = Math.max(limit, Infinity);
+    } else if (plan && plan == 'Advance') {
+      limit = Math.max(limit, 9);
+    } else if (plan && plan == 'Basic') {
+      limit = Math.max(limit, 3);
+    }
+});
+  return limit;
+}
 
 function DataFetchLoading() {
   return (
