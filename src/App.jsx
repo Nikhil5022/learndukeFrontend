@@ -35,6 +35,7 @@ import CancellationAndRefundPolicyPage from "./policies/RefundCancellation";
 import Webinars from "./webinars/Webinars";
 import CreateWebinar from "./webinars/CreateWebinar";
 import Detailedwebinar from "./webinars/Detailedwebinar";
+import Team from "./teachingjobs/Team";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -104,6 +105,7 @@ function App() {
         <Route path="/webinars" element={<Webinars />} />
         <Route path="/create-webinar" element={<CreateWebinar />} />
         <Route path="/detailedWebinar/:id" element={<Detailedwebinar />} />
+        <Route path="/team" element={<Team />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}

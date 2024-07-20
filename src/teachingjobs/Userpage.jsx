@@ -39,6 +39,8 @@ export default function UserPage() {
   const [joinedWebinarsPageNo, setJoinedWebinarsPageNo] = useState(1);
   const [totalmywebinarpages, setTotalMyWebinarPages] = useState(0);
   const [totaljoinedwebinarpages, setTotalJoinedWebinarPages] = useState(0);
+  const [jobspages, setJobsPages] = useState(1);
+  const [totaljobpages, setTotalJobPages] = useState(0);
 
   const domainOptions = [
     "Information Technology (IT)",
@@ -93,10 +95,14 @@ export default function UserPage() {
           setSelectedDomains(response.data.jobAllerts);
 
           axios
-            .get(`${import.meta.env.VITE_SERVER_URL}/getJobs/${user.email}`)
+            .get(
+              `${import.meta.env.VITE_SERVER_URL}/getJobs/${user.email}?page=${jobspages}&limit=2`
+            )
 
             .then((jobsResponse) => {
-              setJobs(jobsResponse.data);
+              console.log(jobsResponse.data);
+              setJobs(jobsResponse.data.jobs);
+              setTotalJobPages(jobsResponse.data.totalPages);
             });
           setLoading(false);
         })
@@ -115,16 +121,21 @@ export default function UserPage() {
 
       axios
         .get(
-          `${import.meta.env.VITE_SERVER_URL}/get-my-webinars/${user.email}?page=${mywebinarpageno}&limit=3`
+          `${import.meta.env.VITE_SERVER_URL}/get-my-webinars/${
+            user.email
+          }?page=${mywebinarpageno}&limit=3`
         )
         .then((response) => {
           setMyWebinars(response.data.webinars);
           setTotalMyWebinarPages(response.data.totalPages);
-          console.log(response.data);
         });
 
       axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/my-registered-webinars/${user.email}?page=${joinedWebinarsPageNo}&limit=3`)
+        .get(
+          `${import.meta.env.VITE_SERVER_URL}/my-registered-webinars/${
+            user.email
+          }?page=${joinedWebinarsPageNo}&limit=3`
+        )
         .then((response) => {
           setJoinedWebinars(response.data.webinars);
           setTotalJoinedWebinarPages(response.data.totalPages);
@@ -132,7 +143,13 @@ export default function UserPage() {
     } else {
       setLoading(false);
     }
-  }, [myWebinars?.length, mywebinarpageno, joinedWebinars?.length, joinedWebinarsPageNo]);
+  }, [
+    myWebinars?.length,
+    mywebinarpageno,
+    joinedWebinars?.length,
+    joinedWebinarsPageNo,
+    jobspages
+  ]);
 
   const handleDelete = (jobId) => {
     axios
@@ -710,7 +727,27 @@ export default function UserPage() {
           )}
         </div>
 
-        <h1 className="text-2xl font-bold mt-10 mb-5">Your Jobs</h1>
+        <div className="flex justify-between items-center mt-10">
+          <h1 className="text-2xl font-bold">Your Jobs</h1>
+          <div className="flex items-center space-x-3">
+            {jobspages > 1 && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleLeft
+                  className="text-2xl text-gray-500"
+                  onClick={() => setJobsPages(jobspages - 1)}
+                />
+              </div>
+            )}
+            {jobspages !== totaljobpages && (
+              <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
+                <FaArrowCircleRight
+                  className="text-2xl text-gray-500"
+                  onClick={() => setJobsPages(jobspages + 1)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
         <div className="flex items-center mb-4">
           <input
             type="text"
@@ -807,12 +844,13 @@ export default function UserPage() {
           <div className="flex items-center space-x-3">
             {mywebinarpageno > 1 && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
-                <FaArrowCircleLeft className="text-2xl text-gray-500"
+                <FaArrowCircleLeft
+                  className="text-2xl text-gray-500"
                   onClick={() => setMyWebinarPageNo(mywebinarpageno - 1)}
                 />
               </div>
             )}
-            {mywebinarpageno!==totalmywebinarpages && (
+            {mywebinarpageno !== totalmywebinarpages && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
@@ -863,9 +901,14 @@ export default function UserPage() {
                         className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
                         onClick={() => {
                           axios
-                            .delete(`${import.meta.env.VITE_SERVER_URL}/delete-webinar`, {
-                              data: { id: webinar._id, mail: user.email },
-                            })
+                            .delete(
+                              `${
+                                import.meta.env.VITE_SERVER_URL
+                              }/delete-webinar`,
+                              {
+                                data: { id: webinar._id, mail: user.email },
+                              }
+                            )
                             .then((response) => {
                               setMyWebinars(
                                 myWebinars.filter(
@@ -894,21 +937,25 @@ export default function UserPage() {
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleLeft
                   className="text-2xl text-gray-500"
-                  onClick={() => setJoinedWebinarsPageNo(joinedWebinarsPageNo - 1)}
+                  onClick={() =>
+                    setJoinedWebinarsPageNo(joinedWebinarsPageNo - 1)
+                  }
                 />
               </div>
             )}
-            {joinedWebinarsPageNo!==totaljoinedwebinarpages && (
+            {joinedWebinarsPageNo !== totaljoinedwebinarpages && (
               <div className="bg-gray-200 p-2 rounded-lg cursor-pointer">
                 <FaArrowCircleRight
                   className="text-2xl text-gray-500"
-                  onClick={() => setJoinedWebinarsPageNo(joinedWebinarsPageNo + 1)}
+                  onClick={() =>
+                    setJoinedWebinarsPageNo(joinedWebinarsPageNo + 1)
+                  }
                 />
               </div>
             )}
           </div>
         </div>
-        
+
         <div className="container mx-auto p-4">
           {joinedWebinars?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -950,9 +997,14 @@ export default function UserPage() {
                         className="bg-red-300 text-red-600 px-2 rounded-lg py-1"
                         onClick={() => {
                           axios
-                            .delete(`${import.meta.env.VITE_SERVER_URL}/delete-webinar`, {
-                              data: { id: webinar._id, mail: user.email },
-                            })
+                            .delete(
+                              `${
+                                import.meta.env.VITE_SERVER_URL
+                              }/delete-webinar`,
+                              {
+                                data: { id: webinar._id, mail: user.email },
+                              }
+                            )
                             .then((response) => {
                               setJoinedWebinars(
                                 joinedWebinars.filter(
