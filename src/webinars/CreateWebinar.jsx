@@ -133,7 +133,7 @@ function CreateWebinar() {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:3000/create-webinar",
+        // "http://localhost:3000/create-webinar",
         `${import.meta.env.VITE_SERVER_URL}/create-webinar`,
         {
           mail: user.email,
