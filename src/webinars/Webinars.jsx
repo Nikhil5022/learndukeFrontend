@@ -71,19 +71,20 @@ function Webinars() {
     setDisabled(true);
     async function getUser(){
       if(user){
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user?.email}`)
         setUserData(res.data)
       }
     }
     getUser()
     async function isMentor() {
       let res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/${user.email}`
+        `${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/${user?.email}`
       );
       setMentorData(res.data.mentor);
       setDisabled(false);
     }
     isMentor();
+    setDisabled(false);
     }, [])
 
   const handleGoogleLogin = () => {
