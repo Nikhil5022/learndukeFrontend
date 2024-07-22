@@ -74,7 +74,6 @@ function Webinars() {
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user?.email}`)
         setUserData(res.data)
       }
-      setDisabled(false)
     }
     getUser()
     async function isMentor() {
@@ -507,7 +506,7 @@ const WebinarCard = React.memo(({webinar}) => {
 
   return (
     <div className="md:flex gap-[22px] rounded-2xl border border-gray-300 p-4 md:p-6 my-2 bg-white">
-      <img src={webinar.photo.url} referrerPolicy="no-referrer" alt="" width="363" height="204" className="w-full h-auto md:max-h-[210px] md:w-[339px] rounded-xl object-cover" />
+      <img src={webinar.photo.url} alt="" width="363" height="204" className="w-full h-auto md:max-h-[210px] md:w-[339px] rounded-xl object-cover" />
 
       <div className="flex grow flex-col justify-between ml-2 mt-3">
         <Link to={`/detailedWebinar/${webinar._id}`}>
