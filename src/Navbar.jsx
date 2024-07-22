@@ -6,7 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import Modal from "./Modal";
 import axios from "axios";
 import "./navbar.css";
-import Logo from "./assets/logo2.jpg";
+import Logo from "./assets/learnDuke.jpg";
 export default function Navbar() {
   const location = useLocation();
   if (location.pathname === "/createjob") {
@@ -129,7 +129,7 @@ export default function Navbar() {
         <img
           src={Logo}
           alt="Learn Duke Logo"
-          className="h-10 md:h-12 mt-2 md:mt-1 mr-10 cursor-pointer"
+          className="h-16 mt-2 md:mt-1 mr-1 cursor-pointer"
           onClick={() => navigate("/")}
         />
 
