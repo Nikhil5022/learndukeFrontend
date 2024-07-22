@@ -127,8 +127,9 @@ function Detailedwebinar() {
   }
 
   const handleUnregister = async () => {
+    setRegisterLoader(true);
     user &&
-      (await axios
+    (await axios
         .post(`${import.meta.env.VITE_SERVER_URL}/unregister-for-webinar`, {
           mail: user.email,
           webinarId: id,
@@ -141,6 +142,9 @@ function Detailedwebinar() {
             ),
           }));
         }));
+    setRegisterLoader(false)
+    setShowConsent(false)
+    setParticipants((prev) => prev.filter((obj) => obj._id !== user._id));
   };
 
   {
@@ -554,10 +558,10 @@ function Detailedwebinar() {
               Cancel
             </button>
             <button
-              className="px-5 py-2 bg-red-100 text-red-500 border-red-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1"
+              className="px-5 py-2 bg-red-100 text-red-500 border-red-500 border rounded-lg whitespace-nowrap flex items-center justify-center space-x-1 w-28"
               onClick={handleUnregister}
             >
-              Continue
+              {registerLoader ? <div className="w-6 h-6 border-red-500 rounded-full animate-spin border-t-2 border-b-2"></div> : "Continue"}
             </button>
           </div>
           </div>

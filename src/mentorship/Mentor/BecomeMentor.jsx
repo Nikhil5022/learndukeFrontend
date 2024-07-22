@@ -19,7 +19,6 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 function BecomeMentor() {
-  const [newData, setNewData] = useState(true);
 
   const [mentorData, setMentorData] = useState({
     profilePhoto: "",
@@ -53,7 +52,6 @@ function BecomeMentor() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
 
   function next(e) {
     e.preventDefault();
@@ -418,7 +416,6 @@ function BecomeMentor() {
     if (!userPresent) {
       navigate("/mentorship");
     }
-    setUser(userPresent);
   }, []);
 
 

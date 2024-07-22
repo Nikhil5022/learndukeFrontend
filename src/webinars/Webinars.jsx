@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import sample from "../assets/user.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Webinar.css";
-import notFound from "../assets/crying.gif";
 import Modal from "../Modal";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { MdPayment } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
-import Loader from "../assets/Loader.gif";
+import Loader from "../assets/WebinarLoader.gif";
 import { FaPlus, FaWhatsapp } from "react-icons/fa";
 function Webinars() {
   const navigate = useNavigate();
@@ -65,9 +63,19 @@ function Webinars() {
 
   let user = JSON.parse(localStorage.getItem("user"));
 
+  // useEffect(() => {
+  //   // window.scroll(0,0)
+    
+  // }, []);
   useEffect(() => {
-    // window.scroll(0,0)
     setDisabled(true);
+    async function getUser(){
+      if(user){
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
+        setUserData(res.data)
+      }
+    }
+    getUser()
     async function isMentor() {
       let res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/isAlreadyMentor/${user.email}`
@@ -76,15 +84,6 @@ function Webinars() {
       setDisabled(false);
     }
     isMentor();
-  }, []);
-  useEffect(() => {
-    async function getUser(){
-      if(user){
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getUser/${user.email}`)
-        setUserData(res.data)
-      }
-    }
-    getUser()
     }, [])
 
   const handleGoogleLogin = () => {
@@ -170,9 +169,11 @@ function Webinars() {
     getPast();
   }, [pastPageNumber]);
 
-  return (
+  return disabled ? <DataFetchLoading /> : (
     <div className="w-full p-4 flex relative">
       <div className="p-2 my-2  w-full xl:w-4/6">
+        { liveWebinars && liveWebinars.length > 0 && 
+        <>
         <div className="w-full">
           <div className="flex flex-col sm:flex-row justify-center w-full ">
             <div className="w-full">
@@ -181,8 +182,8 @@ function Webinars() {
               </h1>
             </div>
           </div>
-          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
-            {liveWebinars && liveWebinars.length > 0 ? (
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full space-x-2 md:space-x-0 lg:p-3">
+            { 
               liveWebinars.map((webinar, index) => (
                 <div key={index}>
                   {index == liveWebinars.length - 2 ? (
@@ -196,14 +197,7 @@ function Webinars() {
                   )}
                 </div>
               ))
-            ) : (
-              <div
-                className="flex-col flex items-center
-            justify-center text-center text-lg p-4"
-              >
-                There are currently no live webinars!
-              </div>
-            )}
+            }
           </div>
           <div className="flex justify-center">
             {showLiveLoadmore && !liveLoading && (
@@ -217,10 +211,14 @@ function Webinars() {
               </button>
             )}
           </div>
-        </div>
+          </div>
         <div className="flex items-center justify-center xl:hidden">
           <p className="w-11/12 my-3 border-2 border-orange-100"></p>
         </div>
+        </>
+          }
+          
+        {upcomingWebinars && upcomingWebinars.length > 0 && 
         <div className="w-full xl:hidden">
           <div className="flex flex-col sm:flex-row justify-center md:justify-between w-full ">
             <div className="w-full">
@@ -229,20 +227,12 @@ function Webinars() {
               </h1>
             </div>
           </div>
-          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3 ">
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full space-x-2 md:space-x-0 lg:p-3">
             {/* live webinar cards */}
-            {upcomingWebinars && upcomingWebinars.length > 0 ? (
-              upcomingWebinars.map((webinar, index) => (
+            { 
+            upcomingWebinars.map((webinar, index) => (
                 <WebinarCard key={index} webinar={webinar} />
-              ))
-            ) : (
-              <div
-                className="flex-col flex items-center
-            justify-center text-center text-lg p-4"
-              >
-                There are currently no upcoming webinars!
-              </div>
-            )}
+              ))}
           </div>
           <div className="flex justify-center">
             {showUpcomingLoadmore && !upLoading && (
@@ -256,16 +246,16 @@ function Webinars() {
               </button>
             )}
           </div>
-        </div>
-        <div className="flex items-center justify-center">
-          <p className="w-11/12 my-3 border-2 border-orange-100"></p>
-        </div>
+            <div className="flex items-center justify-center">
+              <p className="w-11/12 my-3 border-2 border-orange-100"></p>
+            </div>
+          </div>
+          } 
         <div className="w-full">
-          <h1 className="text-3xl mt-4 ml-5 px-4 font-semibold">
+          <h1 className="text-3xl mt-4 md:ml-5 px-4 font-semibold">
             Past Webinars
           </h1>
-
-          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full lg:p-3">
+          <div className="webinarGrid grid grid-cols-1 3xl:grid-cols-2 xl:w-full space-x-2 md:space-x-0 lg:p-3">
             {pastWebinars && pastWebinars.length > 0 ? (
               pastWebinars.map((webinar, index) => (
                 <div key={index}>
@@ -304,9 +294,9 @@ function Webinars() {
         </div>
       </div>
       <div
-        className="top-28 h-fit z-0 border-none w-2/6 p-3 sticky hidden xl:flex my-10"
+        className="top-20 h-fit z-0 border-none w-2/6 p-3 sticky hidden xl:flex overflow-y-scroll"
         style={{
-          maxHeight: "60vh",
+          maxHeight: "70vh",
         }}
       >
         <div className="w-full p-2">
@@ -322,14 +312,14 @@ function Webinars() {
                 upcomingWebinars.map((webinar, index) => (
                   <div
                     key={index}
-                    className="border border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between "
+                    className="border-b border-slate-300 rounded-lg flex p-2 my-2 items-center justify-between "
                   >
                     <div className="flex flex-col w-9/12">
-                      <h1 className="font-semibold p-1">{webinar.title}</h1>
+                      <h1 className="font-semibold text-xl p-1">{webinar.title}</h1>
                       <div className="flex items-center p-1">
                         <img
                           src={webinar.creator.photo}
-                          className="max-w-8 rounded-full mr-3"
+                          className="max-w-6 rounded-full mr-3"
                         />
                         <p>{webinar.creator.name}</p>
                       </div>
@@ -362,7 +352,7 @@ function Webinars() {
                   setUpcomingPageNumber(upcomingPageNumber + 1);
                 }}
               >
-                <FaPlus className="text-xs" /> <span>Load More</span>
+                <FaPlus className="text-xs" /><span>Load More</span>
               </button>
             )}
           </div>
@@ -479,7 +469,7 @@ function Webinars() {
             user
             ? mentorData
             ? mentorData.isPremium
-            ? userData?.webinarLimit <= limit ? navigate("/create-webinar") : setLimitExceeded(true)
+            ? userData?.webinarLimit < limit ? navigate("/create-webinar") : setLimitExceeded(true)
             : setShowPremiumModal(true)
             : setShowMentorModal(true)
             : setShowLoginModal(true)
@@ -494,17 +484,10 @@ function Webinars() {
   );
 }
 
-const WebinarCard = React.memo(({ webinar }) => {
-  const navigate = useNavigate();
+const WebinarCard = React.memo(({webinar}) => {
 
-  const calculate = (date) => {
-    let newDate = new Date(date);
-    return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
-  };
-
-  const handleWhatsapp = () => {
-    console.log(webinar.creator);
-    axios
+  const handleWhatsapp = async () => {
+    await axios
       .get(
         `${import.meta.env.VITE_SERVER_URL}/getWhatsappNumber/${
           webinar.creator.id
@@ -515,59 +498,39 @@ const WebinarCard = React.memo(({ webinar }) => {
         window.open(`https://wa.me/${res.data}`);
       });
   };
+
+  const calculate = (date) => {
+    let newDate = new Date(date);
+    return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
+  };
+
   return (
-    <div className="flex border rounded-xl border-slate-400 shadow-lg p-5 lg:mx-auto my-5 lg:m-2 flex-col md:flex-row lg:w-10/12 xl:w-11/12">
-      <div className="flex items-center justify-center px-1 w-full md:w-6/12 lg:max-w-96">
-        <img
-          src={webinar.photo.url}
-          className="rounded-lg w-full 3xl:w-10/12"
-          alt="webinar"
-        />
-      </div>
-      <div className="p-4 flex md:w-1/2 justify-center flex-col ">
-        <p className="text-orange-600 font-semibold">
-          {calculate(webinar.startTime)}
-        </p>
-        <h1 className="font-semibold text-2xl whitespace-break-spaces">
-          {webinar.title}
-        </h1>
-        <div className="flex items-center my-2">
-          <img
-            src={webinar.creator.photo}
-            className="max-w-8 rounded-full mr-3"
-          />
-          <p>{webinar.creator.name}</p>
-        </div>
-        <div className="flex flex-col md:flex-row ">
-          {webinar.status === "Past" ? (
-            <button
-              className="p-3 mt-3 lg:p-2 md:mr-5 border-orange-500 border-2 rounded-xl md:w-2/5 lg:w-48"
-              onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
-            >
-              See Details
+    <div className="md:flex gap-[22px] rounded-2xl border border-gray-300 p-4 md:p-6 my-2 bg-white">
+      <img src={webinar.photo.url} referrerpolicy="no-referrer" alt="" width="363" height="204" className="w-full h-auto md:max-h-[210px] md:w-[339px] rounded-xl object-cover" />
+
+      <div className="flex grow flex-col justify-between ml-2 mt-3">
+        <Link to={`/detailedWebinar/${webinar._id}`}>
+          <p className="text-sm font-semibold text-[#FB6514]">{calculate(webinar.startTime)}</p>
+          <p className="text-xl md:text-2xl mt-1 font-bold text-[#101828]">{webinar.title}</p>
+
+          <div className="mt-[13px] flex items-center gap-1.5 text-center">
+            <img src={webinar.creator.photo} alt="" loading="lazy" width="28" height="28" decoding="async" data-nimg="1" className="h-6 w-6 rounded-full object-cover" />
+            <p className="text-sm font-semibold leading-[18px] text-gray-900">{webinar.creator.name}</p>
+            <p className="text-gray-600">|</p>
+            <p className="text-sm leading-[18px] text-gray-600">{webinar.domain}</p>
+          </div>
+        </Link>
+        <div className="relative bottom-0 flex items-center gap-3  flex-col-reverse md:flex-row-reverse mt-2 -ml-1">
+            <button className="flex w-full justify-center rounded-lg  bg-black px-5 py-3" onClick={handleWhatsapp}>
+            <div className="text-sm font-semibold items-center text-white flex">
+            <FaWhatsapp className="w-4 h-4 mr-1 mt-0.5" />Connect with Mentor</div>
             </button>
-          ) : (
-            <>
-              <button
-                className="p-3 mt-3 lg:p-2 lg:mr-5 border-orange-500 border-2 rounded-xl md:w-3/5 lg:w-48"
-                onClick={() => navigate(`/detailedWebinar/${webinar._id}`)}
-              >
-                Register for Webinar
-              </button>
-              <button
-                className="p-3 mt-3 border-green-600 border-2 bg-green-400 text-white rounded-xl md:w-3/5 lg:w-48 flex items-center justify-center"
-                onClick={handleWhatsapp}
-              >
-                <FaWhatsapp className="w-5 h-5 mr-2" />
-                <span>Talk to Mentor</span>
-              </button>
-            </>
-          )}
-        </div>
+            <Link to={`/detailedWebinar/${webinar._id}`} className="flex w-full justify-center whitespace-nowrap rounded-lg border border-gray-400 px-5 py-3 text-sm font-semibold text-gray-800">See Details Now</Link>
+          </div>
       </div>
-    </div>
-  );
-});
+      </div>
+  )
+})
 
 function webinarLimits(mentor) {
   let limit = 0; 
@@ -587,7 +550,7 @@ function DataFetchLoading() {
   return (
     <div
       className="flex-col flex items-center
-          justify-center text-lg p-4"
+          justify-center text-lg p-4" style={{height: "80vh"}}
     >
       <img src={Loader} className="max-w-80" />
     </div>
