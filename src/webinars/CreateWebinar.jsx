@@ -297,9 +297,16 @@ function CreateWebinar() {
               required
             >
               <option value="">Select any Domain</option>
+              <option value="Technology">Technology</option>
               <option value="Hiring">Hiring</option>
               <option value="Career">Career</option>
               <option value="Study Abroad">Study Abroad</option>
+              <option value="Product Management">Product Management</option>
+              <option value="Internship">Internship</option>
+              <option value="Business">Business</option>
+              <option value="Govt. Exam">Govt. Exam</option>
+              <option value="Success Story">Success Story</option>
+              <option value="Jobs">Jobs</option>
             </select>
           </div>
           <div className="flex flex-col sm:flex-row px-4 my-4">

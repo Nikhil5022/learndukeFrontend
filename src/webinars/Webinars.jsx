@@ -212,7 +212,7 @@ function Webinars() {
             )}
           </div>
           </div>
-        <div className="flex items-center justify-center xl:hidden">
+        <div className="flex items-center justify-center">
           <p className="w-11/12 my-3 border-2 border-orange-100"></p>
         </div>
         </>
@@ -440,8 +440,7 @@ function Webinars() {
           </div>
         </Modal>
       )}
-      {
-        limitExceeded && (
+      {limitExceeded && (
           <Modal isOpen={limitExceeded} onClose={() => setLimitExceeded(false)}>
             <div className="flex flex-col justify-center space-y-4 items-center text-center">
               <p className="font-semibold text-lg">You have exceeded the monthly limit <br/> of webinars you can create!</p>

@@ -1,8 +1,4 @@
 import React, { useEffect } from "react";
-import { FaFacebook, FaInstagram } from "react-icons/fa";
-
-import TeachingNavbar from "./TeachingNavbar";
-import Footer from "./Footer";
 
 export default function Contactus() {
   useEffect(() => {
