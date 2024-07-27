@@ -56,8 +56,9 @@ export default function Navbar() {
       const email = urlParams.get("email");
       const name = urlParams.get("name");
       const accessToken = urlParams.get("accessToken");
+      const isLogin = urlParams.get("isLogin");
 
-      if (email && name && accessToken) {
+      if (email && name && accessToken && (isLogin === true)) {
         localStorage.setItem(
           "user",
           JSON.stringify({ email, name, accessToken })
@@ -96,7 +97,8 @@ export default function Navbar() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`;
+    window.location.href = "http://localhost:3000/auth/google"
+    // `${import.meta.env.VITE_SERVER_URL}/auth/google`;
   };
 
   const handleLogout = () => {

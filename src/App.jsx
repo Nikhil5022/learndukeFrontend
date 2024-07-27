@@ -34,6 +34,8 @@ import Webinars from "./webinars/Webinars";
 import CreateWebinar from "./webinars/CreateWebinar";
 import Detailedwebinar from "./webinars/Detailedwebinar";
 import Team from "./teachingjobs/Team";
+import WhoAmI from "./auth/WhoAmI";
+import HrDetails from "./hr/HrDetails";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -73,11 +75,14 @@ function App() {
     window.open(`https://wa.me/6371313613?text=${"I was facing an issue in the LearnDuke job dekho"}`, 'blank');
   };
 
+
+
   return (
     <>
       {showNav && <Navbar />}
       <Routes>
         <Route path="/" element={<Teachingjobs />} />
+        <Route path="/who-am-i" element={<WhoAmI />} />
         <Route path="/jobs" element={<Body />} />
         <Route path="/mentorship" element={<LandingPage />} />
         <Route path="/contactus" element={<Contactus />} />
@@ -102,6 +107,7 @@ function App() {
         <Route path="/create-webinar" element={<CreateWebinar />} />
         <Route path="/detailedWebinar/:id" element={<Detailedwebinar />} />
         <Route path="/team" element={<Team />} />
+        <Route path="hr-details" element={<HrDetails />} />
         {/* Add additional routes here */}
       </Routes>
       {showNav && showFooter && <Footer />}

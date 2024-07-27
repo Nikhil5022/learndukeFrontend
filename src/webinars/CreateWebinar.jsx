@@ -94,7 +94,7 @@ function CreateWebinar() {
     ctx.fillStyle = "white";
 
     ctx.font = "30px cursive";
-    ctx.fillText("SurelyWork | Webinar", 30, 50);
+    ctx.fillText("LearnDuke | Webinar", 30, 50);
 
     ctx.font = "60px cursive";
     // ctx.fillText(title, 30, 200, 800);
